@@ -2,7 +2,7 @@
  * @file      debounce_tests.cc
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-12-4
- * @copyright Copyright (c) 2024 Beam Limited. All rights reserved.
+ * @copyright Copyright (c) 2024 Beam Limited.
  * @brief   
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

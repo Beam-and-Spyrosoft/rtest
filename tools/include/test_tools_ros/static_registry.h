@@ -2,7 +2,7 @@
  * @file      static_registry.h
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
- * @copyright Copyright (c) 2024 Beam Limited. All rights reserved.
+ * @copyright Copyright (c) 2024 Beam Limited.
   *  
  * @brief     Mock header for ROS 2 static registry.
  *

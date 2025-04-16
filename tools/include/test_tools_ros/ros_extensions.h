@@ -4,7 +4,7 @@
  * @date       7 Feb 2019
  * @author     Magnus Maynard
  *
- * @copyright Copyright (c) 2024 Beam Limited. All rights reserved.
+ * @copyright Copyright (c) 2024 Beam Limited.
  *  
  * @brief    extensions for waiting for messages and conditions
  *

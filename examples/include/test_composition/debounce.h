@@ -2,7 +2,7 @@
  * @file      debounce.h
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-12-4
- * @copyright Copyright (c) 2024 Beam Limited. All rights reserved.
+ * @copyright Copyright (c) 2024 Beam Limited.
  *   
  * @brief   Simple implementation that uses time measurement and avoids setting a value when some arbitrary time hasn't
  * elapsed.

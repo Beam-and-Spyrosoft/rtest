@@ -2,7 +2,7 @@
  * @file      test_clock.h
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-12-2
- * @copyright Copyright (c) 2024 Beam Limited. All rights reserved.
+ * @copyright Copyright (c) 2024 Beam Limited.
   *  
  * @brief     ROS2 test clock utility.
  *
