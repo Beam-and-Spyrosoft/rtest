@@ -1,5 +1,5 @@
 /**
- * @file      main.cc
+ * @file      pub_sub_tests.cc
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.

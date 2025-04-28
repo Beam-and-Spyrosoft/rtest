@@ -1,5 +1,5 @@
 /**
- * @file      static_registry.cc
+ * @file      publisher.h
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
