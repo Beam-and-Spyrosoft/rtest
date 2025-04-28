@@ -22,6 +22,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <test_composition/publisher.h>
 #include <test_composition/subscriber.h>
+#include <test_composition/service_provider.h>
+#include <test_composition/service_client.h>
 
 int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
@@ -33,6 +35,10 @@ int main(int argc, char **argv) {
   exec.add_node(pub);
   auto sub = std::make_shared<test_composition::Subscriber>(opts);
   exec.add_node(sub);
+  auto service_provider = std::make_shared<test_composition::ServiceProvider>(opts);
+  exec.add_node(service_provider);
+  auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
+  exec.add_node(service_client);
 
   exec.spin();
 

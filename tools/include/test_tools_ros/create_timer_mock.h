@@ -20,7 +20,6 @@
  */
 
 #pragma once
-#define RCLCPP__CREATE_TIMER_HPP_  // disable default implementation
 
 #include <gmock/gmock.h>
 #include <test_tools_ros/static_registry.h>

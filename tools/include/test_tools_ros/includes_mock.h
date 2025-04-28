@@ -21,6 +21,20 @@
 
 #pragma once
 
+// First, disable original implementations
+#include <test_tools_ros/mock_defines.h>
+
+// Then include our mocks
+#ifdef TEST_TOOLS_ROS_SERVICE_MOCK
+#include <test_tools_ros/service_base.h>
+#include <test_tools_ros/service_mock.h>
+#endif
+
+#ifdef TEST_TOOLS_ROS_CLIENT_MOCK
+#include <test_tools_ros/client_base.h>
+#include <test_tools_ros/service_client_mock.h>
+#endif
+
 #if defined(TEST_TOOLS_ROS_PUBLISHER_MOCK) && defined(TEST_TOOLS_ROS_SUBSCRIPTION_MOCK)
 #include <test_tools_ros/publisher_mock.h>
 #include <test_tools_ros/subscription_mock.h>

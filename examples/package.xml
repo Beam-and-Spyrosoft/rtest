@@ -13,6 +13,7 @@
   <depend>lib_burrito_msgs_ros</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
+  <depend>std_srvs</depend>
   <depend>std_msgs</depend>
   <depend>logger</depend>
 

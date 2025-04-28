@@ -86,6 +86,34 @@ target_link_libraries(subscription_mock INTERFACE
 
 target_compile_definitions(subscription_mock INTERFACE TEST_TOOLS_ROS_SUBSCRIPTION_MOCK)
 
+# Service mock library
+add_library(service_mock INTERFACE)
+add_library(${PROJECT_NAME}::service_mock ALIAS service_mock)
+target_include_directories(service_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(service_mock INTERFACE
+  ${PROJECT_NAME}::common
+)
+
+target_compile_definitions(service_mock INTERFACE TEST_TOOLS_ROS_SERVICE_MOCK)
+
+add_library(service_client_mock INTERFACE)
+add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
+target_include_directories(service_client_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(service_client_mock INTERFACE
+  ${PROJECT_NAME}::common
+)
+
+target_compile_definitions(service_client_mock INTERFACE TEST_TOOLS_ROS_CLIENT_MOCK)
 
 # Timer mock library
 add_library(timer_mock INTERFACE)
@@ -117,6 +145,8 @@ install(
     common
     subscription_mock
     publisher_mock
+    service_mock
+    service_client_mock
     timer_mock
   EXPORT ${PROJECT_NAME}_targets
   ARCHIVE DESTINATION lib

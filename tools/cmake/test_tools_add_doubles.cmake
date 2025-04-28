@@ -77,6 +77,8 @@ function(test_tools_add_doubles target)
     target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE
       test_tools_ros::publisher_mock
       test_tools_ros::subscription_mock
+      test_tools_ros::service_mock
+      test_tools_ros::service_client_mock
       test_tools_ros::timer_mock
     )
 
@@ -98,6 +100,8 @@ function(test_tools_add_doubles target)
     target_link_libraries(${LIB_DOUBLES_NAME}
       test_tools_ros::publisher_mock
       test_tools_ros::subscription_mock
+      test_tools_ros::service_mock
+      test_tools_ros::service_client_mock
       test_tools_ros::timer_mock
       test_tools_ros::common
     )

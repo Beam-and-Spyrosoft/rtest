@@ -36,6 +36,8 @@ namespace rclcpp {
 class PublisherBase;
 class SubscriptionBase;
 class TimerBase;
+class ServiceBase;
+class ClientBase;
 }  // namespace rclcpp
 
 namespace test_tools_ros {
@@ -53,6 +55,9 @@ public:
   using FullyQualifiedNodeNameT = std::string;
   using TopicToPublishersMapT = std::map<TopicNameT, std::weak_ptr<rclcpp::PublisherBase>>;
   using TopicToSubscriptionsMapT = std::map<TopicNameT, std::weak_ptr<rclcpp::SubscriptionBase>>;
+  using ServiceNameT = std::string;
+  using ServiceToServicesMapT = std::map<ServiceNameT, std::weak_ptr<rclcpp::ServiceBase>>;
+  using ServiceToClientsMapT = std::map<ServiceNameT, std::weak_ptr<rclcpp::ClientBase>>;
 
   /**
    * @brief Get the static instance of the Mock Registry.
@@ -203,6 +208,67 @@ public:
     }
   }
 
+  /**
+   * @brief Register the newly created Service in the registry.
+   */
+  template <typename ServiceT>
+  void registerService(
+      const FullyQualifiedNodeNameT &nodeName,
+      const ServiceNameT &serviceName,
+      std::weak_ptr<rclcpp::ServiceBase> service) {
+    if (verbose_) {
+      std::cout << "StaticMocksRegistry::registerService<" << boost::typeindex::type_id<ServiceT>().pretty_name()
+                << ">(\"" << nodeName << "\", \"" << serviceName << "\")\n";
+    }
+    registerEntity(servicesRegistry_[nodeName], serviceName, service);
+  }
+
+  /**
+   * @brief Get list of all services created by the selected Node.
+   */
+  std::vector<std::weak_ptr<rclcpp::ServiceBase>> getNodeServices(const FullyQualifiedNodeNameT &nodeName) {
+    std::vector<std::weak_ptr<rclcpp::ServiceBase>> services{};
+    for (auto [serviceName, service] : servicesRegistry_[nodeName]) {
+      services.push_back(service);
+    }
+    return services;
+  }
+
+  /**
+   * @brief Get a service created by a selected Node.
+   */
+  std::weak_ptr<rclcpp::ServiceBase> getService(
+      const FullyQualifiedNodeNameT &nodeName,
+      const ServiceNameT &serviceName) {
+    return findEntity(servicesRegistry_[nodeName], serviceName);
+  }
+
+  template <typename ServiceT>
+  void registerServiceClient(
+      const FullyQualifiedNodeNameT &nodeName,
+      const ServiceNameT &serviceName,
+      std::weak_ptr<rclcpp::ClientBase> client) {
+    if (verbose_) {
+      std::cout << "StaticMocksRegistry::registerServiceClient<" << boost::typeindex::type_id<ServiceT>().pretty_name()
+                << ">(\"" << nodeName << "\", \"" << serviceName << "\")\n";
+    }
+    registerEntity(serviceClientsRegistry_[nodeName], serviceName, client);
+  }
+
+  std::vector<std::weak_ptr<rclcpp::ClientBase>> getNodeServiceClients(const FullyQualifiedNodeNameT &nodeName) {
+    std::vector<std::weak_ptr<rclcpp::ClientBase>> clients{};
+    for (auto [serviceName, client] : serviceClientsRegistry_[nodeName]) {
+      clients.push_back(client);
+    }
+    return clients;
+  }
+
+  std::weak_ptr<rclcpp::ClientBase> getServiceClient(
+      const FullyQualifiedNodeNameT &nodeName,
+      const ServiceNameT &serviceName) {
+    return findEntity(serviceClientsRegistry_[nodeName], serviceName);
+  }
+
 private:
   StaticMocksRegistry() {}
 
@@ -228,6 +294,8 @@ private:
   std::map<FullyQualifiedNodeNameT, TopicToPublishersMapT> publishersRegistry_;
   std::map<FullyQualifiedNodeNameT, TopicToSubscriptionsMapT> subscriptionsRegistry_;
   std::map<FullyQualifiedNodeNameT, std::vector<std::weak_ptr<rclcpp::TimerBase>>> timersRegistry_;
+  std::map<FullyQualifiedNodeNameT, ServiceToServicesMapT> servicesRegistry_;
+  std::map<FullyQualifiedNodeNameT, ServiceToClientsMapT> serviceClientsRegistry_;
 
   std::map<void *, std::weak_ptr<MockBase>> mockRegistry_;
 
