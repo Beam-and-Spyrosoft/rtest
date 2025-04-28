@@ -3,8 +3,8 @@
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
- *   
- * @brief   
+ *
+ * @brief
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

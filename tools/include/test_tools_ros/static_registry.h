@@ -3,7 +3,7 @@
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
-  *  
+ *
  * @brief     Mock header for ROS 2 static registry.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -204,7 +204,7 @@ public:
   }
 
 private:
-  StaticMocksRegistry(){}
+  StaticMocksRegistry() {}
 
   static StaticMocksRegistry theRegistry_;
 
