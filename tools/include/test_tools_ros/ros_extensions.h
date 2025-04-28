@@ -5,7 +5,7 @@
  * @author     Magnus Maynard
  *
  * @copyright Copyright (c) 2024 Beam Limited.
- *  
+ *
  * @brief    extensions for waiting for messages and conditions
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

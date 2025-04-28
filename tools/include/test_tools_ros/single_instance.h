@@ -3,8 +3,8 @@
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
- *  
- * @brief    Mock header for ROS 2 single instance class. 
+ *
+ * @brief    Mock header for ROS 2 single instance class.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

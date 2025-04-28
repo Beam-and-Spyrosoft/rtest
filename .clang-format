@@ -1,0 +1,24 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+UseTab: Never
+IndentWidth: 2
+TabWidth: 2
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: true
+ColumnLimit: 120
+AccessModifierOffset: -2
+NamespaceIndentation: None
+FixNamespaceComments: true
+BreakConstructorInitializers: AfterColon
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+ExperimentalAutoDetectBinPacking: false
+AlignAfterOpenBracket: AlwaysBreak
+ConstructorInitializerIndentWidth: 6
+DerivePointerAlignment: false
+PointerAlignment: Right
+PenaltyReturnTypeOnItsOwnLine: 10000000
+IncludeBlocks: Preserve
+SortIncludes: Never

@@ -3,7 +3,7 @@
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
- *   
+ *
  * @brief    Mock implementation for ROS 2 static registry.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,5 +28,3 @@ StaticMocksRegistry StaticMocksRegistry::theRegistry_;
 void enableVerboseLogs(bool on) { StaticMocksRegistry::instance().enableVerboseLogs(on); }
 
 }  // namespace test_tools_ros
-
-

@@ -3,7 +3,7 @@
  * @author    Sławomir Cielepak (sie@spyro-soft.com)
  * @date      2024-12-2
  * @copyright Copyright (c) 2024 Beam Limited.
-  *  
+ *
  * @brief     ROS2 test clock utility.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
