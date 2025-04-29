@@ -120,7 +120,7 @@ if(BUILD_TESTING)
       rclcpp_components
       std_msgs
   )
-    test_tools_add_doubles(service_provider_component
+  test_tools_add_doubles(service_provider_component
     AMENT_DEPENDENCIES
       rclcpp
       rclcpp_components
