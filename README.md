@@ -111,8 +111,8 @@ Use the appropriate find* function to locate the component created by your node:
 - `findTimers` for timers
 - `findPublisher` for publishers
 - `findSubscription` for subscriptions
-- `findService` for services
-- `findClient` for clients
+- `findService` for service providers
+- `findClient` for service clients
 
 ### Mocking Phase
 
