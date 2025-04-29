@@ -1,7 +1,9 @@
 {
-    "name": "ROS Development Container",
+    "name": "ROS 2 Development Container",
     "privileged": true,
     "remoteUser": "${localEnv:USER}",
+    "containerUser": "${localEnv:USER}",
+    "updateRemoteUserUID": true,
     "build": {
         "dockerfile": "Dockerfile",
         "args": {
@@ -11,8 +13,8 @@
             "IMAGE_SUFFIX": "-ros-base"
         }
     },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws/src,type=bind",
-    "workspaceFolder": "/home/ws/src",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws,type=bind",
+    "workspaceFolder": "/home/ws",
     "customizations": {
         "vscode": {
             "extensions":[
@@ -21,7 +23,8 @@
                 "twxs.cmake",
                 "donjayamanne.python-extension-pack",
                 "eamodio.gitlens",
-                "ms-iot.vscode-ros"
+                "ms-iot.vscode-ros",
+                "xaver.clang-format"
             ]
         }
     },
@@ -41,5 +44,8 @@
         "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind"
     ],
     "initializeCommand": "sh ./.devcontainer/initialize.sh",
-    "postCreateCommand": "sh ./.devcontainer/postCreate.sh"
+    "postCreateCommand": "sh ./.devcontainer/postCreate.sh",
+    "capAdd": [
+        "SYS_PTRACE"
+    ]
 }
