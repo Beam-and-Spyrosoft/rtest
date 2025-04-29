@@ -21,7 +21,10 @@ This repository and tooling was initally developed as a collaboration between [B
     ```
     git clone https://github.com/yourusername/test_tools_ros.git
     ```
-2. Follow the instructions in the individual tool directories to set up and run the tools.
+2. To build and run the test examples:
+    ```
+    colcon build && colcon test --packages-select test_tools_ros_examples --event-handlers console_cohesion+
+    ```
 
 ## License
 
