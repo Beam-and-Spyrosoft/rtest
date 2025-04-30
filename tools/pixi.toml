@@ -16,6 +16,7 @@ preview = ["pixi-build"]
 [dependencies]
 ros-jazzy-ament-cmake = "*"
 ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
 ros-jazzy-ros-base = "*"
 ros-jazzy-rclcpp = "*"
 
@@ -39,6 +40,7 @@ backend = { name = "pixi-build-cmake", version = "*" }
 
 [package.host-dependencies]
 ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
 ros-jazzy-ament-cmake = "*"
 ros-jazzy-ros-base = "*"
 ros-jazzy-rclcpp = "*"
@@ -52,6 +54,7 @@ gmock = "*"
 
 [package.run-dependencies]
 ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
 ros-jazzy-ament-cmake = "*"
 ros-jazzy-ros-base = "*"
 ros-jazzy-rclcpp = "*"
