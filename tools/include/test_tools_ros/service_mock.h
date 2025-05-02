@@ -89,8 +89,8 @@ public:
 
   void handle_request(
       std::shared_ptr<rmw_request_id_t> request_header,
-      std::shared_ptr<typename ServiceT::Request> typed_request) {
-    auto response = service_->handle_request(request_header, typed_request);
+      std::shared_ptr<typename ServiceT::Request> request) {
+    auto response = service_->handle_request(request_header, request);
     if (response) {
       send_response(*request_header, *response);
     }

@@ -23,12 +23,6 @@
 
 #include <test_composition/service_provider.h>
 
-// bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs) {
-//   const bool arrays_equal = std::equal(
-//       std::begin(lhs.writer_guid), std::end(lhs.writer_guid), std::begin(rhs.writer_guid), std::end(rhs.writer_guid));
-//   return (lhs.sequence_number == rhs.sequence_number) && arrays_equal;
-// }
-
 class ServiceProviderTest : public ::testing::Test {
 protected:
   rclcpp::NodeOptions opts;
@@ -46,12 +40,13 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated) {
   // Initial state should be false
   ASSERT_FALSE(node->getState());
 
-  // Set up test request and response
+  // Set up test request
   auto request_header = std::make_shared<rmw_request_id_t>();
   request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = true;
 
+  // Set up expected response
   std_srvs::srv::SetBool::Response expected_response;
   expected_response.success = true;
   expected_response.message = "State updated successfully";
@@ -80,12 +75,13 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated) {
 
   node->lockService();
 
-  // Set up test request and response
+  // Set up test request
   auto request_header = std::make_shared<rmw_request_id_t>();
   request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = true;
 
+  // Set up expected response
   std_srvs::srv::SetBool::Response expected_response;
   expected_response.success = false;
   expected_response.message = "Service is locked, cannot update state";
