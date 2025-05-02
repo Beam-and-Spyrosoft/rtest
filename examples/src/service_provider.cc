@@ -27,7 +27,9 @@ namespace test_composition {
 ServiceProvider::ServiceProvider(const rclcpp::NodeOptions &options) : rclcpp::Node("test_service_provider", options) {
   service_ = create_service<std_srvs::srv::SetBool>(
       "test_service",
-      std::bind(&ServiceProvider::handleServiceRequest, this, std::placeholders::_1, std::placeholders::_2));
+      [this](const std_srvs::srv::SetBool::Request::SharedPtr request, std_srvs::srv::SetBool::Response::SharedPtr response) {
+        handleServiceRequest(request, response);
+      });
 }
 
 bool ServiceProvider::getState() const { return state_; }
@@ -37,9 +39,17 @@ void ServiceProvider::handleServiceRequest(
     std_srvs::srv::SetBool::Response::SharedPtr response) {
   RCLCPP_INFO(get_logger(), "Received service request with data: %s", request->data ? "true" : "false");
 
-  state_ = request->data;
-  response->success = true;
-  response->message = "State updated successfully";
+  if (!locked_) {
+    RCLCPP_INFO(get_logger(), "Service is not locked, updating state");
+    state_ = request->data;
+    response->success = true;
+    response->message = "State updated successfully";
+  } else {
+    RCLCPP_WARN(get_logger(), "Service is locked, cannot update state");
+    response->success = false;
+    response->message = "Service is locked, cannot update state";
+  }
+
 }
 
 }  // namespace test_composition

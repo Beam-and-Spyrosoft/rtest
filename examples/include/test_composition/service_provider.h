@@ -36,6 +36,8 @@ public:
    */
   bool getState() const;
 
+  void lockService() { locked_ = true; }
+
 private:
   /**
    * @brief Service callback handler
@@ -46,6 +48,7 @@ private:
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_;
   bool state_{false};
+  bool locked_{false};
 };
 
 }  // namespace test_composition

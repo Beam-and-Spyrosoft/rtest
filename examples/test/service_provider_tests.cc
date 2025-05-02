@@ -23,6 +23,12 @@
 
 #include <test_composition/service_provider.h>
 
+// bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs) {
+//   const bool arrays_equal = std::equal(
+//       std::begin(lhs.writer_guid), std::end(lhs.writer_guid), std::begin(rhs.writer_guid), std::end(rhs.writer_guid));
+//   return (lhs.sequence_number == rhs.sequence_number) && arrays_equal;
+// }
+
 class ServiceProviderTest : public ::testing::Test {
 protected:
   rclcpp::NodeOptions opts;
@@ -38,32 +44,29 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated) {
   ASSERT_TRUE(service);
 
   // Initial state should be false
-  EXPECT_FALSE(node->getState());
+  ASSERT_FALSE(node->getState());
 
   // Set up test request and response
+  auto request_header = std::make_shared<rmw_request_id_t>();
+  request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = true;
-  std_srvs::srv::SetBool::Response response;
+
+  std_srvs::srv::SetBool::Response expected_response;
+  expected_response.success = true;
+  expected_response.message = "State updated successfully";
 
   // Set up expectation that service will handle request and set proper response
-  EXPECT_CALL(*service, handle(::testing::_, ::testing::_))
-      .WillOnce(::testing::DoAll(
-          ::testing::Invoke(
-              [](const std_srvs::srv::SetBool::Request::SharedPtr /*req*/, std_srvs::srv::SetBool::Response &resp) {
-                resp.success = true;
-                resp.message = "State updated successfully";
-              }),
-          ::testing::Return()));
+  EXPECT_CALL(*service, send_response(*request_header, expected_response));
 
   // Simulate service call
-  service->handle(request, response);
+  service->handle_request(request_header, request);
 
-  // Verify response
-  EXPECT_TRUE(response.success);
-  EXPECT_EQ(response.message, "State updated successfully");
+  // The state should be updated to true
+  EXPECT_TRUE(node->getState());
 }
 
-TEST_F(ServiceProviderTest, WhenServiceRequestReceivedError_ThenStateIsUpdated) {
+TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated) {
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
   // Retrieve the service created by the Node
@@ -73,27 +76,26 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceivedError_ThenStateIsUpdated) 
   ASSERT_TRUE(service);
 
   // Initial state should be false
-  EXPECT_FALSE(node->getState());
+  ASSERT_FALSE(node->getState());
+
+  node->lockService();
 
   // Set up test request and response
+  auto request_header = std::make_shared<rmw_request_id_t>();
+  request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = true;
-  std_srvs::srv::SetBool::Response response;
 
-  // Set up expectation that service will handle request and response error
-  EXPECT_CALL(*service, handle(::testing::_, ::testing::_))
-      .WillOnce(::testing::DoAll(
-          ::testing::Invoke(
-              [](const std_srvs::srv::SetBool::Request::SharedPtr /*req*/, std_srvs::srv::SetBool::Response &resp) {
-                resp.success = false;
-                resp.message = "Error: Invalid request";
-              }),
-          ::testing::Return()));
+  std_srvs::srv::SetBool::Response expected_response;
+  expected_response.success = false;
+  expected_response.message = "Service is locked, cannot update state";
+
+  // Set up expectation that service will handle request and set proper response
+  EXPECT_CALL(*service, send_response(*request_header, expected_response));
 
   // Simulate service call
-  service->handle(request, response);
+  service->handle_request(request_header, request);
 
-  // Verify response
-  EXPECT_FALSE(response.success);
-  EXPECT_EQ(response.message, "Error: Invalid request");
+  // The state should not be updated because the service was locked
+  EXPECT_FALSE(node->getState());
 }
