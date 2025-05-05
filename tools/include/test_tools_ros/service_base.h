@@ -19,6 +19,7 @@
  * limitations under the License.
  */
 
+// clang-format off
 #pragma once
 
 #include <atomic>
@@ -28,7 +29,6 @@
 #include <mutex>
 #include <sstream>
 #include <string>
-
 #include "rcl/error_handling.h"
 #include "rcl/event_callback.h"
 #include "rcl/service.h"
@@ -50,10 +50,11 @@
 #include "rclcpp/qos.hpp"
 #include "rclcpp/type_support_decl.hpp"
 #include "rclcpp/visibility_control.hpp"
+namespace rclcpp
+{
 
-namespace rclcpp {
-
-class ServiceBase {
+class ServiceBase
+{
 public:
   RCLCPP_SMART_PTR_DEFINITIONS_NOT_COPYABLE(ServiceBase)
 
@@ -66,7 +67,8 @@ public:
   /// Return the name of the service.
   /** \return The name of the service. */
   RCLCPP_PUBLIC
-  const char *get_service_name();
+  const char *
+  get_service_name();
 
   /// Return the rcl_service_t service handle in a std::shared_ptr.
   /**
@@ -74,7 +76,8 @@ public:
    * The actual rcl service is not finalized until it is out of scope everywhere.
    */
   RCLCPP_PUBLIC
-  std::shared_ptr<rcl_service_t> get_service_handle();
+  std::shared_ptr<rcl_service_t>
+  get_service_handle();
 
   /// Return the rcl_service_t service handle in a std::shared_ptr.
   /**
@@ -82,7 +85,8 @@ public:
    * The actual rcl service is not finalized until it is out of scope everywhere.
    */
   RCLCPP_PUBLIC
-  std::shared_ptr<const rcl_service_t> get_service_handle() const;
+  std::shared_ptr<const rcl_service_t>
+  get_service_handle() const;
 
   /// Take the next request from the service as a type erased pointer.
   /**
@@ -100,13 +104,22 @@ public:
    *   rcl calls fail.
    */
   RCLCPP_PUBLIC
-  bool take_type_erased_request(void *request_out, rmw_request_id_t &request_id_out);
+  bool
+  take_type_erased_request(void * request_out, rmw_request_id_t & request_id_out);
 
-  virtual std::shared_ptr<void> create_request() = 0;
+  virtual
+  std::shared_ptr<void>
+  create_request() = 0;
 
-  virtual std::shared_ptr<rmw_request_id_t> create_request_header() = 0;
+  virtual
+  std::shared_ptr<rmw_request_id_t>
+  create_request_header() = 0;
 
-  virtual void handle_request(std::shared_ptr<rmw_request_id_t> request_header, std::shared_ptr<void> request) = 0;
+  virtual
+  void
+  handle_request(
+    std::shared_ptr<rmw_request_id_t> request_header,
+    std::shared_ptr<void> request) = 0;
 
   /// Exchange the "in use by wait set" state for this service.
   /**
@@ -119,7 +132,8 @@ public:
    * \returns the previous state.
    */
   RCLCPP_PUBLIC
-  bool exchange_in_use_by_wait_set_state(bool in_use_state);
+  bool
+  exchange_in_use_by_wait_set_state(bool in_use_state);
 
   /// Get the actual response publisher QoS settings, after the defaults have been determined.
   /**
@@ -134,7 +148,8 @@ public:
    * \throws std::runtime_error if failed to get qos settings
    */
   RCLCPP_PUBLIC
-  rclcpp::QoS get_response_publisher_actual_qos() const;
+  rclcpp::QoS
+  get_response_publisher_actual_qos() const;
 
   /// Get the actual request subscription QoS settings, after the defaults have been determined.
   /**
@@ -149,7 +164,8 @@ public:
    * \throws std::runtime_error if failed to get qos settings
    */
   RCLCPP_PUBLIC
-  rclcpp::QoS get_request_subscription_actual_qos() const;
+  rclcpp::QoS
+  get_request_subscription_actual_qos() const;
 
   /// Set a callback to be called when each new request is received.
   /**
@@ -178,29 +194,34 @@ public:
    *
    * \param[in] callback functor to be called when a new request is received
    */
-  void set_on_new_request_callback(std::function<void(size_t)> callback) {
+  void
+  set_on_new_request_callback(std::function<void(size_t)> callback)
+  {
     if (!callback) {
       throw std::invalid_argument(
-          "The callback passed to set_on_new_request_callback "
-          "is not callable.");
+              "The callback passed to set_on_new_request_callback "
+              "is not callable.");
     }
 
-    auto new_callback = [callback, this](size_t number_of_requests) {
-      try {
-        callback(number_of_requests);
-      } catch (const std::exception &exception) {
-        RCLCPP_ERROR_STREAM(
+    auto new_callback =
+      [callback, this](size_t number_of_requests) {
+        try {
+          callback(number_of_requests);
+        } catch (const std::exception & exception) {
+          RCLCPP_ERROR_STREAM(
             node_logger_,
-            "rclcpp::ServiceBase@" << this << " caught " << rmw::impl::cpp::demangle(exception)
-                                   << " exception in user-provided callback for the 'on new request' callback: "
-                                   << exception.what());
-      } catch (...) {
-        RCLCPP_ERROR_STREAM(
+            "rclcpp::ServiceBase@" << this <<
+              " caught " << rmw::impl::cpp::demangle(exception) <<
+              " exception in user-provided callback for the 'on new request' callback: " <<
+              exception.what());
+        } catch (...) {
+          RCLCPP_ERROR_STREAM(
             node_logger_,
-            "rclcpp::ServiceBase@" << this << " caught unhandled exception in user-provided callback "
-                                   << "for the 'on new request' callback");
-      }
-    };
+            "rclcpp::ServiceBase@" << this <<
+              " caught unhandled exception in user-provided callback " <<
+              "for the 'on new request' callback");
+        }
+      };
 
     std::lock_guard<std::recursive_mutex> lock(callback_mutex_);
 
@@ -208,20 +229,23 @@ public:
     // This two-step setting, prevents a gap where the old std::function has
     // been replaced but the middleware hasn't been told about the new one yet.
     set_on_new_request_callback(
-        rclcpp::detail::cpp_callback_trampoline<decltype(new_callback), const void *, size_t>,
-        static_cast<const void *>(&new_callback));
+      rclcpp::detail::cpp_callback_trampoline<decltype(new_callback), const void *, size_t>,
+      static_cast<const void *>(&new_callback));
 
     // Store the std::function to keep it in scope, also overwrites the existing one.
     on_new_request_callback_ = new_callback;
 
     // Set it again, now using the permanent storage.
     set_on_new_request_callback(
-        rclcpp::detail::cpp_callback_trampoline<decltype(on_new_request_callback_), const void *, size_t>,
-        static_cast<const void *>(&on_new_request_callback_));
+      rclcpp::detail::cpp_callback_trampoline<
+        decltype(on_new_request_callback_), const void *, size_t>,
+      static_cast<const void *>(&on_new_request_callback_));
   }
 
   /// Unset the callback registered for new requests, if any.
-  void clear_on_new_request_callback() {
+  void
+  clear_on_new_request_callback()
+  {
     std::lock_guard<std::recursive_mutex> lock(callback_mutex_);
     if (on_new_request_callback_) {
       set_on_new_request_callback(nullptr, nullptr);
@@ -233,13 +257,16 @@ protected:
   RCLCPP_DISABLE_COPY(ServiceBase)
 
   RCLCPP_PUBLIC
-  rcl_node_t *get_rcl_node_handle();
+  rcl_node_t *
+  get_rcl_node_handle();
 
   RCLCPP_PUBLIC
-  const rcl_node_t *get_rcl_node_handle() const;
+  const rcl_node_t *
+  get_rcl_node_handle() const;
 
   RCLCPP_PUBLIC
-  void set_on_new_request_callback(rcl_event_callback_t callback, const void *user_data);
+  void
+  set_on_new_request_callback(rcl_event_callback_t callback, const void * user_data);
 
   std::shared_ptr<rcl_node_t> node_handle_;
 
@@ -259,3 +286,5 @@ protected:
 };
 
 }  // namespace rclcpp
+
+// clang-format on
