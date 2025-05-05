@@ -25,10 +25,14 @@
 #include <test_tools_ros/static_registry.h>
 #include <test_tools_ros/service_base.h>
 
+#include <algorithm>
 #include <functional>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <utility>
+
+#include <boost/type_index.hpp>
 
 #include "rcl/error_handling.h"
 #include "rcl/service.h"
@@ -65,15 +69,35 @@ public:
   using SharedRequest = typename ServiceT::Request::SharedPtr;
   using SharedResponse = typename ServiceT::Response::SharedPtr;
 
-  ServiceMock(rclcpp::ServiceBase *service) : service_(service) {}
+  ServiceMock(rclcpp::ServiceBase *service_base) {
+    if (service_base) {
+      service_ = dynamic_cast<rclcpp::Service<ServiceT> *>(service_base);
+      if (!service_) {
+        throw std::runtime_error(
+            std::string{"Attempt to create ServiceMock for a different service type than: "} +
+            boost::typeindex::type_id<ServiceT>().pretty_name());
+      }
+    } else {
+      throw std::invalid_argument("Attempt to create ServiceMock for a nullptr service_base");
+    }
+  }
   ~ServiceMock() { StaticMocksRegistry::instance().detachMock(service_); }
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ServiceMock<ServiceT>)
 
-  MOCK_METHOD(void, handle, (const SharedRequest &, Response &), ());
+  MOCK_METHOD(void, send_response, (rmw_request_id_t &, typename ServiceT::Response &), ());
+
+  void handle_request(
+      std::shared_ptr<rmw_request_id_t> request_header,
+      std::shared_ptr<typename ServiceT::Request> request) {
+    auto response = service_->handle_request(request_header, request);
+    if (response) {
+      send_response(*request_header, *response);
+    }
+  }
 
 private:
-  rclcpp::ServiceBase *service_{nullptr};
+  rclcpp::Service<ServiceT> *service_{nullptr};
 };
 
 }  // namespace test_tools_ros
@@ -115,31 +139,26 @@ public:
 
   void handle_request(std::shared_ptr<rmw_request_id_t> request_header, std::shared_ptr<void> request) override {
     auto typed_request = std::static_pointer_cast<typename ServiceT::Request>(request);
-    auto response = std::make_shared<typename ServiceT::Response>();
-
-    auto mock = test_tools_ros::StaticMocksRegistry::instance().getMock(this).lock();
-    if (mock) {
-      std::static_pointer_cast<test_tools_ros::ServiceMock<ServiceT>>(mock)->handle(typed_request, *response);
-    } else {
-      response = any_callback_.dispatch(this->shared_from_this(), request_header, typed_request);
-    }
-
+    auto response = handle_request(request_header, typed_request);
     if (response) {
-      send_response(*request_header, *response);
+      auto mock = test_tools_ros::StaticMocksRegistry::instance().getMock(this).lock();
+      if (mock) {
+        std::static_pointer_cast<test_tools_ros::ServiceMock<ServiceT>>(mock)->send_response(
+            *request_header, *response);
+      }
     }
+  }
+
+  std::shared_ptr<typename ServiceT::Response> handle_request(
+      std::shared_ptr<rmw_request_id_t> request_header,
+      std::shared_ptr<typename ServiceT::Request> typed_request) {
+    return any_callback_.dispatch(this->shared_from_this(), request_header, typed_request);
   }
 
 private:
   RCLCPP_DISABLE_COPY(Service)
 
   AnyServiceCallback<ServiceT> any_callback_;
-
-  void send_response(rmw_request_id_t &req_id, typename ServiceT::Response &response) {
-    rcl_ret_t ret = rcl_send_response(get_service_handle().get(), &req_id, &response);
-    if (ret != RCL_RET_OK) {
-      rclcpp::exceptions::throw_from_rcl_error(ret, "failed to send response");
-    }
-  }
 
 private:
   std::string fully_qualified_name_;
@@ -180,3 +199,9 @@ std::shared_ptr<ServiceMock<ServiceT>> findService(
 }
 
 }  // namespace test_tools_ros
+
+static bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs) {
+  const bool arrays_equal = std::equal(
+      std::begin(lhs.writer_guid), std::end(lhs.writer_guid), std::begin(rhs.writer_guid), std::end(rhs.writer_guid));
+  return (lhs.sequence_number == rhs.sequence_number) && arrays_equal;
+}
