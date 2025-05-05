@@ -27,7 +27,7 @@ Please report security vulnerabilities using one of the following methods:
    - Select "Report a vulnerability"
    - Fill in the details of the vulnerability
 
-2. **Private Communication**: If you prefer not to use GitHub's features, contact the maintainers through the ROS Discourse forum via private message to user "beam_security".
+2. **Private Communication**: If you prefer not to use GitHub's features, you can contact the repository maintainers directly by sending a direct message to the repository owners on GitHub.
 
 Include any plans you may have to disclose details about the vulnerability. In order to protect our users, unless otherwise agreed by both parties, we ask that you not publicly discuss the vulnerability until a fix is published or at least 90 days have passed since the initial report submission. The team handling the report will also follow this timeline.If you do not wish to be acknowledged in the release communications, please indicate so when you submit the vulnerability.
 
