@@ -94,4 +94,20 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated) {
 
   // The state should not be updated because the service was locked
   EXPECT_FALSE(node->getState());
+
+  // Unlock the service
+  node->unlockService();
+
+  // Set up expected response for unlocking
+  expected_response.success = true;
+  expected_response.message = "State updated successfully";
+
+  // Set up expectation that service will handle request and set proper response
+  EXPECT_CALL(*service, send_response(*request_header, expected_response));
+
+  // Simulate service call again
+  service->handle_request(request_header, request);
+
+  // The state should be updated to true
+  EXPECT_TRUE(node->getState());
 }

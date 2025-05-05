@@ -24,6 +24,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/set_bool.hpp>
 
+#include <atomic>
+
 namespace test_composition {
 
 class ServiceProvider : public rclcpp::Node {
@@ -38,6 +40,8 @@ public:
 
   void lockService() { locked_ = true; }
 
+  void unlockService() { locked_ = false; }
+
 private:
   /**
    * @brief Service callback handler
@@ -48,7 +52,7 @@ private:
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_;
   bool state_{false};
-  bool locked_{false};
+  std::atomic_bool locked_{false};
 };
 
 }  // namespace test_composition
