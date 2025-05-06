@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !env.ACT && always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: build/test_tools_ros_examples/test_results
