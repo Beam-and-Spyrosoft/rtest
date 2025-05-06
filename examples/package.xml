@@ -15,7 +15,6 @@
   <depend>rclcpp_components</depend>
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
-  <depend>logger</depend>
 
   <test_depend>test_tools_ros</test_depend>
 
