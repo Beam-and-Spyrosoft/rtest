@@ -1,0 +1,57 @@
+name: ROS 2 Jazzy CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    container:
+      image: osrf/ros:jazzy-desktop
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
+            libboost-all-dev libgmock-dev python3-pip
+
+      - name: Initialize rosdep
+        run: |
+          rosdep init || true
+          # Poprawienie uprawnień przed uruchomieniem rosdep update
+          mkdir -p /root/.ros
+          rosdep fix-permissions || true
+          rosdep update
+
+      - name: Install dependencies
+        run: |
+          rosdep install --from-paths . --ignore-src -r -y
+
+      - name: Build project
+        shell: bash
+        run: |
+          . /opt/ros/jazzy/setup.bash
+          colcon build
+
+      - name: Run tests
+        shell: bash
+        run: |
+          . /opt/ros/jazzy/setup.bash
+          . install/setup.bash
+          colcon test --packages-select test_tools_ros_examples --event-handlers console_cohesion+
+          colcon test-result
+
+      - name: Upload test results
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: build/test_tools_ros_examples/test_results
