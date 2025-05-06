@@ -26,7 +26,6 @@ jobs:
       - name: Initialize rosdep
         run: |
           rosdep init || true
-          # Poprawienie uprawnień przed uruchomieniem rosdep update
           mkdir -p /root/.ros
           rosdep fix-permissions || true
           rosdep update
