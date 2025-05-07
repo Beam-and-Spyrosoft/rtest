@@ -1,6 +1,6 @@
 /**
  * @file      includes_mock.h
- * @author    Sławomir Cielepak (sie@spyro-soft.com)
+ * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-21
  * @copyright Copyright (c) 2024 Beam Limited.
  *

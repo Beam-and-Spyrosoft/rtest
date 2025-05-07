@@ -1,6 +1,6 @@
 /**
  * @file      debounce_tests.cc
- * @author    Sławomir Cielepak (sie@spyro-soft.com)
+ * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.
  * @brief

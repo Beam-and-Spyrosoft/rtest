@@ -1,5 +1,5 @@
 # @file      test_tools_add_doubles.cmake
-# @author    Sławomir Cielepak (sie@spyro-soft.com)
+# @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
 # @date      2024-11-25
 # @copyright Copyright (c) 2024 Beam Limited.
 
