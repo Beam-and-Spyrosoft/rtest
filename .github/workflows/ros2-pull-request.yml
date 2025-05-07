@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           . /opt/ros/jazzy/setup.bash
-          colcon build --cmake-args -DBUILD_TESTING=On
+          colcon build
 
       - name: Run tests
         shell: bash
