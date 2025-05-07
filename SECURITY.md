@@ -2,18 +2,18 @@
 
 ## Abstract
 
-This document describes the Vulnerability Disclosure Policy for the `test_tools_ros` package.
+This document describes the Vulnerability Disclosure Policy for the `ros2_test_framework` package.
 
 ## Motivation
 
-The developers of `test_tools_ros` take security seriously. As such, we would like to be informed when a security bug is found so that it can be fixed and disclosed as quickly as possible.
+The developers of `ros2_test_framework` take security seriously. As such, we would like to be informed when a security bug is found so that it can be fixed and disclosed as quickly as possible.
 This document outlines what is covered by this policy and how to report security vulnerabilities.
 
 ## Scope
 
-The Vulnerability Disclosure Program described here applies to all code contained in the `test_tools_ros` package, including its usage examples.
+The Vulnerability Disclosure Program described here applies to all code contained in the `ros2_test_framework` package, including its usage examples.
 
-The maintainers of `test_tools_ros` may also be able to assist you with reporting vulnerabilities related to ROS 2 in general. If you discover vulnerabilities in the broader ROS 2 ecosystem, please refer to [REP-2006](https://www.ros.org/reps/rep-2006.html) for the official ROS 2 vulnerability disclosure policy.
+The maintainers of `ros2_test_framework` may also be able to assist you with reporting vulnerabilities related to ROS 2 in general. If you discover vulnerabilities in the broader ROS 2 ecosystem, please refer to [REP-2006](https://www.ros.org/reps/rep-2006.html) for the official ROS 2 vulnerability disclosure policy.
 
 ## How to submit a vulnerability
 
@@ -35,7 +35,7 @@ Include any plans you may have to disclose details about the vulnerability. In o
 
 For non-security related bugs, feature requests, or general feedback, please open an issue in our GitHub repository:
 
-[https://github.com/rovco/test_tools_ros/issues](https://github.com/Beam-and-Spyrosoft/ros2_test_framework)
+[Issues](https://github.com/Beam-and-Spyrosoft/ros2_test_framework/issues)
 
 When reporting issues through GitHub, please use the provided issue templates when available and include as much detail as possible to help us understand and address your concern.
 
@@ -49,13 +49,13 @@ We will notify you when a solution has been implemented. Due to the potentially 
 
 ## Safe Harbor
 
-BEAM and Spyrosoft strongly support security research into `test_tools_ros` software and seek to encourage that research. We will not engage in legal action against individuals who act in good faith to identify, report and fix vulnerabilities in our software, so long as they operate in accordance with any applicable laws or this policy. Research or testing against operating robotic systems without the consent of the owner/operator is in violation of this policy and strongly discouraged due to potential health and human safety concerns.
+BEAM and Spyrosoft strongly support security research into `ros2_test_framework` software and seek to encourage that research. We will not engage in legal action against individuals who act in good faith to identify, report and fix vulnerabilities in our software, so long as they operate in accordance with any applicable laws or this policy. Research or testing against operating robotic systems without the consent of the owner/operator is in violation of this policy and strongly discouraged due to potential health and human safety concerns.
 
 If at any time you have concerns about whether your activities are consistent with this policy, please contact us through one of the methods described above.
 
 ## Copyright
 
-This security policy is based on REP-2006 and is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive.
+This security policy is based on [REP-2006](https://www.ros.org/reps/rep-2006.html) and is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive.
 
 ---
 

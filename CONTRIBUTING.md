@@ -1,5 +1,5 @@
 # Contributing Guidelines
-Thank you for your interest in contributing to `test_tools_ros`.
+Thank you for your interest in contributing to `ros2_test_framework`.
 Whether it's a bug report, new feature, correction, or additional
 documentation, we greatly value feedback and contributions from our community.
 
@@ -11,7 +11,7 @@ information to effectively respond to your bug report or contribution.
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
 
 When filing an issue, please check [existing open][issues], or [recently closed][closed-issues], issues to make sure
- somebody else hasn't already reported the issue.
+somebody else hasn't already reported the issue.
 Please try to include as much information as you can. Details like these are incredibly useful:
 
 * A reproducible test case or series of steps
@@ -44,6 +44,12 @@ To send us a pull request, please:
 GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/) and
 [creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
+## Signed-off commits
+
+Contributors must sign-off each commit by adding a `Signed-off-by: ...`
+line to commit messages to certify that they have the right to submit
+the code they are contributing to the project according to the
+[Developer Certificate of Origin (DCO)](https://developercertificate.org/).
 
 ## Finding contributions to work on
 Looking at the existing issues is a great way to find something to contribute on.
