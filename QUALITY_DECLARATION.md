@@ -155,11 +155,25 @@ Below are evaluations of each of `ros2_test_framework`'s run-time and build-time
 
 `ros2_test_framework` has the following runtime ROS 2 dependencies:
 
-#### `rcl`
+#### `rclcpp`
 
-`rcl` a library to support implementation of language specific ROS 2 Client Libraries.
+`rclcpp` - The ROS 2 client library in C++.
 
-It is **Quality Level 1**, see its [Quality Declaration document](https://github.com/ros2/rcl/blob/rolling/rcl/QUALITY_DECLARATION.md).
+It is **Quality Level 1**, see its [Quality Declaration document](https://github.com/ros2/rclcpp/blob/jazzy/rclcpp/QUALITY_DECLARATION.md).
+
+#### `ament_cmake_ros`
+
+`ament_cmake_ros` - The ROS specific CMake bits in the ament buildsystem.
+
+No quality level is declared for `ament_cmake_ros` package.
+
+#### `gmock_vendor`
+
+`gmock_vendor` - Googletest Mocking (gMock) Framework.
+
+No quality level is declared for `gmock_vendor` package.
+
+It is **Quality Level 1**, see its [Quality Declaration document](https://github.com/ros2/rclcpp/blob/jazzy/rclcpp/QUALITY_DECLARATION.md).
 
 ### Direct Runtime non-ROS Dependency [5.iii]
 
