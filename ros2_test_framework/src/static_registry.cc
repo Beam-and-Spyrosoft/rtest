@@ -19,12 +19,12 @@
  * limitations under the License.
  */
 
-#include <test_tools_ros/static_registry.h>
+#include <ros2_test_framework/static_registry.h>
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 StaticMocksRegistry StaticMocksRegistry::theRegistry_;
 
 void enableVerboseLogs(bool on) { StaticMocksRegistry::instance().enableVerboseLogs(on); }
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework

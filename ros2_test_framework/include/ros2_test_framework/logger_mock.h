@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include "test_tools_ros/single_instance.h"
+#include "ros2_test_framework/single_instance.h"
 #include <rcutils/logging.h>
 #include <gmock/gmock.h>
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 // Fwd declaration
 void log_handler(
@@ -39,7 +39,7 @@ void log_handler(
 /**
  * @brief A mock for ROS 2 logging interface
  */
-class LoggerMock : public test_tools_ros::SingleInstance<LoggerMock> {
+class LoggerMock : public ros2_test_framework::SingleInstance<LoggerMock> {
 public:
   LoggerMock() {
     instance_ = this;
@@ -64,7 +64,7 @@ private:
  * @brief Disable the logs in the test.
  *
  */
-class DisableLogs : public test_tools_ros::SingleInstance<DisableLogs> {
+class DisableLogs : public ros2_test_framework::SingleInstance<DisableLogs> {
 public:
   DisableLogs() {
     orig_log_handler_ = rcutils_logging_get_output_handler();
@@ -77,4 +77,4 @@ private:
   rcutils_logging_output_handler_t orig_log_handler_{nullptr};
 };
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework

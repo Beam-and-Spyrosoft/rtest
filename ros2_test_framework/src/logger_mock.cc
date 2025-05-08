@@ -19,9 +19,9 @@
  * limitations under the License.
  */
 
-#include <test_tools_ros/logger_mock.h>
+#include <ros2_test_framework/logger_mock.h>
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 LoggerMock *LoggerMock::instance_{nullptr};
 
@@ -51,4 +51,4 @@ void log_handler(
   }
 }
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework

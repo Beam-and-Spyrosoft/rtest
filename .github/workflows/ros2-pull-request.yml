@@ -41,7 +41,7 @@ jobs:
         run: |
           . /opt/ros/jazzy/setup.bash
           . install/setup.bash
-          colcon test --packages-select test_tools_ros_examples --event-handlers console_cohesion+
+          colcon test --packages-select ros2_test_framework_examples --event-handlers console_cohesion+
           colcon test-result
 
       - name: Upload test results
@@ -49,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: build/test_tools_ros_examples/test_results
+          path: build/ros2_test_framework_examples/test_results

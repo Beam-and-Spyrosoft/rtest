@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(test_tools_ros_examples 
+project(ros2_test_framework_examples 
   LANGUAGES CXX
   VERSION 0.1.0
 )
+
+# Build tests by default
+option(BUILD_TESTING "Build tests" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -107,7 +110,7 @@ install(TARGETS
 )
 
 if(BUILD_TESTING)
-  find_package(test_tools_ros REQUIRED)
+  find_package(ros2_test_framework REQUIRED)
   test_tools_add_doubles(publisher_component
     AMENT_DEPENDENCIES
       rclcpp

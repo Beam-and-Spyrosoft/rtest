@@ -22,7 +22,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <test_tools_ros/static_registry.h>
+#include <ros2_test_framework/static_registry.h>
 
 #include <chrono>
 #include <exception>
@@ -140,7 +140,7 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
       std::move(clock), period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
 
-  test_tools_ros::StaticMocksRegistry::instance().registerTimer(node_base->get_fully_qualified_name(), timer);
+  ros2_test_framework::StaticMocksRegistry::instance().registerTimer(node_base->get_fully_qualified_name(), timer);
 
   return timer;
 }
@@ -171,13 +171,13 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
       rclcpp::WallTimer<CallbackT>::make_shared(period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
 
-  test_tools_ros::StaticMocksRegistry::instance().registerTimer(node_base->get_fully_qualified_name(), timer);
+  ros2_test_framework::StaticMocksRegistry::instance().registerTimer(node_base->get_fully_qualified_name(), timer);
 
   return timer;
 }
 }  // namespace rclcpp
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 /**
  * @brief Convenience function for getting a list of Timers created by thje given Node.
@@ -208,4 +208,4 @@ static inline std::vector<std::shared_ptr<rclcpp::TimerBase>> findTimers(const s
   return findTimers(nodePtr->get_fully_qualified_name());
 }
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework

@@ -22,7 +22,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 /**
  * @brief Test utility for manual time control. Takes over control over the given Node's clock.
@@ -63,4 +63,4 @@ private:
   rcl_clock_t *clock_{nullptr};
   rcl_time_point_value_t now_{0L};
 };
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework
