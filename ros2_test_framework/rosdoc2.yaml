@@ -1,0 +1,21 @@
+type: 'rosdoc2 config'
+version: 1
+
+---
+
+settings:
+    generate_package_index: true
+    always_run_doxygen: true
+    always_run_sphinx_apidoc: true
+    enable_breathe: true
+
+builders:
+    - doxygen: {
+        name: 'ros2_test_framework Public C/C++ API',
+        output_dir: 'generated/doxygen'
+    }
+    - sphinx: {
+        name: 'ros2_test_framework',
+        doxygen_xml_directory: 'generated/doxygen/xml',
+        output_dir: ''
+    }
