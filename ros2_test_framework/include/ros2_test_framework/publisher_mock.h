@@ -22,7 +22,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <test_tools_ros/static_registry.h>
+#include <ros2_test_framework/static_registry.h>
 
 #include <functional>
 #include <iostream>
@@ -56,7 +56,7 @@
 #include "rclcpp/type_support_decl.hpp"
 #include "rclcpp/visibility_control.hpp"
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 /**
  * @brief A wrapper object for rclcpp::Publisher that intercepts the publish() method invocation and implements a mock
@@ -90,7 +90,7 @@ public:
   rclcpp::PublisherBase *pub_{nullptr};
 };
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework
 
 namespace rclcpp {
 
@@ -149,7 +149,7 @@ public:
     (void)qos;
     (void)options;
 
-    test_tools_ros::StaticMocksRegistry::instance().registerPublisher<MessageT>(
+    ros2_test_framework::StaticMocksRegistry::instance().registerPublisher<MessageT>(
         node_base->get_fully_qualified_name(), get_topic_name(), weak_from_this());
   }
 
@@ -161,9 +161,9 @@ public:
    * @param msg published message
    */
   void publish_(const MessageT &msg) {
-    auto mock = test_tools_ros::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      (std::static_pointer_cast<test_tools_ros::PublisherMock<MessageT>>(mock))->publish(msg);
+      (std::static_pointer_cast<ros2_test_framework::PublisherMock<MessageT>>(mock))->publish(msg);
     }
   }
 
@@ -173,10 +173,10 @@ public:
    * @return number of real and fake subscriptions
    */
   size_t get_subscription_count() {
-    auto mock = test_tools_ros::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return PublisherBase::get_subscription_count() +
-             (std::static_pointer_cast<test_tools_ros::PublisherMock<MessageT>>(mock))->subscriptions_count_;
+             (std::static_pointer_cast<ros2_test_framework::PublisherMock<MessageT>>(mock))->subscriptions_count_;
     }
 
     return PublisherBase::get_subscription_count();
@@ -275,7 +275,7 @@ public:
 
 }  // namespace rclcpp
 
-namespace test_tools_ros {
+namespace ros2_test_framework {
 
 /**
  * @brief Convenience function for getting publisher object for given Node name and Topic name.
@@ -301,7 +301,7 @@ std::shared_ptr<PublisherMock<MessageT>> findPublisher(
   auto publisher = std::dynamic_pointer_cast<rclcpp::Publisher<MessageT>>(pub_base);
   if (publisher) {
     if (StaticMocksRegistry::instance().getMock(publisher.get()).lock()) {
-      std::cerr << "test_tools_ros::findPublisher() WARNING: PublisherMock already attached to the Publisher\n";
+      std::cerr << "ros2_test_framework::findPublisher() WARNING: PublisherMock already attached to the Publisher\n";
     } else {
       pub_mock = std::make_shared<PublisherMock<MessageT>>(publisher.get());
       StaticMocksRegistry::instance().attachMock(publisher.get(), pub_mock);
@@ -327,4 +327,4 @@ std::shared_ptr<PublisherMock<MessageT>> findPublisher(
   return findPublisher<MessageT>(nodePtr->get_fully_qualified_name(), topicName);
 }
 
-}  // namespace test_tools_ros
+}  // namespace ros2_test_framework

@@ -21,7 +21,7 @@
 #include <gtest/gtest.h>
 
 #include <test_composition/debounce.h>
-#include <test_tools_ros/test_clock.h>
+#include <ros2_test_framework/test_clock.h>
 
 using namespace std::chrono_literals;
 
@@ -34,19 +34,19 @@ TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException) {
   auto node = std::make_shared<test_composition::DebounceNode>("default_opts", 123ms, opts);
 
   // No use_sim_time option
-  EXPECT_THROW(test_tools_ros::TestClock{node}, std::invalid_argument);
+  EXPECT_THROW(ros2_test_framework::TestClock{node}, std::invalid_argument);
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", false)});
   node = std::make_shared<test_composition::DebounceNode>("use_sim_time_false", 123ms, opts);
 
   // use_sim_time option set to false
-  EXPECT_THROW(test_tools_ros::TestClock{node}, std::invalid_argument);
+  EXPECT_THROW(ros2_test_framework::TestClock{node}, std::invalid_argument);
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
   node = std::make_shared<test_composition::DebounceNode>("use_sim_time_true", 123ms, opts);
 
   // use_sim_time option set to true
-  EXPECT_NO_THROW(test_tools_ros::TestClock{node});
+  EXPECT_NO_THROW(ros2_test_framework::TestClock{node});
 }
 
 TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce) {
@@ -55,7 +55,7 @@ TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce) 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
   auto debounce_int = std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
 
-  auto test_clock = test_tools_ros::TestClock{debounce_int};
+  auto test_clock = ros2_test_framework::TestClock{debounce_int};
 
   // Allow to set the value initially by advancing the time to t > DEBOUNCE_TIME
   test_clock.advance(DEBOUNCE_TIME + 1ms);

@@ -75,11 +75,11 @@ function(test_tools_add_doubles target)
     )
 
     target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE
-      test_tools_ros::publisher_mock
-      test_tools_ros::subscription_mock
-      test_tools_ros::service_mock
-      test_tools_ros::service_client_mock
-      test_tools_ros::timer_mock
+      ros2_test_framework::publisher_mock
+      ros2_test_framework::subscription_mock
+      ros2_test_framework::service_mock
+      ros2_test_framework::service_client_mock
+      ros2_test_framework::timer_mock
     )
 
     ament_target_dependencies(${LIB_DOUBLES_NAME} INTERFACE
@@ -98,12 +98,12 @@ function(test_tools_add_doubles target)
     )
 
     target_link_libraries(${LIB_DOUBLES_NAME}
-      test_tools_ros::publisher_mock
-      test_tools_ros::subscription_mock
-      test_tools_ros::service_mock
-      test_tools_ros::service_client_mock
-      test_tools_ros::timer_mock
-      test_tools_ros::common
+      ros2_test_framework::publisher_mock
+      ros2_test_framework::subscription_mock
+      ros2_test_framework::service_mock
+      ros2_test_framework::service_client_mock
+      ros2_test_framework::timer_mock
+      ros2_test_framework::common
     )
 
     ament_target_dependencies(${LIB_DOUBLES_NAME}
@@ -112,12 +112,12 @@ function(test_tools_add_doubles target)
   endif()
   
   
-  # set(TEST_TOOLS_ROS_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/../test_tools_ros/share/test_tools_ros/cmake/")
-  set(TEST_TOOLS_ROS_CMAKE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+  # set(ROS2_TEST_FRAMEWORK_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/../ros2_test_framework/share/ros2_test_framework/cmake/")
+  set(ROS2_TEST_FRAMEWORK_CMAKE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 
 
   configure_package_config_file(
-    ${TEST_TOOLS_ROS_CMAKE_DIR}/test-doublesConfig.cmake.in
+    ${ROS2_TEST_FRAMEWORK_CMAKE_DIR}/test-doublesConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/${LIB_DOUBLES_NAME}Config.cmake
     INSTALL_DESTINATION share/${LIB_DOUBLES_NAME}/cmake
   )

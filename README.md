@@ -1,8 +1,8 @@
-# Test Tools ROS
+# ROS 2 Testing Framework
 
-This repository provides a suite of tools and utilities tailored for testing and debugging ROS2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS2-based projects, particularly in scenarios involving integration testing. 
+This repository provides a suite of tools and utilities tailored for testing and debugging ROS 2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS 2-based projects, particularly in scenarios involving unit and integration testing. 
 
-The tools in this repository address challenges posed by ROS2's inter-process communication, which can lead to inconsistent test results. By focusing on integration testing without revalidating the underlying RMW (ROS Middleware) implementations, this repository ensures a more streamlined and reliable testing process.
+The tools in this repository address challenges posed by ROS 2's inter-process communication, which can lead to inconsistent test results. By focusing on integration testing without revalidating the underlying RMW (ROS Middleware) implementations, this repository ensures a more streamlined and reliable testing process.
 
 ## Contributors
 This repository and tooling was initally developed as a collaboration between [BEAM](https://beam.global/) and [Spyrosoft](https://spyro-soft.com/); and is maintained as a collaboration.
@@ -13,29 +13,31 @@ This repository and tooling was initally developed as a collaboration between [B
 
 ## Requirements
 
-- ROS2
+- rclcpp
+- GoogleTest
+- ament_cmake_ros
 
 ## Usage
 
 1. Clone the repository:
     ```
-    git clone https://github.com/yourusername/test_tools_ros.git
+    git clone https://github.com/yourusername/ros2_test_framework.git
     ```
 2. To build and run the test examples:
     ```
-    colcon build && colcon test --packages-select test_tools_ros_examples --event-handlers console_cohesion+
+    colcon build && colcon test --packages-select ros2_test_framework_examples --event-handlers console_cohesion+
     ```
 
 ## Adding Testing Support to Your Package
 
 ### 1. Add Dependencies
 
-Add a dependency to `test_tools_ros` in your `package.xml` file:
+Add a dependency to `ros2_test_framework` in your `package.xml` file:
 
 ```xml
 <package format="3">
   ...
-  <test_depend>test_tools_ros</test_depend>
+  <test_depend>ros2_test_framework</test_depend>
 </package>
 ```
 
@@ -49,7 +51,7 @@ Example `CMakeLists.txt`:
 
 ```cmake
 find_package(ament_cmake_gmock REQUIRED)
-find_package(test_tools_ros REQUIRED)
+find_package(ros2_test_framework REQUIRED)
 
 ament_add_gmock(${PROJECT_NAME}-test
   main.cpp
@@ -58,11 +60,11 @@ ament_add_gmock(${PROJECT_NAME}-test
 )
 
 target_link_libraries(${PROJECT_NAME}-test
-  test_tools_ros::publisher_mock
-  test_tools_ros::subscription_mock
-  test_tools_ros::timer_mock
-  test_tools_ros::service_mock
-  test_tools_ros::service_client_mock
+  ros2_test_framework::publisher_mock
+  ros2_test_framework::subscription_mock
+  ros2_test_framework::timer_mock
+  ros2_test_framework::service_mock
+  ros2_test_framework::service_client_mock
 )
 
 ament_target_dependencies(${PROJECT_NAME}-test

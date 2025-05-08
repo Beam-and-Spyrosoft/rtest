@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>test_tools_ros</name>
-  <version>2.0.1</version>
+  <name>ros2_test_framework</name>
+  <version>0.1.0</version>
   <description>ROS2-specific code to help with testing.</description>
   <maintainer email="gc19@beam.global">Gary Cross</maintainer>
   <maintainer email="slawomir.cielepak@gmail.com">Sławomir Cielepak</maintainer>
@@ -15,5 +15,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <quality_level_status content="LEVEL_4"/>
   </export>
 </package>

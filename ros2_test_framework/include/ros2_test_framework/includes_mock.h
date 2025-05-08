@@ -22,28 +22,28 @@
 #pragma once
 
 // First, disable original implementations
-#include <test_tools_ros/mock_defines.h>
+#include <ros2_test_framework/mock_defines.h>
 
 // Then include our mocks
-#ifdef TEST_TOOLS_ROS_SERVICE_MOCK
-#include <test_tools_ros/service_base.h>
-#include <test_tools_ros/service_mock.h>
+#ifdef ROS2_TEST_FRAMEWORK_SERVICE_MOCK
+#include <ros2_test_framework/service_base.h>
+#include <ros2_test_framework/service_mock.h>
 #endif
 
-#ifdef TEST_TOOLS_ROS_CLIENT_MOCK
-#include <test_tools_ros/client_base.h>
-#include <test_tools_ros/service_client_mock.h>
+#ifdef ROS2_TEST_FRAMEWORK_CLIENT_MOCK
+#include <ros2_test_framework/client_base.h>
+#include <ros2_test_framework/service_client_mock.h>
 #endif
 
-#if defined(TEST_TOOLS_ROS_PUBLISHER_MOCK) && defined(TEST_TOOLS_ROS_SUBSCRIPTION_MOCK)
-#include <test_tools_ros/publisher_mock.h>
-#include <test_tools_ros/subscription_mock.h>
-#elif defined(TEST_TOOLS_ROS_PUBLISHER_MOCK)
-#include <test_tools_ros/publisher_mock.h>
-#elif defined(TEST_TOOLS_ROS_SUBSCRIPTION_MOCK)
-#include <test_tools_ros/subscription_mock.h>
+#if defined(ROS2_TEST_FRAMEWORK_PUBLISHER_MOCK) && defined(ROS2_TEST_FRAMEWORK_SUBSCRIPTION_MOCK)
+#include <ros2_test_framework/publisher_mock.h>
+#include <ros2_test_framework/subscription_mock.h>
+#elif defined(ROS2_TEST_FRAMEWORK_PUBLISHER_MOCK)
+#include <ros2_test_framework/publisher_mock.h>
+#elif defined(ROS2_TEST_FRAMEWORK_SUBSCRIPTION_MOCK)
+#include <ros2_test_framework/subscription_mock.h>
 #endif
 
-#ifdef TEST_TOOLS_ROS_TIMER_MOCK
-#include <test_tools_ros/create_timer_mock.h>
+#ifdef ROS2_TEST_FRAMEWORK_TIMER_MOCK
+#include <ros2_test_framework/create_timer_mock.h>
 #endif
