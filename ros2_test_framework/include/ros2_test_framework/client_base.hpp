@@ -1,5 +1,5 @@
 /**
- * @file      client_base.h
+ * @file      client_base.hpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.

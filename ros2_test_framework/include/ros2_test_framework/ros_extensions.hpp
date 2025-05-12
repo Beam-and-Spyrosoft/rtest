@@ -1,5 +1,5 @@
 /**
- * @file       ros_extensions.h
+ * @file       ros_extensions.hpp
  * @brief      Useful extensions for ROS when testing.
  * @date       7 Feb 2019
  * @author     Magnus Maynard

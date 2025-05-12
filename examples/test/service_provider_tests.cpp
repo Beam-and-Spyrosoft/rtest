@@ -1,5 +1,5 @@
 /**
- * @file      service_provider_tests.cc
+ * @file      service_provider_tests.cpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.
@@ -21,7 +21,7 @@
 
 #include <gtest/gtest.h>
 
-#include <test_composition/service_provider.h>
+#include <test_composition/service_provider.hpp>
 
 class ServiceProviderTest : public ::testing::Test {
 protected:

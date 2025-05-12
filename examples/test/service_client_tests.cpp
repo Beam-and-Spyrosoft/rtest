@@ -1,5 +1,5 @@
 /**
- * @file      service_client_tests.cc
+ * @file      service_client_tests.cpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.
@@ -20,7 +20,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <test_composition/service_client.h>
+#include <test_composition/service_client.hpp>
 
 class ServiceClientTest : public ::testing::Test {
 protected:

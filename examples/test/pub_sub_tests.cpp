@@ -1,5 +1,5 @@
 /**
- * @file      pub_sub_tests.cc
+ * @file      pub_sub_tests.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -21,8 +21,8 @@
 
 #include <gtest/gtest.h>
 
-#include <test_composition/publisher.h>
-#include <test_composition/subscriber.h>
+#include <test_composition/publisher.hpp>
+#include <test_composition/subscriber.hpp>
 
 class PubSubTest : public ::testing::Test {
 protected:

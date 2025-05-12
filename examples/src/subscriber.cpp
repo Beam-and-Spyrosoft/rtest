@@ -1,10 +1,10 @@
 /**
- * @file      static_registry.cc
+ * @file      subscriber.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
  *
- * @brief    Mock implementation for ROS 2 static registry.
+ * @brief
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,21 @@
  * limitations under the License.
  */
 
-#include <ros2_test_framework/static_registry.h>
+#include "test_composition/subscriber.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-namespace ros2_test_framework {
+using namespace std::chrono_literals;
 
-StaticMocksRegistry StaticMocksRegistry::theRegistry_;
+namespace test_composition {
 
-void enableVerboseLogs(bool on) { StaticMocksRegistry::instance().enableVerboseLogs(on); }
+Subscriber::Subscriber(const rclcpp::NodeOptions &options) : rclcpp::Node("test_subscriber", options) {
+  subscription = create_subscription<std_msgs::msg::String>(
+      "test_topic", rclcpp::SensorDataQoS(), [this](std_msgs::msg::String::UniquePtr msg) {
+        RCLCPP_INFO(get_logger(), "Received message: %s", msg->data.c_str());
+        lastMsg_ = *msg;
+      });
+}
 
-}  // namespace ros2_test_framework
+}  // namespace test_composition
+
+RCLCPP_COMPONENTS_REGISTER_NODE(test_composition::Subscriber);

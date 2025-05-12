@@ -1,5 +1,5 @@
 /**
- * @file      service_provider.cc
+ * @file      service_provider.cpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.
@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-#include "test_composition/service_provider.h"
+#include "test_composition/service_provider.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 namespace test_composition {

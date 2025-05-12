@@ -1,10 +1,10 @@
 /**
- * @file      subscriber.h
+ * @file      single_instance.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
  *
- * @brief
+ * @brief    Mock header for ROS 2 single instance class.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,32 @@
 
 #pragma once
 
-#include <rclcpp/rclcpp.hpp>
-#include <rclcpp/executors.hpp>
-#include <std_msgs/msg/string.hpp>
+#include <atomic>
+#include <stdexcept>
+#include <string>
+#include <typeinfo>
 
-namespace test_composition {
+#include <boost/type_index.hpp>
 
-class Subscriber : public rclcpp::Node {
+namespace ros2_test_framework {
+
+template <typename T>
+class SingleInstance {
 public:
-  explicit Subscriber(const rclcpp::NodeOptions &options);
+  SingleInstance() {
+    if (instanceCreated_.test_and_set()) {
+      throw std::runtime_error{
+          std::string{"Attempt to create more than one instance of "} + boost::typeindex::type_id<T>().pretty_name()};
+    }
+  }
 
-  const std_msgs::msg::String &getLastMsg() const { return lastMsg_; }
+  ~SingleInstance() { instanceCreated_.clear(); }
 
 private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription;
-  std_msgs::msg::String lastMsg_{};
+  static std::atomic_flag instanceCreated_;
 };
 
-}  // namespace test_composition
+template <typename T>
+std::atomic_flag SingleInstance<T>::instanceCreated_ = ATOMIC_FLAG_INIT;
+
+}  // namespace ros2_test_framework

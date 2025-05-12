@@ -1,5 +1,5 @@
 /**
- * @file      logger_mock.h
+ * @file      logger_mock.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-18
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ros2_test_framework/single_instance.h"
+#include "ros2_test_framework/single_instance.hpp"
 #include <rcutils/logging.h>
 #include <gmock/gmock.h>
 

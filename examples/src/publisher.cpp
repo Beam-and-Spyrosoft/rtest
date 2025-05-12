@@ -1,5 +1,5 @@
 /**
- * @file      publisher.cc
+ * @file      publisher.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-#include "test_composition/publisher.h"
+#include "test_composition/publisher.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
 using namespace std::chrono_literals;

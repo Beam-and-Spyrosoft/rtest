@@ -1,5 +1,5 @@
 /**
- * @file      debounce_tests.cc
+ * @file      debounce_tests.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -20,8 +20,8 @@
 
 #include <gtest/gtest.h>
 
-#include <test_composition/debounce.h>
-#include <ros2_test_framework/test_clock.h>
+#include <test_composition/debounce.hpp>
+#include <ros2_test_framework/test_clock.hpp>
 
 using namespace std::chrono_literals;
 

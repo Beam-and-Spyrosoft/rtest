@@ -1,5 +1,5 @@
 /**
- * @file      logger_mock.cc
+ * @file      logger_mock.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-18
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-#include <ros2_test_framework/logger_mock.h>
+#include <ros2_test_framework/logger_mock.hpp>
 
 namespace ros2_test_framework {
 

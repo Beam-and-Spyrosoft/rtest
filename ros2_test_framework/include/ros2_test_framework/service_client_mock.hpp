@@ -1,5 +1,5 @@
 /**
- * @file      service_client_mock.h
+ * @file      service_client_mock.hpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.
@@ -22,8 +22,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.h>
-#include <ros2_test_framework/client_base.h>
+#include <ros2_test_framework/static_registry.hpp>
+#include <ros2_test_framework/client_base.hpp>
 
 #include <memory>
 #include <string>

@@ -1,5 +1,5 @@
 /**
- * @file      debounce.h
+ * @file      debounce.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.

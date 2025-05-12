@@ -1,5 +1,5 @@
 /**
- * @file      subscription_mock.h
+ * @file      subscription_mock.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -21,7 +21,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.h>
+#include <ros2_test_framework/static_registry.hpp>
 
 #include <rmw/error_handling.h>
 #include <rmw/rmw.h>

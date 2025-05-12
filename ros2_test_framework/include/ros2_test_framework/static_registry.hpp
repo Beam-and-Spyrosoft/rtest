@@ -1,5 +1,5 @@
 /**
- * @file      static_registry.h
+ * @file      static_registry.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -30,7 +30,7 @@
 
 #include <boost/type_index.hpp>
 
-#include <ros2_test_framework/single_instance.h>
+#include <ros2_test_framework/single_instance.hpp>
 
 namespace rclcpp {
 class PublisherBase;

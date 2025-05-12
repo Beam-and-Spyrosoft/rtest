@@ -1,9 +1,8 @@
 /**
- * @file      publisher.h
+ * @file      main.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
- * @date      2024-11-26
+ * @date      2024-12-4
  * @copyright Copyright (c) 2024 Beam Limited.
- *
  * @brief
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,25 +18,16 @@
  * limitations under the License.
  */
 
-#pragma once
-
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <rclcpp/rclcpp.hpp>
-#include <rclcpp/executors.hpp>
-#include <std_msgs/msg/string.hpp>
 
-namespace test_composition {
+int main(int argc, char **argv) {
+  testing::InitGoogleMock(&argc, argv);
+  rclcpp::init(argc, argv);
 
-class Publisher : public rclcpp::Node {
-public:
-  explicit Publisher(const rclcpp::NodeOptions &options);
-
-  void publishCopy();
-  void publishUniquePtr();
-  void publishLoanedMsg();
-
-private:
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  rclcpp::TimerBase::SharedPtr timer;
-};
-
-}  // namespace test_composition
+  // Run all tests
+  int result = RUN_ALL_TESTS();
+  rclcpp::shutdown();
+  return result;
+}

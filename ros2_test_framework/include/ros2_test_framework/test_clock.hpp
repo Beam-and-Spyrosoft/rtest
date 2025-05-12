@@ -1,5 +1,5 @@
 /**
- * @file      test_clock.h
+ * @file      test_clock.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-12-2
  * @copyright Copyright (c) 2024 Beam Limited.

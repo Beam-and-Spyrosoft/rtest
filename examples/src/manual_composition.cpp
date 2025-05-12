@@ -1,8 +1,9 @@
 /**
- * @file      main.cc
+ * @file      manual_composition.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
- * @date      2024-12-4
+ * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
+ *
  * @brief
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +19,29 @@
  * limitations under the License.
  */
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <rclcpp/rclcpp.hpp>
+#include <test_composition/publisher.hpp>
+#include <test_composition/subscriber.hpp>
+#include <test_composition/service_provider.hpp>
+#include <test_composition/service_client.hpp>
 
 int main(int argc, char **argv) {
-  testing::InitGoogleMock(&argc, argv);
   rclcpp::init(argc, argv);
 
-  // Run all tests
-  int result = RUN_ALL_TESTS();
+  rclcpp::NodeOptions opts{};
+
+  rclcpp::executors::SingleThreadedExecutor exec{};
+  auto pub = std::make_shared<test_composition::Publisher>(opts);
+  exec.add_node(pub);
+  auto sub = std::make_shared<test_composition::Subscriber>(opts);
+  exec.add_node(sub);
+  auto service_provider = std::make_shared<test_composition::ServiceProvider>(opts);
+  exec.add_node(service_provider);
+  auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
+  exec.add_node(service_client);
+
+  exec.spin();
+
   rclcpp::shutdown();
-  return result;
+  return 0;
 }
