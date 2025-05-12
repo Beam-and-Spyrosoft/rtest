@@ -25,7 +25,8 @@
 #include <test_composition/service_provider.hpp>
 #include <test_composition/service_client.hpp>
 
-int main(int argc, char **argv) {
+int main(int argc, char ** argv)
+{
   rclcpp::init(argc, argv);
 
   rclcpp::NodeOptions opts{};

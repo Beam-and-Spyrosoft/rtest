@@ -24,14 +24,17 @@
 
 using namespace std::chrono_literals;
 
-namespace test_composition {
+namespace test_composition
+{
 
-Subscriber::Subscriber(const rclcpp::NodeOptions &options) : rclcpp::Node("test_subscriber", options) {
+Subscriber::Subscriber(const rclcpp::NodeOptions & options)
+: rclcpp::Node("test_subscriber", options)
+{
   subscription = create_subscription<std_msgs::msg::String>(
-      "test_topic", rclcpp::SensorDataQoS(), [this](std_msgs::msg::String::UniquePtr msg) {
-        RCLCPP_INFO(get_logger(), "Received message: %s", msg->data.c_str());
-        lastMsg_ = *msg;
-      });
+    "test_topic", rclcpp::SensorDataQoS(), [this](std_msgs::msg::String::UniquePtr msg) {
+      RCLCPP_INFO(get_logger(), "Received message: %s", msg->data.c_str());
+      lastMsg_ = *msg;
+    });
 }
 
 }  // namespace test_composition

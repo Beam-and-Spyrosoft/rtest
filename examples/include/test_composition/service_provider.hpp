@@ -26,11 +26,13 @@
 
 #include <atomic>
 
-namespace test_composition {
+namespace test_composition
+{
 
-class ServiceProvider : public rclcpp::Node {
+class ServiceProvider : public rclcpp::Node
+{
 public:
-  explicit ServiceProvider(const rclcpp::NodeOptions &options);
+  explicit ServiceProvider(const rclcpp::NodeOptions & options);
 
   /**
    * @brief Get current state value
@@ -47,8 +49,8 @@ private:
    * @brief Service callback handler
    */
   void handleServiceRequest(
-      const std_srvs::srv::SetBool::Request::SharedPtr request,
-      std_srvs::srv::SetBool::Response::SharedPtr response);
+    const std_srvs::srv::SetBool::Request::SharedPtr request,
+    std_srvs::srv::SetBool::Response::SharedPtr response);
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_;
   bool state_{false};

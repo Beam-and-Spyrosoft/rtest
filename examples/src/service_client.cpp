@@ -24,13 +24,17 @@
 
 using namespace std::chrono_literals;
 
-namespace test_composition {
+namespace test_composition
+{
 
-ServiceClient::ServiceClient(const rclcpp::NodeOptions &options) : rclcpp::Node("test_service_client", options) {
+ServiceClient::ServiceClient(const rclcpp::NodeOptions & options)
+: rclcpp::Node("test_service_client", options)
+{
   client_ = create_client<std_srvs::srv::SetBool>("test_service");
 }
 
-bool ServiceClient::setState(bool state) {
+bool ServiceClient::setState(bool state)
+{
   if (!client_->service_is_ready()) {
     RCLCPP_ERROR(get_logger(), "Service not available");
     last_call_success_ = false;
@@ -43,8 +47,10 @@ bool ServiceClient::setState(bool state) {
 
   auto future_result = client_->async_send_request(request).share();
 
-  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), future_result, std::chrono::seconds(1)) !=
-      rclcpp::FutureReturnCode::SUCCESS) {
+  if (
+    rclcpp::spin_until_future_complete(
+      this->get_node_base_interface(), future_result, std::chrono::seconds(1)) !=
+    rclcpp::FutureReturnCode::SUCCESS) {
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -56,7 +62,7 @@ bool ServiceClient::setState(bool state) {
     last_call_success_ = response->success;
     last_response_message_ = response->message;
     return response->success;
-  } catch (const std::exception &e) {
+  } catch (const std::exception & e) {
     RCLCPP_ERROR(get_logger(), "Service call error: %s", e.what());
     last_call_success_ = false;
     last_response_message_ = e.what();
@@ -64,7 +70,8 @@ bool ServiceClient::setState(bool state) {
   }
 }
 
-bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType callback) {
+bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType callback)
+{
   if (!client_->service_is_ready()) {
     RCLCPP_ERROR(get_logger(), "Service not available");
     last_call_success_ = false;
@@ -77,9 +84,10 @@ bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType
 
   auto future_and_id = client_->async_send_request(request, callback);
 
-  if (rclcpp::spin_until_future_complete(
-          this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
-      rclcpp::FutureReturnCode::SUCCESS) {
+  if (
+    rclcpp::spin_until_future_complete(
+      this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
+    rclcpp::FutureReturnCode::SUCCESS) {
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -91,7 +99,7 @@ bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType
     last_call_success_ = response->success;
     last_response_message_ = response->message;
     return response->success;
-  } catch (const std::exception &e) {
+  } catch (const std::exception & e) {
     RCLCPP_ERROR(get_logger(), "Service call error: %s", e.what());
     last_call_success_ = false;
     last_response_message_ = e.what();
@@ -99,7 +107,10 @@ bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType
   }
 }
 
-bool ServiceClient::setStateWithRequestCallback(bool state, ServiceClient::CallbackWithRequestType callback) {
+bool ServiceClient::setStateWithRequestCallback(
+  bool state,
+  ServiceClient::CallbackWithRequestType callback)
+{
   if (!client_->service_is_ready()) {
     RCLCPP_ERROR(get_logger(), "Service not available");
     last_call_success_ = false;
@@ -112,9 +123,10 @@ bool ServiceClient::setStateWithRequestCallback(bool state, ServiceClient::Callb
 
   auto future_and_id = client_->async_send_request(request, callback);
 
-  if (rclcpp::spin_until_future_complete(
-          this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
-      rclcpp::FutureReturnCode::SUCCESS) {
+  if (
+    rclcpp::spin_until_future_complete(
+      this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
+    rclcpp::FutureReturnCode::SUCCESS) {
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -126,7 +138,7 @@ bool ServiceClient::setStateWithRequestCallback(bool state, ServiceClient::Callb
     last_call_success_ = response->success;
     last_response_message_ = response->message;
     return response->success;
-  } catch (const std::exception &e) {
+  } catch (const std::exception & e) {
     RCLCPP_ERROR(get_logger(), "Service call error: %s", e.what());
     last_call_success_ = false;
     last_response_message_ = e.what();

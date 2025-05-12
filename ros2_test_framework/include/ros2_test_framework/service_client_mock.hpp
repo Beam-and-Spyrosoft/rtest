@@ -44,7 +44,8 @@
 
 #define TEST_TOOLS_MAKE_SHARED_DEFINITION(...)                             \
   template <typename... Args>                                              \
-  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&...args) {        \
+  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&... args)         \
+  {                                                                        \
     auto ptr = std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
     ptr->post_init_setup();                                                \
     return ptr;                                                            \
@@ -56,44 +57,48 @@
   __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
   TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 template <typename ServiceT>
-class ServiceClientMock : public MockBase {
+class ServiceClientMock : public MockBase
+{
 public:
   using Types = rclcpp::ClientTypes<ServiceT>;
   using FutureAndRequestId = typename Types::FutureResponseAndId;
   using SharedFutureAndRequestId = typename Types::SharedFutureAndRequestId;
   using SharedFutureWithRequestAndRequestId = typename Types::SharedFutureWithRequestAndRequestId;
 
-  ServiceClientMock(rclcpp::ClientBase *client) : client_(client) {}
+  ServiceClientMock(rclcpp::ClientBase * client) : client_(client) {}
   ~ServiceClientMock() { StaticMocksRegistry::instance().detachMock(client_); }
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ServiceClientMock<ServiceT>)
 
   MOCK_METHOD(FutureAndRequestId, async_send_request, (typename Types::SharedRequest), ());
   MOCK_METHOD(
-      SharedFutureAndRequestId,
-      async_send_request_with_callback,
-      (typename Types::SharedRequest, typename Types::CallbackType),
-      ());
+    SharedFutureAndRequestId,
+    async_send_request_with_callback,
+    (typename Types::SharedRequest, typename Types::CallbackType),
+    ());
   MOCK_METHOD(
-      SharedFutureWithRequestAndRequestId,
-      async_send_request_with_callback_and_request,
-      (typename Types::SharedRequest, typename Types::CallbackWithRequestType),
-      ());
+    SharedFutureWithRequestAndRequestId,
+    async_send_request_with_callback_and_request,
+    (typename Types::SharedRequest, typename Types::CallbackWithRequestType),
+    ());
   MOCK_METHOD(bool, service_is_ready, (), ());
 
 private:
-  rclcpp::ClientBase *client_{nullptr};
+  rclcpp::ClientBase * client_{nullptr};
 };
 
 }  // namespace ros2_test_framework
 
-namespace rclcpp {
+namespace rclcpp
+{
 
 template <typename ServiceT>
-class Client : public ClientBase, public std::enable_shared_from_this<Client<ServiceT>> {
+class Client : public ClientBase, public std::enable_shared_from_this<Client<ServiceT>>
+{
 public:
   using Types = rclcpp::ClientTypes<ServiceT>;
 
@@ -117,65 +122,82 @@ public:
   TEST_TOOLS_SMART_PTR_DEFINITIONS(Client<ServiceT>)
 
   Client(
-      rclcpp::node_interfaces::NodeBaseInterface *node_base,
-      std::shared_ptr<rclcpp::node_interfaces::NodeGraphInterface> &node_graph,
-      const std::string &service_name,
-      rcl_client_options_t &options) :
-        ClientBase(node_base, node_graph), service_name_(service_name) {
+    rclcpp::node_interfaces::NodeBaseInterface * node_base,
+    std::shared_ptr<rclcpp::node_interfaces::NodeGraphInterface> & node_graph,
+    const std::string & service_name,
+    rcl_client_options_t & options)
+  : ClientBase(node_base, node_graph), service_name_(service_name)
+  {
     fully_qualified_name_ = node_base->get_fully_qualified_name();
   }
 
   virtual ~Client() = default;
 
-  std::shared_ptr<void> create_response() override { return std::shared_ptr<void>(new typename ServiceT::Response()); }
+  std::shared_ptr<void> create_response() override
+  {
+    return std::shared_ptr<void>(new typename ServiceT::Response());
+  }
 
-  std::shared_ptr<rmw_request_id_t> create_request_header() override {
+  std::shared_ptr<rmw_request_id_t> create_request_header() override
+  {
     return std::shared_ptr<rmw_request_id_t>(new rmw_request_id_t);
   }
 
-  void handle_response(std::shared_ptr<rmw_request_id_t> request_header, std::shared_ptr<void> response) override {
+  void handle_response(
+    std::shared_ptr<rmw_request_id_t> request_header,
+    std::shared_ptr<void> response) override
+  {
     (void)request_header;
     (void)response;
     throw std::runtime_error("not implemented");
   }
 
-  FutureAndRequestId async_send_request(SharedRequest request) {
-    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
-    if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)->async_send_request(request);
-    }
-    throw std::runtime_error("No mock attached");
-  }
-
-  SharedFutureAndRequestId async_send_request(SharedRequest request, CallbackType cb) {
+  FutureAndRequestId async_send_request(SharedRequest request)
+  {
     auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
-          ->async_send_request_with_callback(request, cb);
+        ->async_send_request(request);
     }
     throw std::runtime_error("No mock attached");
   }
 
-  SharedFutureWithRequestAndRequestId async_send_request(SharedRequest request, CallbackWithRequestType cb) {
+  SharedFutureAndRequestId async_send_request(SharedRequest request, CallbackType cb)
+  {
     auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
-          ->async_send_request_with_callback_and_request(request, cb);
+        ->async_send_request_with_callback(request, cb);
     }
     throw std::runtime_error("No mock attached");
   }
 
-  bool service_is_ready() {
+  SharedFutureWithRequestAndRequestId async_send_request(
+    SharedRequest request,
+    CallbackWithRequestType cb)
+  {
     auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)->service_is_ready();
+      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
+        ->async_send_request_with_callback_and_request(request, cb);
+    }
+    throw std::runtime_error("No mock attached");
+  }
+
+  bool service_is_ready()
+  {
+    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
+        ->service_is_ready();
     }
     return false;
   }
 
-  void post_init_setup() {
+  void post_init_setup()
+  {
     ros2_test_framework::StaticMocksRegistry::instance().template registerServiceClient<ServiceT>(
-        fully_qualified_name_, service_name_, this->template weak_from_this());
+      fully_qualified_name_, service_name_, this->template weak_from_this());
   }
 
 private:
@@ -188,18 +210,22 @@ private:
 
 }  // namespace rclcpp
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 template <typename ServiceT>
 std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
-    const std::string &fullyQualifiedNodeName,
-    const std::string &serviceName) {
+  const std::string & fullyQualifiedNodeName,
+  const std::string & serviceName)
+{
   std::shared_ptr<ServiceClientMock<ServiceT>> client_mock{};
-  auto client_base = StaticMocksRegistry::instance().getServiceClient(fullyQualifiedNodeName, serviceName).lock();
+  auto client_base =
+    StaticMocksRegistry::instance().getServiceClient(fullyQualifiedNodeName, serviceName).lock();
 
   if (client_base) {
     if (StaticMocksRegistry::instance().getMock(client_base.get()).lock()) {
-      std::cerr << "ros2_test_framework::findServiceClient() WARNING: ServiceClientMock already attached to the Client\n";
+      std::cerr << "ros2_test_framework::findServiceClient() WARNING: ServiceClientMock already "
+                   "attached to the Client\n";
     } else {
       client_mock = std::make_shared<ServiceClientMock<ServiceT>>(client_base.get());
       StaticMocksRegistry::instance().attachMock(client_base.get(), client_mock);
@@ -210,9 +236,10 @@ std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
 
 template <typename ServiceT, typename NodeT>
 std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
-    const std::shared_ptr<NodeT> nodePtr,
-    const std::string &serviceName) {
-  const char *namePtr = serviceName.c_str();
+  const std::shared_ptr<NodeT> nodePtr,
+  const std::string & serviceName)
+{
+  const char * namePtr = serviceName.c_str();
   if (!serviceName.empty() && serviceName[0] == '/') {
     namePtr++;
   }

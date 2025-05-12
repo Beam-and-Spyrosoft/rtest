@@ -32,7 +32,8 @@
 
 #include <ros2_test_framework/single_instance.hpp>
 
-namespace rclcpp {
+namespace rclcpp
+{
 class PublisherBase;
 class SubscriptionBase;
 class TimerBase;
@@ -40,16 +41,20 @@ class ServiceBase;
 class ClientBase;
 }  // namespace rclcpp
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
-class MockBase {};
+class MockBase
+{
+};
 
 /**
  * Whenever the ROS 2 Node creates a Subscriber, Publisher or Timer
  * it is registered in this static registry, so the user can retrieve a handle
  * to the mock object in the test.
  */
-class StaticMocksRegistry : SingleInstance<StaticMocksRegistry> {
+class StaticMocksRegistry : SingleInstance<StaticMocksRegistry>
+{
 public:
   using TopicNameT = std::string;
   using FullyQualifiedNodeNameT = std::string;
@@ -64,7 +69,7 @@ public:
    *
    * @return StaticMocksRegistry&
    */
-  static StaticMocksRegistry &instance() { return theRegistry_; }
+  static StaticMocksRegistry & instance() { return theRegistry_; }
 
   /**
    * @brief Register the newly created Publisher in the regisrtry.
@@ -76,12 +81,14 @@ public:
    */
   template <typename MessageT>
   void registerPublisher(
-      const FullyQualifiedNodeNameT &nodeName,
-      const TopicNameT &topicName,
-      std::weak_ptr<rclcpp::PublisherBase> pub) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const TopicNameT & topicName,
+    std::weak_ptr<rclcpp::PublisherBase> pub)
+  {
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerPublisher<" << boost::typeindex::type_id<MessageT>().pretty_name()
-                << ">(\"" << nodeName << "\", \"" << topicName << "\")\n";
+      std::cout << "StaticMocksRegistry::registerPublisher<"
+                << boost::typeindex::type_id<MessageT>().pretty_name() << ">(\"" << nodeName
+                << "\", \"" << topicName << "\")\n";
     }
     registerEntity(publishersRegistry_[nodeName], topicName, pub);
   }
@@ -92,7 +99,9 @@ public:
    * @param nodeName Fully-qualified Node name
    * @return std::vector<std::weak_ptr<rclcpp::PublisherBase>>
    */
-  std::vector<std::weak_ptr<rclcpp::PublisherBase>> getNodePublishers(const FullyQualifiedNodeNameT &nodeName) {
+  std::vector<std::weak_ptr<rclcpp::PublisherBase>> getNodePublishers(
+    const FullyQualifiedNodeNameT & nodeName)
+  {
     std::vector<std::weak_ptr<rclcpp::PublisherBase>> publishers{};
     for (auto [topicName, publisher] : publishersRegistry_[nodeName]) {
       publishers.push_back(publisher);
@@ -108,8 +117,9 @@ public:
    * @return std::weak_ptr<rclcpp::PublisherBase>
    */
   std::weak_ptr<rclcpp::PublisherBase> getPublisher(
-      const FullyQualifiedNodeNameT &nodeName,
-      const TopicNameT &topicName) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const TopicNameT & topicName)
+  {
     return findEntity(publishersRegistry_[nodeName], topicName);
   }
 
@@ -123,12 +133,14 @@ public:
    */
   template <typename MessageT>
   void registerSubscription(
-      const FullyQualifiedNodeNameT &nodeName,
-      const TopicNameT &topicName,
-      std::weak_ptr<rclcpp::SubscriptionBase> sub) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const TopicNameT & topicName,
+    std::weak_ptr<rclcpp::SubscriptionBase> sub)
+  {
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerSubscription<" << boost::typeindex::type_id<MessageT>().pretty_name()
-                << ">(\"" << nodeName << "\", \"" << topicName << "\")\n";
+      std::cout << "StaticMocksRegistry::registerSubscription<"
+                << boost::typeindex::type_id<MessageT>().pretty_name() << ">(\"" << nodeName
+                << "\", \"" << topicName << "\")\n";
     }
     registerEntity(subscriptionsRegistry_[nodeName], topicName, sub);
   }
@@ -139,7 +151,9 @@ public:
    * @param nodeName
    * @return std::vector<std::weak_ptr<rclcpp::SubscriptionBase>>
    */
-  std::vector<std::weak_ptr<rclcpp::SubscriptionBase>> getNodeSubscriptions(const FullyQualifiedNodeNameT &nodeName) {
+  std::vector<std::weak_ptr<rclcpp::SubscriptionBase>> getNodeSubscriptions(
+    const FullyQualifiedNodeNameT & nodeName)
+  {
     std::vector<std::weak_ptr<rclcpp::SubscriptionBase>> subscriptions{};
     for (auto [topicName, subscription] : subscriptionsRegistry_[nodeName]) {
       subscriptions.push_back(subscription);
@@ -155,8 +169,9 @@ public:
    * @return std::weak_ptr<rclcpp::SubscriptionBase>
    */
   std::weak_ptr<rclcpp::SubscriptionBase> getSubscription(
-      const FullyQualifiedNodeNameT &nodeName,
-      const TopicNameT &topicName) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const TopicNameT & topicName)
+  {
     return findEntity(subscriptionsRegistry_[nodeName], topicName);
   }
 
@@ -169,7 +184,10 @@ public:
    * @return true
    * @return false
    */
-  bool registerTimer(const FullyQualifiedNodeNameT &nodeName, std::weak_ptr<rclcpp::TimerBase> timer) {
+  bool registerTimer(
+    const FullyQualifiedNodeNameT & nodeName,
+    std::weak_ptr<rclcpp::TimerBase> timer)
+  {
     timersRegistry_[nodeName].push_back(timer);
     return true;
   }
@@ -180,7 +198,8 @@ public:
    * @param nodeName Fully-qualified Node name
    * @return std::vector<std::weak_ptr<rclcpp::TimerBase>>
    */
-  std::vector<std::weak_ptr<rclcpp::TimerBase>> getTimers(const FullyQualifiedNodeNameT &nodeName) {
+  std::vector<std::weak_ptr<rclcpp::TimerBase>> getTimers(const FullyQualifiedNodeNameT & nodeName)
+  {
     return findEntity(timersRegistry_, nodeName);
   }
 
@@ -191,7 +210,8 @@ public:
    */
   void enableVerboseLogs(bool on) { verbose_ = on; }
 
-  std::weak_ptr<MockBase> getMock(void *ptr) {
+  std::weak_ptr<MockBase> getMock(void * ptr)
+  {
     auto it = mockRegistry_.find(ptr);
     if (it != mockRegistry_.end()) {
       return it->second;
@@ -199,9 +219,10 @@ public:
     return {};
   }
 
-  void attachMock(void *ptr, std::weak_ptr<MockBase> mock) { mockRegistry_[ptr] = mock; }
+  void attachMock(void * ptr, std::weak_ptr<MockBase> mock) { mockRegistry_[ptr] = mock; }
 
-  void detachMock(void *ptr) {
+  void detachMock(void * ptr)
+  {
     auto it = mockRegistry_.find(ptr);
     if (it != mockRegistry_.end()) {
       mockRegistry_.erase(it);
@@ -213,12 +234,14 @@ public:
    */
   template <typename ServiceT>
   void registerService(
-      const FullyQualifiedNodeNameT &nodeName,
-      const ServiceNameT &serviceName,
-      std::weak_ptr<rclcpp::ServiceBase> service) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const ServiceNameT & serviceName,
+    std::weak_ptr<rclcpp::ServiceBase> service)
+  {
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerService<" << boost::typeindex::type_id<ServiceT>().pretty_name()
-                << ">(\"" << nodeName << "\", \"" << serviceName << "\")\n";
+      std::cout << "StaticMocksRegistry::registerService<"
+                << boost::typeindex::type_id<ServiceT>().pretty_name() << ">(\"" << nodeName
+                << "\", \"" << serviceName << "\")\n";
     }
     registerEntity(servicesRegistry_[nodeName], serviceName, service);
   }
@@ -226,7 +249,9 @@ public:
   /**
    * @brief Get list of all services created by the selected Node.
    */
-  std::vector<std::weak_ptr<rclcpp::ServiceBase>> getNodeServices(const FullyQualifiedNodeNameT &nodeName) {
+  std::vector<std::weak_ptr<rclcpp::ServiceBase>> getNodeServices(
+    const FullyQualifiedNodeNameT & nodeName)
+  {
     std::vector<std::weak_ptr<rclcpp::ServiceBase>> services{};
     for (auto [serviceName, service] : servicesRegistry_[nodeName]) {
       services.push_back(service);
@@ -238,24 +263,29 @@ public:
    * @brief Get a service created by a selected Node.
    */
   std::weak_ptr<rclcpp::ServiceBase> getService(
-      const FullyQualifiedNodeNameT &nodeName,
-      const ServiceNameT &serviceName) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const ServiceNameT & serviceName)
+  {
     return findEntity(servicesRegistry_[nodeName], serviceName);
   }
 
   template <typename ServiceT>
   void registerServiceClient(
-      const FullyQualifiedNodeNameT &nodeName,
-      const ServiceNameT &serviceName,
-      std::weak_ptr<rclcpp::ClientBase> client) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const ServiceNameT & serviceName,
+    std::weak_ptr<rclcpp::ClientBase> client)
+  {
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerServiceClient<" << boost::typeindex::type_id<ServiceT>().pretty_name()
-                << ">(\"" << nodeName << "\", \"" << serviceName << "\")\n";
+      std::cout << "StaticMocksRegistry::registerServiceClient<"
+                << boost::typeindex::type_id<ServiceT>().pretty_name() << ">(\"" << nodeName
+                << "\", \"" << serviceName << "\")\n";
     }
     registerEntity(serviceClientsRegistry_[nodeName], serviceName, client);
   }
 
-  std::vector<std::weak_ptr<rclcpp::ClientBase>> getNodeServiceClients(const FullyQualifiedNodeNameT &nodeName) {
+  std::vector<std::weak_ptr<rclcpp::ClientBase>> getNodeServiceClients(
+    const FullyQualifiedNodeNameT & nodeName)
+  {
     std::vector<std::weak_ptr<rclcpp::ClientBase>> clients{};
     for (auto [serviceName, client] : serviceClientsRegistry_[nodeName]) {
       clients.push_back(client);
@@ -264,8 +294,9 @@ public:
   }
 
   std::weak_ptr<rclcpp::ClientBase> getServiceClient(
-      const FullyQualifiedNodeNameT &nodeName,
-      const ServiceNameT &serviceName) {
+    const FullyQualifiedNodeNameT & nodeName,
+    const ServiceNameT & serviceName)
+  {
     return findEntity(serviceClientsRegistry_[nodeName], serviceName);
   }
 
@@ -275,14 +306,18 @@ private:
   static StaticMocksRegistry theRegistry_;
 
   template <typename RegistryT, typename EntityT>
-  void registerEntity(RegistryT &reg, const TopicNameT &topicName, EntityT e) {
+  void registerEntity(RegistryT & reg, const TopicNameT & topicName, EntityT e)
+  {
     if (!reg[topicName].lock()) {
       reg[topicName] = e;
     }
   }
 
   template <typename RegistryT>
-  typename RegistryT::value_type::second_type findEntity(RegistryT &reg, const TopicNameT &topicName) {
+  typename RegistryT::value_type::second_type findEntity(
+    RegistryT & reg,
+    const TopicNameT & topicName)
+  {
     auto it = reg.find(topicName);
     if (it != reg.end()) {
       return it->second;

@@ -22,16 +22,19 @@
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 /**
  * @brief Test utility for manual time control. Takes over control over the given Node's clock.
  *        The Node must be constructed with parameter "use_sim_time" set to true.
  *
  */
-class TestClock {
+class TestClock
+{
 public:
-  TestClock(rclcpp::Node::SharedPtr node) {
+  TestClock(rclcpp::Node::SharedPtr node)
+  {
     if (!node) {
       throw std::invalid_argument{"TestClock - invalid node ptr"};
     }
@@ -44,7 +47,8 @@ public:
     reset_clock();
   }
 
-  void advance(std::chrono::milliseconds milliseconds) {
+  void advance(std::chrono::milliseconds milliseconds)
+  {
     now_ += (milliseconds.count() * 1000000L);
     if (rcl_set_ros_time_override(clock_, now_) != RCL_RET_OK) {
       throw std::runtime_error{"TestClock::advance_ms() error"};
@@ -53,14 +57,15 @@ public:
 
   void advance_ms(int64_t milliseconds) { advance(std::chrono::milliseconds(milliseconds)); }
 
-  void reset_clock(const rcl_time_point_value_t tv = 0L) {
+  void reset_clock(const rcl_time_point_value_t tv = 0L)
+  {
     if (rcl_set_ros_time_override(clock_, tv) != RCL_RET_OK) {
       throw std::runtime_error{"TestClock::reset_clock() error"};
     }
   }
 
 private:
-  rcl_clock_t *clock_{nullptr};
+  rcl_clock_t * clock_{nullptr};
   rcl_time_point_value_t now_{0L};
 };
 }  // namespace ros2_test_framework

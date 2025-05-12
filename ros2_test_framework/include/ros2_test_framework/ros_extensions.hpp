@@ -29,14 +29,16 @@
 #include <chrono>
 #include <condition_variable>
 
-namespace test_tools {
+namespace test_tools
+{
 
 /** @brief Waits for a given duration, allowing ROS messages to
  *  be sent.
  *
  *  @param seconds The duration to wait.
  */
-static void Wait(double seconds = 0.2) {
+static void Wait(double seconds = 0.2)
+{
   rclcpp::Rate rate(20);
   auto start = std::chrono::system_clock::now();
   auto end = start + std::chrono::milliseconds(static_cast<int>(seconds * 1000));
@@ -51,7 +53,8 @@ static void Wait(double seconds = 0.2) {
  *
  *  @param time The rclcpp time to wait until.
  */
-static void WaitUntil(const rclcpp::Time time) {
+static void WaitUntil(const rclcpp::Time time)
+{
   rclcpp::Rate rate(20);
 
   while (rclcpp::Clock().now() < time) {
@@ -67,7 +70,10 @@ static void WaitUntil(const rclcpp::Time time) {
  *  @returns True when condition has been meet or false when the wait times out.
  */
 template <typename T, class ChronoRep, class ChronoPeriod>
-static bool WaitUntil(T &&condition_function, const std::chrono::duration<ChronoRep, ChronoPeriod> max_wait) {
+static bool WaitUntil(
+  T && condition_function,
+  const std::chrono::duration<ChronoRep, ChronoPeriod> max_wait)
+{
   rclcpp::Rate rate(20);
   auto start = std::chrono::system_clock::now();
   auto end = start + max_wait;
@@ -89,8 +95,10 @@ static bool WaitUntil(T &&condition_function, const std::chrono::duration<Chrono
  *  @returns True when condition has been meet or false when the wait times out.
  */
 template <typename T>
-static bool WaitUntil(T &&condition_function, const double max_wait_seconds) {
-  return WaitUntil(condition_function, std::chrono::milliseconds(static_cast<int>(max_wait_seconds * 1000)));
+static bool WaitUntil(T && condition_function, const double max_wait_seconds)
+{
+  return WaitUntil(
+    condition_function, std::chrono::milliseconds(static_cast<int>(max_wait_seconds * 1000)));
 }
 
 /**
@@ -102,9 +110,10 @@ static bool WaitUntil(T &&condition_function, const double max_wait_seconds) {
  */
 template <class ChronoRep, class ChronoPeriod>
 static void WaitForMessage(
-    const std::chrono::duration<ChronoRep, ChronoPeriod> &timeout,
-    std::condition_variable &callback_cv,
-    std::mutex &callback_mutex) {
+  const std::chrono::duration<ChronoRep, ChronoPeriod> & timeout,
+  std::condition_variable & callback_cv,
+  std::mutex & callback_mutex)
+{
   std::unique_lock<std::mutex> lk(callback_mutex);
   callback_cv.wait_for(lk, timeout);
 }

@@ -25,12 +25,14 @@
 
 using namespace std::chrono_literals;
 
-class DebounceTest : public ::testing::Test {
+class DebounceTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException) {
+TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException)
+{
   auto node = std::make_shared<test_composition::DebounceNode>("default_opts", 123ms, opts);
 
   // No use_sim_time option
@@ -49,11 +51,13 @@ TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException) {
   EXPECT_NO_THROW(ros2_test_framework::TestClock{node});
 }
 
-TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce) {
+TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce)
+{
   const auto DEBOUNCE_TIME{123ms};
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
-  auto debounce_int = std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
+  auto debounce_int =
+    std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
 
   auto test_clock = ros2_test_framework::TestClock{debounce_int};
 

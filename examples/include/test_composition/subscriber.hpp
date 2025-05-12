@@ -25,13 +25,15 @@
 #include <rclcpp/executors.hpp>
 #include <std_msgs/msg/string.hpp>
 
-namespace test_composition {
+namespace test_composition
+{
 
-class Subscriber : public rclcpp::Node {
+class Subscriber : public rclcpp::Node
+{
 public:
-  explicit Subscriber(const rclcpp::NodeOptions &options);
+  explicit Subscriber(const rclcpp::NodeOptions & options);
 
-  const std_msgs::msg::String &getLastMsg() const { return lastMsg_; }
+  const std_msgs::msg::String & getLastMsg() const { return lastMsg_; }
 
 private:
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription;

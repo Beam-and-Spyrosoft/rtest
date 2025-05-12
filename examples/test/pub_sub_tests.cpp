@@ -24,12 +24,14 @@
 #include <test_composition/publisher.hpp>
 #include <test_composition/subscriber.hpp>
 
-class PubSubTest : public ::testing::Test {
+class PubSubTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(PubSubTest, PublisherTest) {
+TEST_F(PubSubTest, PublisherTest)
+{
   auto node = std::make_shared<test_composition::Publisher>(opts);
 
   // Retrieve the publisher created by the Node
@@ -53,11 +55,13 @@ TEST_F(PubSubTest, PublisherTest) {
   nodeTimers[0]->execute_callback(nullptr);
 }
 
-TEST_F(PubSubTest, SubscriptionTest) {
+TEST_F(PubSubTest, SubscriptionTest)
+{
   auto node = std::make_shared<test_composition::Subscriber>(opts);
 
   // Retrieve the subscription created by the Node
-  auto subscription = ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
+  auto subscription =
+    ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Subscription with topic: "/test_topic"
   ASSERT_TRUE(subscription);
@@ -79,7 +83,8 @@ TEST_F(PubSubTest, SubscriptionTest) {
   EXPECT_NE(node->getLastMsg(), lastMsg);
 }
 
-TEST_F(PubSubTest, PubSequenceTest) {
+TEST_F(PubSubTest, PubSequenceTest)
+{
   auto node = std::make_shared<test_composition::Publisher>(opts);
   auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
@@ -103,15 +108,18 @@ TEST_F(PubSubTest, PubSequenceTest) {
   }
 }
 
-TEST_F(PubSubTest, IntraProcessCommTest) {
+TEST_F(PubSubTest, IntraProcessCommTest)
+{
   // Test if the framework also work if Intra-Process Communication is on
   opts.use_intra_process_comms(true);
 
   auto subNode = std::make_shared<test_composition::Subscriber>(opts);
   auto pubNode = std::make_shared<test_composition::Publisher>(opts);
 
-  auto subscription = ros2_test_framework::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
-  auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
+  auto subscription =
+    ros2_test_framework::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
+  auto publisher =
+    ros2_test_framework::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
 
   ASSERT_TRUE(subscription);
   ASSERT_TRUE(publisher);

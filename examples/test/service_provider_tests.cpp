@@ -23,12 +23,14 @@
 
 #include <test_composition/service_provider.hpp>
 
-class ServiceProviderTest : public ::testing::Test {
+class ServiceProviderTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated) {
+TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated)
+{
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
   // Retrieve the service created by the Node
@@ -61,7 +63,8 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated) {
   EXPECT_TRUE(node->getState());
 }
 
-TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated) {
+TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
+{
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
   // Retrieve the service created by the Node

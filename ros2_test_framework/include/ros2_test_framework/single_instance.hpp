@@ -28,15 +28,19 @@
 
 #include <boost/type_index.hpp>
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 template <typename T>
-class SingleInstance {
+class SingleInstance
+{
 public:
-  SingleInstance() {
+  SingleInstance()
+  {
     if (instanceCreated_.test_and_set()) {
       throw std::runtime_error{
-          std::string{"Attempt to create more than one instance of "} + boost::typeindex::type_id<T>().pretty_name()};
+        std::string{"Attempt to create more than one instance of "} +
+        boost::typeindex::type_id<T>().pretty_name()};
     }
   }
 

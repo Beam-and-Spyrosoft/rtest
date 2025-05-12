@@ -25,34 +25,38 @@
 #include <rcutils/logging.h>
 #include <gmock/gmock.h>
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 // Fwd declaration
 void log_handler(
-    const rcutils_log_location_t *location,
-    int severity,
-    const char *name,
-    rcutils_time_point_value_t timestamp,
-    const char *format,
-    va_list *args);
+  const rcutils_log_location_t * location,
+  int severity,
+  const char * name,
+  rcutils_time_point_value_t timestamp,
+  const char * format,
+  va_list * args);
 
 /**
  * @brief A mock for ROS 2 logging interface
  */
-class LoggerMock : public ros2_test_framework::SingleInstance<LoggerMock> {
+class LoggerMock : public ros2_test_framework::SingleInstance<LoggerMock>
+{
 public:
-  LoggerMock() {
+  LoggerMock()
+  {
     instance_ = this;
     orig_log_handler_ = rcutils_logging_get_output_handler();
     rcutils_logging_set_output_handler(log_handler);
   }
 
-  ~LoggerMock() {
+  ~LoggerMock()
+  {
     instance_ = nullptr;
     rcutils_logging_set_output_handler(orig_log_handler_);
   }
 
-  static LoggerMock *instance_;
+  static LoggerMock * instance_;
 
   MOCK_METHOD(void, log, (RCUTILS_LOG_SEVERITY, const std::string));
 
@@ -64,9 +68,11 @@ private:
  * @brief Disable the logs in the test.
  *
  */
-class DisableLogs : public ros2_test_framework::SingleInstance<DisableLogs> {
+class DisableLogs : public ros2_test_framework::SingleInstance<DisableLogs>
+{
 public:
-  DisableLogs() {
+  DisableLogs()
+  {
     orig_log_handler_ = rcutils_logging_get_output_handler();
     rcutils_logging_set_output_handler(nullptr);
   }

@@ -22,16 +22,19 @@
 #include <gtest/gtest.h>
 #include <test_composition/service_client.hpp>
 
-class ServiceClientTest : public ::testing::Test {
+class ServiceClientTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails) {
+TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
+{
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   // Retrieve the client created by the Node
-  auto client = ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client =
+    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -47,12 +50,14 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails) {
   EXPECT_EQ(node->getLastResponseMessage(), "Service not available");
 }
 
-TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds) {
+TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
+{
   // Create node
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   // Retrieve the client created by the Node
-  auto client = ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client =
+    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -66,16 +71,16 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds) {
   EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
 
   EXPECT_CALL(*client, async_send_request(::testing::_))
-      .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
-        // Create a new promise and future for each call
-        std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
-        promise.set_value(response);
+    .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
+      // Create a new promise and future for each call
+      std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
+      promise.set_value(response);
 
-        return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
-            promise.get_future(),  // Move the future directly into constructor
-            1UL                    // Request ID
-        );
-      });
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
+        promise.get_future(),  // Move the future directly into constructor
+        1UL                    // Request ID
+      );
+    });
 
   // Attempt to set state should succeed
   EXPECT_TRUE(node->setState(true));
@@ -83,12 +88,14 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds) {
   EXPECT_EQ(node->getLastResponseMessage(), "State updated successfully");
 }
 
-TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails) {
+TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
+{
   // Create node
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   // Retrieve the client created by the Node
-  auto client = ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client =
+    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -102,16 +109,16 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails) {
   EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
 
   EXPECT_CALL(*client, async_send_request(::testing::_))
-      .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
-        // Create a new promise and future for each call
-        std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
-        promise.set_value(response);
+    .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
+      // Create a new promise and future for each call
+      std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
+      promise.set_value(response);
 
-        return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
-            promise.get_future(),  // Move the future directly into constructor
-            1UL                    // Request ID
-        );
-      });
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
+        promise.get_future(),  // Move the future directly into constructor
+        1UL                    // Request ID
+      );
+    });
 
   // Attempt to set state should fail
   EXPECT_FALSE(node->setState(true));
@@ -119,9 +126,11 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails) {
   EXPECT_EQ(node->getLastResponseMessage(), "Failed to update state");
 }
 
-TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds) {
+TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds)
+{
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
-  auto client = ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client =
+    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
@@ -131,14 +140,15 @@ TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds) {
   EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
 
   EXPECT_CALL(*client, async_send_request_with_callback(::testing::_, ::testing::_))
-      .WillOnce([response](auto request, auto callback) {
-        (void)request;
-        std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
-        promise.set_value(response);
-        auto shared_future = promise.get_future().share();
-        callback(shared_future);
-        return rclcpp::ClientTypes<std_srvs::srv::SetBool>::SharedFutureResponseAndId{shared_future, 1UL};
-      });
+    .WillOnce([response](auto request, auto callback) {
+      (void)request;
+      std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
+      promise.set_value(response);
+      auto shared_future = promise.get_future().share();
+      callback(shared_future);
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::SharedFutureResponseAndId{
+        shared_future, 1UL};
+    });
 
   bool callback_called = false;
   EXPECT_TRUE(node->setStateWithCallback(true, [&callback_called, response](auto future) {
@@ -153,9 +163,11 @@ TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds) {
   EXPECT_EQ(node->getLastResponseMessage(), "State updated with callback successfully");
 }
 
-TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceeds) {
+TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceeds)
+{
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
-  auto client = ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client =
+    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
@@ -165,14 +177,15 @@ TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceed
   EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
 
   EXPECT_CALL(*client, async_send_request_with_callback_and_request(::testing::_, ::testing::_))
-      .WillOnce([response](auto request, auto callback) {
-        auto pair = std::make_pair(request, response);
-        std::promise<decltype(pair)> promise;
-        promise.set_value(pair);
-        auto shared_future = promise.get_future().share();
-        callback(shared_future);
-        return rclcpp::ClientTypes<std_srvs::srv::SetBool>::SharedFutureWithRequestAndRequestId{shared_future, 1UL};
-      });
+    .WillOnce([response](auto request, auto callback) {
+      auto pair = std::make_pair(request, response);
+      std::promise<decltype(pair)> promise;
+      promise.set_value(pair);
+      auto shared_future = promise.get_future().share();
+      callback(shared_future);
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::SharedFutureWithRequestAndRequestId{
+        shared_future, 1UL};
+    });
 
   bool callback_called = false;
   EXPECT_TRUE(node->setStateWithRequestCallback(true, [&callback_called](auto future) {

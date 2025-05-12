@@ -25,11 +25,13 @@
 #include <rclcpp/executors.hpp>
 #include <std_msgs/msg/string.hpp>
 
-namespace test_composition {
+namespace test_composition
+{
 
-class Publisher : public rclcpp::Node {
+class Publisher : public rclcpp::Node
+{
 public:
-  explicit Publisher(const rclcpp::NodeOptions &options);
+  explicit Publisher(const rclcpp::NodeOptions & options);
 
   void publishCopy();
   void publishUniquePtr();

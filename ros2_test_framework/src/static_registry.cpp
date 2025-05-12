@@ -21,7 +21,8 @@
 
 #include <ros2_test_framework/static_registry.hpp>
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
 StaticMocksRegistry StaticMocksRegistry::theRegistry_;
 

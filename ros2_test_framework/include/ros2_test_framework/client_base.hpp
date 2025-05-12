@@ -58,11 +58,14 @@
 #include "rmw/impl/cpp/demangle.hpp"
 #include "rmw/rmw.h"
 
-namespace rclcpp {
+namespace rclcpp
+{
 
-namespace detail {
+namespace detail
+{
 template <typename FutureT>
-struct FutureAndRequestId {
+struct FutureAndRequestId
+{
   FutureT future;
   int64_t request_id;
 
@@ -81,12 +84,14 @@ struct FutureAndRequestId {
   void wait() const { return this->future.wait(); }
   /// See std::future::wait_for().
   template <class Rep, class Period>
-  std::future_status wait_for(const std::chrono::duration<Rep, Period> &timeout_duration) const {
+  std::future_status wait_for(const std::chrono::duration<Rep, Period> & timeout_duration) const
+  {
     return this->future.wait_for(timeout_duration);
   }
   /// See std::future::wait_until().
   template <class Clock, class Duration>
-  std::future_status wait_until(const std::chrono::time_point<Clock, Duration> &timeout_time) const {
+  std::future_status wait_until(const std::chrono::time_point<Clock, Duration> & timeout_time) const
+  {
     return this->future.wait_until(timeout_time);
   }
 
@@ -94,23 +99,24 @@ struct FutureAndRequestId {
   // methods are deleted.
 
   /// Move constructor.
-  FutureAndRequestId(FutureAndRequestId &&other) noexcept = default;
+  FutureAndRequestId(FutureAndRequestId && other) noexcept = default;
   /// Deleted copy constructor, each instance is a unique owner of the future.
-  FutureAndRequestId(const FutureAndRequestId &other) = delete;
+  FutureAndRequestId(const FutureAndRequestId & other) = delete;
   /// Move assignment.
-  FutureAndRequestId &operator=(FutureAndRequestId &&other) noexcept = default;
+  FutureAndRequestId & operator=(FutureAndRequestId && other) noexcept = default;
   /// Deleted copy assignment, each instance is a unique owner of the future.
-  FutureAndRequestId &operator=(const FutureAndRequestId &other) = delete;
+  FutureAndRequestId & operator=(const FutureAndRequestId & other) = delete;
   /// Destructor.
   ~FutureAndRequestId() = default;
 };
 
 template <typename PendingRequestsT, typename AllocatorT = std::allocator<int64_t>>
 size_t prune_requests_older_than_impl(
-    PendingRequestsT &pending_requests,
-    std::mutex &pending_requests_mutex,
-    std::chrono::time_point<std::chrono::system_clock> time_point,
-    std::vector<int64_t, AllocatorT> *pruned_requests = nullptr) {
+  PendingRequestsT & pending_requests,
+  std::mutex & pending_requests_mutex,
+  std::chrono::time_point<std::chrono::system_clock> time_point,
+  std::vector<int64_t, AllocatorT> * pruned_requests = nullptr)
+{
   std::lock_guard guard(pending_requests_mutex);
   auto old_size = pending_requests.size();
   for (auto it = pending_requests.begin(), last = pending_requests.end(); it != last;) {
@@ -127,18 +133,20 @@ size_t prune_requests_older_than_impl(
 }
 }  // namespace detail
 
-namespace node_interfaces {
+namespace node_interfaces
+{
 class NodeBaseInterface;
 }  // namespace node_interfaces
 
-class ClientBase {
+class ClientBase
+{
 public:
   RCLCPP_SMART_PTR_DEFINITIONS_NOT_COPYABLE(ClientBase)
 
   RCLCPP_PUBLIC
   ClientBase(
-      rclcpp::node_interfaces::NodeBaseInterface *node_base,
-      rclcpp::node_interfaces::NodeGraphInterface::SharedPtr node_graph);
+    rclcpp::node_interfaces::NodeBaseInterface * node_base,
+    rclcpp::node_interfaces::NodeGraphInterface::SharedPtr node_graph);
 
   RCLCPP_PUBLIC
   virtual ~ClientBase() = default;
@@ -161,12 +169,12 @@ public:
    *   rcl function fail.
    */
   RCLCPP_PUBLIC
-  bool take_type_erased_response(void *response_out, rmw_request_id_t &request_header_out);
+  bool take_type_erased_response(void * response_out, rmw_request_id_t & request_header_out);
 
   /// Return the name of the service.
   /** \return The name of the service. */
   RCLCPP_PUBLIC
-  const char *get_service_name() const;
+  const char * get_service_name() const;
 
   /// Return the rcl_client_t client handle in a std::shared_ptr.
   /**
@@ -197,13 +205,18 @@ public:
    * \return `true` if the service is ready and the timeout is not over, `false` otherwise
    */
   template <typename RepT = int64_t, typename RatioT = std::milli>
-  bool wait_for_service(std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1)) {
-    return wait_for_service_nanoseconds(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+  bool wait_for_service(
+    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  {
+    return wait_for_service_nanoseconds(
+      std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
   }
 
   virtual std::shared_ptr<void> create_response() = 0;
   virtual std::shared_ptr<rmw_request_id_t> create_request_header() = 0;
-  virtual void handle_response(std::shared_ptr<rmw_request_id_t> request_header, std::shared_ptr<void> response) = 0;
+  virtual void handle_response(
+    std::shared_ptr<rmw_request_id_t> request_header,
+    std::shared_ptr<void> response) = 0;
 
   /// Exchange the "in use by wait set" state for this client.
   /**
@@ -274,27 +287,29 @@ public:
    *
    * \param[in] callback functor to be called when a new response is received
    */
-  void set_on_new_response_callback(std::function<void(size_t)> callback) {
+  void set_on_new_response_callback(std::function<void(size_t)> callback)
+  {
     if (!callback) {
       throw std::invalid_argument(
-          "The callback passed to set_on_new_response_callback "
-          "is not callable.");
+        "The callback passed to set_on_new_response_callback "
+        "is not callable.");
     }
 
     auto new_callback = [callback, this](size_t number_of_responses) {
       try {
         callback(number_of_responses);
-      } catch (const std::exception &exception) {
+      } catch (const std::exception & exception) {
         RCLCPP_ERROR_STREAM(
-            node_logger_,
-            "rclcpp::ClientBase@" << this << " caught " << rmw::impl::cpp::demangle(exception)
-                                  << " exception in user-provided callback for the 'on new response' callback: "
-                                  << exception.what());
+          node_logger_,
+          "rclcpp::ClientBase@"
+            << this << " caught " << rmw::impl::cpp::demangle(exception)
+            << " exception in user-provided callback for the 'on new response' callback: "
+            << exception.what());
       } catch (...) {
         RCLCPP_ERROR_STREAM(
-            node_logger_,
-            "rclcpp::ClientBase@" << this << " caught unhandled exception in user-provided callback "
-                                  << "for the 'on new response' callback");
+          node_logger_,
+          "rclcpp::ClientBase@" << this << " caught unhandled exception in user-provided callback "
+                                << "for the 'on new response' callback");
       }
     };
 
@@ -304,20 +319,22 @@ public:
     // This two-step setting, prevents a gap where the old std::function has
     // been replaced but the middleware hasn't been told about the new one yet.
     set_on_new_response_callback(
-        rclcpp::detail::cpp_callback_trampoline<decltype(new_callback), const void *, size_t>,
-        static_cast<const void *>(&new_callback));
+      rclcpp::detail::cpp_callback_trampoline<decltype(new_callback), const void *, size_t>,
+      static_cast<const void *>(&new_callback));
 
     // Store the std::function to keep it in scope, also overwrites the existing one.
     on_new_response_callback_ = new_callback;
 
     // Set it again, now using the permanent storage.
     set_on_new_response_callback(
-        rclcpp::detail::cpp_callback_trampoline<decltype(on_new_response_callback_), const void *, size_t>,
-        static_cast<const void *>(&on_new_response_callback_));
+      rclcpp::detail::
+        cpp_callback_trampoline<decltype(on_new_response_callback_), const void *, size_t>,
+      static_cast<const void *>(&on_new_response_callback_));
   }
 
   /// Unset the callback registered for new responses, if any.
-  void clear_on_new_response_callback() {
+  void clear_on_new_response_callback()
+  {
     std::lock_guard<std::recursive_mutex> lock(callback_mutex_);
     if (on_new_response_callback_) {
       set_on_new_response_callback(nullptr, nullptr);
@@ -332,13 +349,13 @@ protected:
   bool wait_for_service_nanoseconds(std::chrono::nanoseconds timeout);
 
   RCLCPP_PUBLIC
-  rcl_node_t *get_rcl_node_handle();
+  rcl_node_t * get_rcl_node_handle();
 
   RCLCPP_PUBLIC
-  const rcl_node_t *get_rcl_node_handle() const;
+  const rcl_node_t * get_rcl_node_handle() const;
 
   RCLCPP_PUBLIC
-  void set_on_new_response_callback(rcl_event_callback_t callback, const void *user_data);
+  void set_on_new_response_callback(rcl_event_callback_t callback, const void * user_data);
 
   rclcpp::node_interfaces::NodeGraphInterface::WeakPtr node_graph_;
   std::shared_ptr<rcl_node_t> node_handle_;
@@ -358,7 +375,8 @@ protected:
 };
 
 template <typename ServiceT>
-struct ClientTypes {
+struct ClientTypes
+{
   using Request = typename ServiceT::Request;
   using Response = typename ServiceT::Response;
   using SharedRequest = typename ServiceT::Request::SharedPtr;
@@ -368,17 +386,21 @@ struct ClientTypes {
   using SharedFuture = std::shared_future<SharedResponse>;
   using SharedFutureWithRequest = std::shared_future<std::pair<SharedRequest, SharedResponse>>;
 
-  using FutureResponseAndId = struct FutureAndRequestId : detail::FutureAndRequestId<Future> {
+  using FutureResponseAndId = struct FutureAndRequestId : detail::FutureAndRequestId<Future>
+  {
     using detail::FutureAndRequestId<Future>::FutureAndRequestId;
     SharedFuture share() noexcept { return this->future.share(); }
   };
 
-  using SharedFutureResponseAndId = struct SharedFutureAndRequestId : detail::FutureAndRequestId<SharedFuture> {
+  using SharedFutureResponseAndId =
+    struct SharedFutureAndRequestId : detail::FutureAndRequestId<SharedFuture>
+  {
     using detail::FutureAndRequestId<SharedFuture>::FutureAndRequestId;
   };
 
   using SharedFutureWithRequestAndId =
-      struct SharedFutureWithRequestAndRequestId : detail::FutureAndRequestId<SharedFutureWithRequest> {
+    struct SharedFutureWithRequestAndRequestId : detail::FutureAndRequestId<SharedFutureWithRequest>
+  {
     using detail::FutureAndRequestId<SharedFutureWithRequest>::FutureAndRequestId;
   };
 

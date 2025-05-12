@@ -24,9 +24,11 @@
 
 using namespace std::chrono_literals;
 
-namespace test_composition {
+namespace test_composition
+{
 
-Publisher::Publisher(const rclcpp::NodeOptions &options) : rclcpp::Node("test_publisher", options) {
+Publisher::Publisher(const rclcpp::NodeOptions & options) : rclcpp::Node("test_publisher", options)
+{
   publisher_ = create_publisher<std_msgs::msg::String>("test_topic", rclcpp::QoS{5UL});
   timer = create_timer(500ms, [this]() {
     auto msg = std::make_unique<std_msgs::msg::String>();
@@ -35,19 +37,22 @@ Publisher::Publisher(const rclcpp::NodeOptions &options) : rclcpp::Node("test_pu
   });
 }
 
-void Publisher::publishCopy() {
+void Publisher::publishCopy()
+{
   auto msg = std_msgs::msg::String{};
   msg.set__data("copy");
   publisher_->publish(msg);
 }
 
-void Publisher::publishUniquePtr() {
+void Publisher::publishUniquePtr()
+{
   auto msg = std::make_unique<std_msgs::msg::String>();
   msg->set__data("unique_ptr");
   publisher_->publish(std::move(msg));
 }
 
-void Publisher::publishLoanedMsg() {
+void Publisher::publishLoanedMsg()
+{
   auto msg = publisher_->borrow_loaned_message();
   msg.get().set__data("loaned_msg");
   publisher_->publish(std::move(msg));

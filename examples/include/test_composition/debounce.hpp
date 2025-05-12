@@ -23,19 +23,27 @@
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>
 
-namespace test_composition {
+namespace test_composition
+{
 
 /**
  * @brief Simple implementation that uses time measurement and avoids setting a value when some arbitrary time hasn't
  * elapsed.
  *
  */
-class DebounceNode : public rclcpp::Node {
+class DebounceNode : public rclcpp::Node
+{
 public:
-  DebounceNode(const std::string &name, std::chrono::milliseconds debounce_time, const rclcpp::NodeOptions &options) :
-        Node(name, options), debounce_time_(debounce_time), last_set_time_(get_clock()->now()) {}
+  DebounceNode(
+    const std::string & name,
+    std::chrono::milliseconds debounce_time,
+    const rclcpp::NodeOptions & options)
+  : Node(name, options), debounce_time_(debounce_time), last_set_time_(get_clock()->now())
+  {
+  }
 
-  void set(int new_value) {
+  void set(int new_value)
+  {
     const auto now = get_clock()->now();
     if ((now - last_set_time_) >= debounce_time_) {
       value_ = new_value;
