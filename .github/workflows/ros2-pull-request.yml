@@ -1,92 +1,13 @@
 name: ROS 2 Jazzy CI
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
-  copyright-check:
-    runs-on: ubuntu-24.04
-    container:
-      image: osrf/ros:jazzy-desktop
-      options: --user root
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check copyright headers
-        run: |
-          # Create a script to check for copyright and license headers
-          cat > check_copyright.py << 'EOF'
-          #!/usr/bin/env python3
-          import os
-          import sys
-          import re
-
-          # File extensions to check
-          EXTENSIONS = ['.cpp', '.hpp', '.h', '.cc', '.c', '.py']
-
-          # Patterns to look for in files, based on the example header format
-          COPYRIGHT_PATTERN = re.compile(r'@copyright\s+Copyright\s+\(c\)\s+\d{4}.*', re.IGNORECASE)
-          LICENSE_PATTERN = re.compile(r'Licensed\s+under', re.IGNORECASE)
-
-          # Files and directories to exclude
-          EXCLUDED_FILES = ['check_copyright.py']
-          EXCLUDED_DIRS = ['.git', 'build', 'install', '.github']
-
-          def check_file(filepath):
-              issues = []
-              try:
-                  with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                      try:
-                          content = f.read(2000)  # Read more characters to ensure we capture the full header
-                          if not COPYRIGHT_PATTERN.search(content):
-                              issues.append("Missing copyright statement (e.g: @copyright Copyright (c) 2025 John Smith.")
-                          if not LICENSE_PATTERN.search(content):
-                              issues.append("Missing license statement (e.g: Licensed under the Apache License, Version 2.0)")
-                      except UnicodeDecodeError:
-                          pass  # Skip binary files
-              except Exception as e:
-                  print(f"Warning: Could not check {filepath}: {str(e)}")
-              return issues
-
-          def main():
-              passed = True
-              files_with_issues = {}
-
-              for root, _, files in os.walk('.'):
-                  # Skip excluded directories
-                  if any(skip_dir in root for skip_dir in EXCLUDED_DIRS):
-                      continue
-                  for file in files:
-                      # Skip excluded files
-                      if file in EXCLUDED_FILES:
-                          continue
-                      if any(file.endswith(ext) for ext in EXTENSIONS):
-                          filepath = os.path.join(root, file)
-                          issues = check_file(filepath)
-                          if issues:
-                              files_with_issues[filepath] = issues
-                              passed = False
-              if not passed:
-                  print("The following files have header issues:")
-                  for filepath, issues in sorted(files_with_issues.items()):
-                      print(f"\n- {filepath}:")
-                      for issue in issues:
-                          print(f"  * {issue}")
-                  sys.exit(1)
-              else:
-                  print("All files have proper copyright and license headers!")
-                  sys.exit(0)
-          if __name__ == "__main__":
-              main()
-          EOF
-
-          python3 check_copyright.py
-
   build-and-test-ubuntu:
-    needs: copyright-check
     strategy:
       fail-fast: false
       matrix:
@@ -105,7 +26,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-            libboost-all-dev libgmock-dev python3-pip
+            libboost-all-dev libgmock-dev python3-pip ros-jazzy-ament-copyright
 
       - name: Update rosdep database
         run: rosdep update || true
@@ -125,7 +46,7 @@ jobs:
         run: |
           . /opt/ros/jazzy/setup.bash
           . install/setup.bash
-          colcon test --packages-select ros2_test_framework_examples --event-handlers console_cohesion+
+          colcon test --event-handlers console_cohesion+
           colcon test-result
 
       - name: Upload test results

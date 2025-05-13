@@ -157,6 +157,10 @@ install(
 ament_export_targets(${PROJECT_NAME}_targets HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp)
 
+if(BUILD_TESTING)
+  find_package(ament_cmake_copyright REQUIRED)
+  ament_copyright()
+endif()
 
 ament_package(
   CONFIG_EXTRAS "cmake/test_tools_add_doubles.cmake"

@@ -7,7 +7,6 @@
   <maintainer email="slawomir.cielepak@gmail.com">Sławomir Cielepak</maintainer>
   <license>Apache 2.0</license>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
   <depend>rclcpp</depend>
@@ -16,6 +15,7 @@
   <depend>std_msgs</depend>
 
   <test_depend>ros2_test_framework</test_depend>
+  <test_depend>ament_cmake_copyright</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
