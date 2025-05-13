@@ -79,13 +79,6 @@ public:
    */
   MOCK_METHOD(void, publish, (const MessageT & msg));
 
-  /**
-   * @brief Set the fake subscriptions count.
-   *
-   * @param count number of fake subscriptions
-   */
-  void set_subscription_count(size_t count) { subscriptions_count_ = count; }
-
   size_t subscriptions_count_{0UL};
 
   rclcpp::PublisherBase * pub_{nullptr};

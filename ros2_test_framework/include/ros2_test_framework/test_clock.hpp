@@ -43,23 +43,23 @@ public:
     }
 
     clock_ = node->get_clock()->get_clock_handle();
-    reset_clock();
+    resetClock();
   }
 
   void advance(std::chrono::milliseconds milliseconds)
   {
     now_ += (milliseconds.count() * 1000000L);
     if (rcl_set_ros_time_override(clock_, now_) != RCL_RET_OK) {
-      throw std::runtime_error{"TestClock::advance_ms() error"};
+      throw std::runtime_error{"TestClock::advanceMs() error"};
     }
   }
 
-  void advance_ms(int64_t milliseconds) { advance(std::chrono::milliseconds(milliseconds)); }
+  void advanceMs(int64_t milliseconds) { advance(std::chrono::milliseconds(milliseconds)); }
 
-  void reset_clock(const rcl_time_point_value_t tv = 0L)
+  void resetClock(const rcl_time_point_value_t tv = 0L)
   {
     if (rcl_set_ros_time_override(clock_, tv) != RCL_RET_OK) {
-      throw std::runtime_error{"TestClock::reset_clock() error"};
+      throw std::runtime_error{"TestClock::advanceMs() error"};
     }
   }
 

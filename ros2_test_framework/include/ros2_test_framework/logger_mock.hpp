@@ -28,7 +28,7 @@ namespace ros2_test_framework
 {
 
 /// Fwd declaration
-void log_handler(
+void logHandler(
   const rcutils_log_location_t * location,
   int severity,
   const char * name,
@@ -46,7 +46,7 @@ public:
   {
     instance_ = this;
     orig_log_handler_ = rcutils_logging_get_output_handler();
-    rcutils_logging_set_output_handler(log_handler);
+    rcutils_logging_set_output_handler(logHandler);
   }
 
   ~LoggerMock()
