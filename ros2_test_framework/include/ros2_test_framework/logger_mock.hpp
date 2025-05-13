@@ -27,7 +27,7 @@
 namespace ros2_test_framework
 {
 
-// Fwd declaration
+/// Fwd declaration
 void log_handler(
   const rcutils_log_location_t * location,
   int severity,

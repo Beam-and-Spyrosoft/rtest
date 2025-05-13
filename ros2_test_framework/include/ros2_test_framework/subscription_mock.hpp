@@ -83,7 +83,7 @@ class Subscription : public SubscriptionBase
   friend class rclcpp::node_interfaces::NodeTopicsInterface;
 
 public:
-  // Redeclare these here to use outside of the class.
+  /// Redeclare these here to use outside of the class.
   using SubscribedType = SubscribedT;
   using ROSMessageType = ROSMessageT;
   using MessageMemoryStrategyType = MessageMemoryStrategyT;
@@ -142,7 +142,7 @@ public:
     if (rclcpp::detail::resolve_use_intra_process(options_, *node_base)) {
       using rclcpp::detail::resolve_intra_process_buffer_type;
 
-      // Check if the QoS is compatible with intra-process.
+      /// Check if the QoS is compatible with intra-process.
       auto qos_profile = get_actual_qos();
       if (qos_profile.history() != rclcpp::HistoryPolicy::KeepLast) {
         throw std::invalid_argument(
@@ -255,7 +255,7 @@ public:
     }
 
     auto typed_message = static_cast<ROSMessageType *>(loaned_message);
-    // message is loaned, so we have to make sure that the deleter does not deallocate the message
+    /// message is loaned, so we have to make sure that the deleter does not deallocate the message
     auto sptr =
       std::shared_ptr<ROSMessageType>(typed_message, [](ROSMessageType * msg) { (void)msg; });
 

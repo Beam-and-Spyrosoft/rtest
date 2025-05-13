@@ -33,19 +33,19 @@ TEST_F(PubSubTest, PublisherTest)
 {
   auto node = std::make_shared<test_composition::Publisher>(opts);
 
-  // Retrieve the publisher created by the Node
+  /// Retrieve the publisher created by the Node
   auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Publisher with topic: "/test_topic"
   ASSERT_TRUE(publisher);
 
-  // Retrieve the timers created by the Node
+  /// Retrieve the timers created by the Node
   auto nodeTimers = ros2_test_framework::findTimers(node);
 
   // There should be just one timer
   ASSERT_EQ(nodeTimers.size(), 1UL);
 
-  // Set up expectation that the Node will publish a FalconState message when the timer callback is fired
+  /// Set up expectation that the Node will publish a FalconState message when the timer callback is fired
   auto expectedMsg = std_msgs::msg::String{};
   expectedMsg.set__data("timer");
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
@@ -58,14 +58,14 @@ TEST_F(PubSubTest, SubscriptionTest)
 {
   auto node = std::make_shared<test_composition::Subscriber>(opts);
 
-  // Retrieve the subscription created by the Node
+  /// Retrieve the subscription created by the Node
   auto subscription =
     ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Subscription with topic: "/test_topic"
   ASSERT_TRUE(subscription);
 
-  // Inject a message to the subscription
+  /// Inject a message to the subscription
   auto msg = std::make_shared<std_msgs::msg::String>();
   msg->set__data("someId");
   subscription->handle_message(msg);

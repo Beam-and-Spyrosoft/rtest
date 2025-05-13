@@ -29,7 +29,7 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
 {
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
-  // Retrieve the client created by the Node
+  /// Retrieve the client created by the Node
   auto client =
     ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
@@ -49,17 +49,17 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
 
 TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
 {
-  // Create node
+  /// Create node
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
-  // Retrieve the client created by the Node
+  /// Retrieve the client created by the Node
   auto client =
     ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
 
-  // Create successful response
+  /// Create successful response
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
   response->success = true;
   response->message = "State updated successfully";
@@ -87,17 +87,17 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
 
 TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
 {
-  // Create node
+  /// Create node
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
-  // Retrieve the client created by the Node
+  /// Retrieve the client created by the Node
   auto client =
     ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
 
-  // Create failed response
+  /// Create failed response
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
   response->success = false;
   response->message = "Failed to update state";
