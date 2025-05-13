@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      logger_mock.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-11-18
+//
+// @brief     Mock implementation for ROS 2 logging.
 
 #include <ros2_test_framework/logger_mock.hpp>
 

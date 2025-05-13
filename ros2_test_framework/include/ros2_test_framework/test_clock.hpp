@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      test_clock.hpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-12-02
+//
+// @brief     ROS2 test clock utility.
 
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>

@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      pub_sub_tests.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-12-04
+//
+// @brief     Unit tests for the Publisher and Subscriber classes.
 
 #include <gtest/gtest.h>
 

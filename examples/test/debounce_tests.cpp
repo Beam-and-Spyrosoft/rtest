@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      debounce_tests.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-12-04
+//
+// @brief     Example unit tests using the `ros2_test_framework::TestClock` class.
 
 #include <gtest/gtest.h>
 

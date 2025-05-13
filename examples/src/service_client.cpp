@@ -11,6 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      service_client.cpp
+// @author    Mariusz Szczepanik (mua@spyro-soft.com)
+// @date      2025-05-28
 
 #include "test_composition/service_client.hpp"
 #include "rclcpp_components/register_node_macro.hpp"

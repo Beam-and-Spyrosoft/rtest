@@ -11,6 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      subscriber.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-11-26
 
 #include "test_composition/subscriber.hpp"
 #include "rclcpp_components/register_node_macro.hpp"

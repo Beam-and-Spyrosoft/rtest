@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# @file      test_tools_add_doubles.cmake
+# @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+# @date      2024-11-25
+#
 # @details This macro creates a test doubles library with mocked ROS 2 rclcpp layer.
 #          It is used to create a library that can be used in integration tests
 #          to replace the original implementation of a target with a test double.

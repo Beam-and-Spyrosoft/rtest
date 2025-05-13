@@ -11,6 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// @file      subscription_mock.hpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-11-26
+//
+// @brief     Mock header for ROS 2 Subscriber.
 
 #pragma once
 
