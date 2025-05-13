@@ -1,5 +1,5 @@
 /**
- * @file      includes_mock.h
+ * @file      includes_mock.hpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-21
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -22,28 +22,28 @@
 #pragma once
 
 // First, disable original implementations
-#include <ros2_test_framework/mock_defines.h>
+#include <ros2_test_framework/mock_defines.hpp>
 
 // Then include our mocks
 #ifdef ROS2_TEST_FRAMEWORK_SERVICE_MOCK
-#include <ros2_test_framework/service_base.h>
-#include <ros2_test_framework/service_mock.h>
+#include <ros2_test_framework/service_base.hpp>
+#include <ros2_test_framework/service_mock.hpp>
 #endif
 
 #ifdef ROS2_TEST_FRAMEWORK_CLIENT_MOCK
-#include <ros2_test_framework/client_base.h>
-#include <ros2_test_framework/service_client_mock.h>
+#include <ros2_test_framework/client_base.hpp>
+#include <ros2_test_framework/service_client_mock.hpp>
 #endif
 
 #if defined(ROS2_TEST_FRAMEWORK_PUBLISHER_MOCK) && defined(ROS2_TEST_FRAMEWORK_SUBSCRIPTION_MOCK)
-#include <ros2_test_framework/publisher_mock.h>
-#include <ros2_test_framework/subscription_mock.h>
+#include <ros2_test_framework/publisher_mock.hpp>
+#include <ros2_test_framework/subscription_mock.hpp>
 #elif defined(ROS2_TEST_FRAMEWORK_PUBLISHER_MOCK)
-#include <ros2_test_framework/publisher_mock.h>
+#include <ros2_test_framework/publisher_mock.hpp>
 #elif defined(ROS2_TEST_FRAMEWORK_SUBSCRIPTION_MOCK)
-#include <ros2_test_framework/subscription_mock.h>
+#include <ros2_test_framework/subscription_mock.hpp>
 #endif
 
 #ifdef ROS2_TEST_FRAMEWORK_TIMER_MOCK
-#include <ros2_test_framework/create_timer_mock.h>
+#include <ros2_test_framework/create_timer_mock.hpp>
 #endif

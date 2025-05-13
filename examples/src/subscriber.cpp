@@ -1,5 +1,5 @@
 /**
- * @file      subscriber.h
+ * @file      subscriber.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -19,23 +19,24 @@
  * limitations under the License.
  */
 
-#pragma once
+#include "test_composition/subscriber.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
 
-#include <rclcpp/rclcpp.hpp>
-#include <rclcpp/executors.hpp>
-#include <std_msgs/msg/string.hpp>
+using namespace std::chrono_literals;
 
-namespace test_composition {
+namespace test_composition
+{
 
-class Subscriber : public rclcpp::Node {
-public:
-  explicit Subscriber(const rclcpp::NodeOptions &options);
-
-  const std_msgs::msg::String &getLastMsg() const { return lastMsg_; }
-
-private:
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription;
-  std_msgs::msg::String lastMsg_{};
-};
+Subscriber::Subscriber(const rclcpp::NodeOptions & options)
+: rclcpp::Node("test_subscriber", options)
+{
+  subscription = create_subscription<std_msgs::msg::String>(
+    "test_topic", rclcpp::SensorDataQoS(), [this](std_msgs::msg::String::UniquePtr msg) {
+      RCLCPP_INFO(get_logger(), "Received message: %s", msg->data.c_str());
+      lastMsg_ = *msg;
+    });
+}
 
 }  // namespace test_composition
+
+RCLCPP_COMPONENTS_REGISTER_NODE(test_composition::Subscriber);

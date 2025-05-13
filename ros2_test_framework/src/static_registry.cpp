@@ -1,10 +1,10 @@
 /**
- * @file      publisher.h
+ * @file      static_registry.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
  *
- * @brief
+ * @brief    Mock implementation for ROS 2 static registry.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,13 @@
  * limitations under the License.
  */
 
-#pragma once
+#include <ros2_test_framework/static_registry.hpp>
 
-#include <rclcpp/rclcpp.hpp>
-#include <rclcpp/executors.hpp>
-#include <std_msgs/msg/string.hpp>
+namespace ros2_test_framework
+{
 
-namespace test_composition {
+StaticMocksRegistry StaticMocksRegistry::theRegistry_;
 
-class Publisher : public rclcpp::Node {
-public:
-  explicit Publisher(const rclcpp::NodeOptions &options);
+void enableVerboseLogs(bool on) { StaticMocksRegistry::instance().enableVerboseLogs(on); }
 
-  void publishCopy();
-  void publishUniquePtr();
-  void publishLoanedMsg();
-
-private:
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
-  rclcpp::TimerBase::SharedPtr timer;
-};
-
-}  // namespace test_composition
+}  // namespace ros2_test_framework

@@ -1,5 +1,5 @@
 /**
- * @file      logger_mock.cc
+ * @file      logger_mock.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-18
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -19,19 +19,21 @@
  * limitations under the License.
  */
 
-#include <ros2_test_framework/logger_mock.h>
+#include <ros2_test_framework/logger_mock.hpp>
 
-namespace ros2_test_framework {
+namespace ros2_test_framework
+{
 
-LoggerMock *LoggerMock::instance_{nullptr};
+LoggerMock * LoggerMock::instance_{nullptr};
 
 void log_handler(
-    const rcutils_log_location_t *location,
-    int severity,
-    const char *name,
-    rcutils_time_point_value_t timestamp,
-    const char *format,
-    va_list *args) {
+  const rcutils_log_location_t * location,
+  int severity,
+  const char * name,
+  rcutils_time_point_value_t timestamp,
+  const char * format,
+  va_list * args)
+{
   (void)location;
   (void)name;
   (void)timestamp;

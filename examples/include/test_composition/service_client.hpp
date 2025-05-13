@@ -1,5 +1,5 @@
 /**
- * @file      service_client.h
+ * @file      service_client.hpp
  * @author    Mariusz Szczepanik (mua@spyro-soft.com)
  * @date      2025-05-28
  * @copyright Copyright (c) 2025 Spyrosoft Limited.
@@ -24,17 +24,21 @@
 #include <std_srvs/srv/set_bool.hpp>
 #include <functional>
 
-namespace test_composition {
+namespace test_composition
+{
 
-class ServiceClient : public rclcpp::Node {
+class ServiceClient : public rclcpp::Node
+{
 public:
-  explicit ServiceClient(const rclcpp::NodeOptions &options);
+  explicit ServiceClient(const rclcpp::NodeOptions & options);
 
-  using CallbackType = std::function<void(std::shared_future<std::shared_ptr<std_srvs::srv::SetBool_Response>>)>;
+  using CallbackType =
+    std::function<void(std::shared_future<std::shared_ptr<std_srvs::srv::SetBool_Response>>)>;
 
-  using CallbackWithRequestType = std::function<void(std::shared_future<std::pair<
-                                                         std::shared_ptr<std_srvs::srv::SetBool_Request>,
-                                                         std::shared_ptr<std_srvs::srv::SetBool_Response>>>)>;
+  using CallbackWithRequestType =
+    std::function<void(std::shared_future<std::pair<
+                         std::shared_ptr<std_srvs::srv::SetBool_Request>,
+                         std::shared_ptr<std_srvs::srv::SetBool_Response>>>)>;
 
   /**
    * @brief Call service to set state

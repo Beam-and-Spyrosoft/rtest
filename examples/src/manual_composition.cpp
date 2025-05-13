@@ -1,5 +1,5 @@
 /**
- * @file      manual_composition.cc
+ * @file      manual_composition.cpp
  * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
  * @date      2024-11-26
  * @copyright Copyright (c) 2024 Beam Limited.
@@ -20,12 +20,13 @@
  */
 
 #include <rclcpp/rclcpp.hpp>
-#include <test_composition/publisher.h>
-#include <test_composition/subscriber.h>
-#include <test_composition/service_provider.h>
-#include <test_composition/service_client.h>
+#include <test_composition/publisher.hpp>
+#include <test_composition/subscriber.hpp>
+#include <test_composition/service_provider.hpp>
+#include <test_composition/service_client.hpp>
 
-int main(int argc, char **argv) {
+int main(int argc, char ** argv)
+{
   rclcpp::init(argc, argv);
 
   rclcpp::NodeOptions opts{};

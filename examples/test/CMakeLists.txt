@@ -1,11 +1,11 @@
 find_package(ament_cmake_gmock REQUIRED)
 
 ament_add_gmock(${PROJECT_NAME}-test
-  main.cc
-  pub_sub_tests.cc
-  service_provider_tests.cc
-  service_client_tests.cc
-  debounce_tests.cc
+  main.cpp
+  pub_sub_tests.cpp
+  service_provider_tests.cpp
+  service_client_tests.cpp
+  debounce_tests.cpp
 )
 
 target_include_directories(${PROJECT_NAME}-test PRIVATE

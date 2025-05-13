@@ -24,7 +24,7 @@ find_package(std_srvs REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 
 # Publisher component
-add_library(publisher_component SHARED src/publisher.cc)
+add_library(publisher_component SHARED src/publisher.cpp)
 target_compile_definitions(publisher_component PRIVATE "COMPOSITION_BUILDING_DLL")
 
 target_include_directories(publisher_component PUBLIC
@@ -39,7 +39,7 @@ ament_target_dependencies(publisher_component
 rclcpp_components_register_nodes(publisher_component "test_composition::Publisher")
 
 # Subscriber component
-add_library(subscriber_component SHARED src/subscriber.cc)
+add_library(subscriber_component SHARED src/subscriber.cpp)
 target_compile_definitions(subscriber_component PRIVATE "COMPOSITION_BUILDING_DLL")
 target_include_directories(subscriber_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -53,7 +53,7 @@ ament_target_dependencies(subscriber_component
 rclcpp_components_register_nodes(subscriber_component "test_composition::Subscriber")
 
 # Service provider component
-add_library(service_provider_component SHARED src/service_provider.cc)
+add_library(service_provider_component SHARED src/service_provider.cpp)
 target_compile_definitions(service_provider_component PRIVATE "COMPOSITION_BUILDING_DLL")
 target_include_directories(service_provider_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -68,7 +68,7 @@ ament_target_dependencies(service_provider_component
 rclcpp_components_register_nodes(service_provider_component "test_composition::ServiceProvider")
 
 # Service client component
-add_library(service_client_component SHARED src/service_client.cc)
+add_library(service_client_component SHARED src/service_client.cpp)
 target_compile_definitions(service_client_component PRIVATE "COMPOSITION_BUILDING_DLL")
 target_include_directories(service_client_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -83,7 +83,7 @@ ament_target_dependencies(service_client_component
 rclcpp_components_register_nodes(service_client_component "test_composition::ServiceClient")
 
 # Manual/static Node composition
-add_executable(manual_composition src/manual_composition.cc)
+add_executable(manual_composition src/manual_composition.cpp)
 target_link_libraries(manual_composition
   publisher_component
   subscriber_component
