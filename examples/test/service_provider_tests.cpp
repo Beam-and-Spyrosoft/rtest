@@ -30,7 +30,7 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated)
 {
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
-  // Retrieve the service created by the Node
+  /// Retrieve the service created by the Node
   auto service = ros2_test_framework::findService<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Service
@@ -39,7 +39,7 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated)
   // Initial state should be false
   ASSERT_FALSE(node->getState());
 
-  // Set up test request
+  /// Set up test request
   auto request_header = std::make_shared<rmw_request_id_t>();
   request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
@@ -64,7 +64,7 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
 {
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
-  // Retrieve the service created by the Node
+  /// Retrieve the service created by the Node
   auto service = ros2_test_framework::findService<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Service
@@ -75,7 +75,7 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
 
   node->lockService();
 
-  // Set up test request
+  /// Set up test request
   auto request_header = std::make_shared<rmw_request_id_t>();
   request_header->sequence_number = 123L;
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();

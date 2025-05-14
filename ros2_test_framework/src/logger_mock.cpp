@@ -25,7 +25,7 @@ namespace ros2_test_framework
 
 LoggerMock * LoggerMock::instance_{nullptr};
 
-void log_handler(
+void logHandler(
   const rcutils_log_location_t * location,
   int severity,
   const char * name,

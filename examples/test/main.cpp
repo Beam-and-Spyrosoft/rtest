@@ -25,7 +25,7 @@ int main(int argc, char ** argv)
   testing::InitGoogleMock(&argc, argv);
   rclcpp::init(argc, argv);
 
-  // Run all tests
+  /// Run all tests
   int result = RUN_ALL_TESTS();
   rclcpp::shutdown();
   return result;

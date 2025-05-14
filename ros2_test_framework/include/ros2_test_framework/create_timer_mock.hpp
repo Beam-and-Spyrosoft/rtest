@@ -142,7 +142,7 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
 
   const std::chrono::nanoseconds period_ns = detail::safe_cast_to_period_in_ns(period);
 
-  // Add a new generic timer.
+  /// Add a new generic timer.
   auto timer = rclcpp::GenericTimer<CallbackT>::make_shared(
     std::move(clock), period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
@@ -175,7 +175,7 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
 
   const std::chrono::nanoseconds period_ns = detail::safe_cast_to_period_in_ns(period);
 
-  // Add a new wall timer.
+  /// Add a new wall timer.
   auto timer = rclcpp::WallTimer<CallbackT>::make_shared(
     period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
