@@ -13,6 +13,8 @@
   <depend>rclcpp</depend>
   <depend>gmock_vendor</depend>
 
+  <test_depend>ament_cmake_copyright</test_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
     <quality_level_status content="LEVEL_4"/>

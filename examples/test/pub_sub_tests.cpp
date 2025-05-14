@@ -1,35 +1,36 @@
-/**
- * @file      pub_sub_tests.cc
- * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
- * @date      2024-12-4
- * @copyright Copyright (c) 2024 Beam Limited.
- *
- * @brief   Unit tests for the Publisher and Subscriber classes.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2024 Beam Limited.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// @file      pub_sub_tests.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-12-04
+//
+// @brief     Unit tests for the Publisher and Subscriber classes.
 
 #include <gtest/gtest.h>
 
-#include <test_composition/publisher.h>
-#include <test_composition/subscriber.h>
+#include <test_composition/publisher.hpp>
+#include <test_composition/subscriber.hpp>
 
-class PubSubTest : public ::testing::Test {
+class PubSubTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(PubSubTest, PublisherTest) {
+TEST_F(PubSubTest, PublisherTest)
+{
   auto node = std::make_shared<test_composition::Publisher>(opts);
 
   // Retrieve the publisher created by the Node
@@ -53,11 +54,13 @@ TEST_F(PubSubTest, PublisherTest) {
   nodeTimers[0]->execute_callback(nullptr);
 }
 
-TEST_F(PubSubTest, SubscriptionTest) {
+TEST_F(PubSubTest, SubscriptionTest)
+{
   auto node = std::make_shared<test_composition::Subscriber>(opts);
 
   // Retrieve the subscription created by the Node
-  auto subscription = ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
+  auto subscription =
+    ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Subscription with topic: "/test_topic"
   ASSERT_TRUE(subscription);
@@ -79,7 +82,8 @@ TEST_F(PubSubTest, SubscriptionTest) {
   EXPECT_NE(node->getLastMsg(), lastMsg);
 }
 
-TEST_F(PubSubTest, PubSequenceTest) {
+TEST_F(PubSubTest, PubSequenceTest)
+{
   auto node = std::make_shared<test_composition::Publisher>(opts);
   auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
@@ -103,15 +107,18 @@ TEST_F(PubSubTest, PubSequenceTest) {
   }
 }
 
-TEST_F(PubSubTest, IntraProcessCommTest) {
+TEST_F(PubSubTest, IntraProcessCommTest)
+{
   // Test if the framework also work if Intra-Process Communication is on
   opts.use_intra_process_comms(true);
 
   auto subNode = std::make_shared<test_composition::Subscriber>(opts);
   auto pubNode = std::make_shared<test_composition::Publisher>(opts);
 
-  auto subscription = ros2_test_framework::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
-  auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
+  auto subscription =
+    ros2_test_framework::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
+  auto publisher =
+    ros2_test_framework::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
 
   ASSERT_TRUE(subscription);
   ASSERT_TRUE(publisher);

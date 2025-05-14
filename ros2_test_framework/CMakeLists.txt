@@ -24,8 +24,8 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Common mocking library
 add_library(common SHARED
-  src/static_registry.cc
-  src/logger_mock.cc
+  src/static_registry.cpp
+  src/logger_mock.cpp
 )
 add_library(${PROJECT_NAME}::common ALIAS common)
 set_property(TARGET common PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -37,11 +37,11 @@ target_include_directories(common PUBLIC
 if(WIN32)
 MESSAGE ("WINDOWS")
   target_compile_options(common PUBLIC
-    "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.h"
+    "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.hpp"
   )
 else()
   target_compile_options(common PUBLIC
-    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.h"
+    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.hpp"
   )
 endif()
 
@@ -157,6 +157,10 @@ install(
 ament_export_targets(${PROJECT_NAME}_targets HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp)
 
+if(BUILD_TESTING)
+  find_package(ament_cmake_copyright REQUIRED)
+  ament_copyright()
+endif()
 
 ament_package(
   CONFIG_EXTRAS "cmake/test_tools_add_doubles.cmake"

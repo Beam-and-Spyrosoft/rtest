@@ -31,7 +31,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          libboost-all-dev libgmock-dev python3-pip lcov gcovr
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-jazzy-ament-copyright
 
       - name: Update rosdep database
         run: rosdep update || true
@@ -51,7 +51,8 @@ jobs:
         run: |
           . /opt/ros/jazzy/setup.bash
           . install/setup.bash
-          colcon test --packages-select ros2_test_framework ros2_test_framework_examples --event-handlers console_cohesion+
+          colcon test --event-handlers console_cohesion+
+          colcon test-result
 
       - name: Upload test results
         if: ${{ !env.ACT && always() }}

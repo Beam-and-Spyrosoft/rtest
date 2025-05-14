@@ -1,36 +1,38 @@
-/**
- * @file      debounce_tests.cc
- * @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
- * @date      2024-12-4
- * @copyright Copyright (c) 2024 Beam Limited.
- * @brief
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2024 Beam Limited.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// @file      debounce_tests.cpp
+// @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
+// @date      2024-12-04
+//
+// @brief     Example unit tests using the `ros2_test_framework::TestClock` class.
 
 #include <gtest/gtest.h>
 
-#include <test_composition/debounce.h>
-#include <ros2_test_framework/test_clock.h>
+#include <test_composition/debounce.hpp>
+#include <ros2_test_framework/test_clock.hpp>
 
 using namespace std::chrono_literals;
 
-class DebounceTest : public ::testing::Test {
+class DebounceTest : public ::testing::Test
+{
 protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException) {
+TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException)
+{
   auto node = std::make_shared<test_composition::DebounceNode>("default_opts", 123ms, opts);
 
   // No use_sim_time option
@@ -49,11 +51,13 @@ TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException) {
   EXPECT_NO_THROW(ros2_test_framework::TestClock{node});
 }
 
-TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce) {
+TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce)
+{
   const auto DEBOUNCE_TIME{123ms};
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
-  auto debounce_int = std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
+  auto debounce_int =
+    std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
 
   auto test_clock = ros2_test_framework::TestClock{debounce_int};
 
