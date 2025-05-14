@@ -57,8 +57,7 @@ void Publisher::publishLoanedMsg()
 
 void Publisher::publishIfSubscribersListening()
 {
-  if (publisher_->get_subscription_count())
-  {
+  if (publisher_->get_subscription_count()) {
     auto msg = std::make_unique<std_msgs::msg::String>();
     msg->set__data("if_subscribers_listening");
     publisher_->publish(std::move(msg));

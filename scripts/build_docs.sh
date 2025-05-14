@@ -9,3 +9,5 @@ echo "===== BUILDING DOCUMENTATION ====="
 PACKAGE_DIR="${SCRIPT_DIR}/../ros2_test_framework"
 
 rosdoc2 build --package-path "${PACKAGE_DIR}"
+
+touch docs_build/COLCON_IGNORE

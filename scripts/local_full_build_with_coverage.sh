@@ -64,7 +64,7 @@ fi
 
 # Step 1: Build the project with coverage flags
 echo -e "\n===== STEP 1: BUILDING PROJECT WITH COVERAGE FLAGS ====="
-colcon build --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_C_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
+colcon build --event-handlers console_cohesion+  --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_C_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
 
 if [ $? -ne 0 ]; then
   echo "❌ Build failed"

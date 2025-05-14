@@ -64,7 +64,7 @@ TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
   node->publishIfSubscribersListening();
 
   /// Set subscription count to 1
-  publisher->set_subscription_count(1UL);
+  publisher->setSubscriptionCount(1UL);
 
   auto expectedMsg = std_msgs::msg::String{};
   expectedMsg.set__data("if_subscribers_listening");
