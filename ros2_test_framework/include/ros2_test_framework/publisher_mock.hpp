@@ -84,7 +84,7 @@ public:
    *
    * @param count number of fake subscriptions
    */
-  void set_subscription_count(size_t count) { subscriptions_count_ = count; }
+  void setSubscriptionCount(size_t count) { subscriptions_count_ = count; }
 
   size_t subscriptions_count_{0UL};
 
