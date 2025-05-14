@@ -1,24 +1,35 @@
-# .readthedocs.yaml
+# Read the Docs configuration file for Sphinx projects
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
 version: 2
 
 # Set the OS, Python version and other tools you might need
 build:
-  os: ubuntu-24.04
+  os: ubuntu-22.04
   tools:
-    python: "3.12" # Or your preferred Python version for Sphinx
-  jobs:
-    # pre_build:
-    #   # Install Doxygen and Graphviz
-    #   - sudo apt-get update
-    #   - sudo apt-get install -y doxygen graphviz
-    #   # Run Doxygen to generate XML (adjust path to Doxyfile if needed)
-    #   - doxygen Doxyfile # Or "doxygen doc/Doxyfile" if it's in a doc subdir
+    python: "3.12"
+    # You can also specify other tool versions:
+    # nodejs: "20"
+    # rust: "1.70"
+    # golang: "1.20"
 
-# Build documentation in the docs/ directory with Sphinx
+# Build documentation in the "docs/" directory with Sphinx
 sphinx:
-  configuration: ros2_test_framework/doc/source/conf.py # Path to your conf.py
+  configuration: ros2_test_framework/docs/conf.py
+  # You can configure Sphinx to use a different builder, for instance use the dirhtml builder for simpler URLs
+  # builder: "dirhtml"
+  # Fail on all warnings to avoid broken references
+  # fail_on_warning: true
 
-# Optionally declare the Python requirements required to build your docs
+# Optionally build your docs in additional formats such as PDF and ePub
+# formats:
+#   - pdf
+#   - epub
+
+# Optional but recommended, declare the Python requirements required
+# to build your documentation
+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 # python:
 #   install:
-#     - requirements: ros2_test_framework/doc/requirements.txt
+#     - requirements: docs/requirements.txt
