@@ -45,13 +45,33 @@ TEST_F(PubSubTest, PublisherTest)
   // There should be just one timer
   ASSERT_EQ(nodeTimers.size(), 1UL);
 
-  // Set up expectation that the Node will publish a FalconState message when the timer callback is fired
+  // Set up expectation that the Node will publish a message when the timer callback is fired
   auto expectedMsg = std_msgs::msg::String{};
   expectedMsg.set__data("timer");
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
 
   // Fire the timer callback
   nodeTimers[0]->execute_callback(nullptr);
+}
+
+TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
+{
+  auto node = std::make_shared<test_composition::Publisher>(opts);
+  auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+
+  // Set up expectation that the Node will not publish a message when the subscription count is 0
+  EXPECT_CALL(*publisher, publish(::testing::_)).Times(0);
+  node->publishIfSubscribersListening();
+
+  // Set subscription count to 1
+  publisher->set_subscription_count(1UL);
+
+  auto expectedMsg = std_msgs::msg::String{};
+  expectedMsg.set__data("if_subscribers_listening");
+
+  // Set up expectation that the Node will publish a message when the subscription count is 1
+  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  node->publishIfSubscribersListening();
 }
 
 TEST_F(PubSubTest, SubscriptionTest)

@@ -225,8 +225,8 @@ The chart below compares the requirements in the REP-2004 with the current state
 |4| Testing | --- |
 |4.i| Feature items tests | ☓ |
 |4.ii| Public API tests | ☓ |
-|4.iii.a| Coverage tracking | ☓ |
-|4.iii.b| Enforced coverage policy | x |
+|4.iii.a| Coverage tracking | ✓ |
+|4.iii.b| Enforced coverage policy | ✓ |
 |4.iv.a| Performance tests (if applicable) | ☓ |
 |4.iv.b| Performance tests policy | ☓ |
 |4.v.a| Code style enforcement (linters) | ☓ |

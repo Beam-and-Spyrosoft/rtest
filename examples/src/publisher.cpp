@@ -55,6 +55,16 @@ void Publisher::publishLoanedMsg()
   publisher_->publish(std::move(msg));
 }
 
+void Publisher::publishIfSubscribersListening()
+{
+  if (publisher_->get_subscription_count())
+  {
+    auto msg = std::make_unique<std_msgs::msg::String>();
+    msg->set__data("if_subscribers_listening");
+    publisher_->publish(std::move(msg));
+  }
+}
+
 }  // namespace test_composition
 
 RCLCPP_COMPONENTS_REGISTER_NODE(test_composition::Publisher);

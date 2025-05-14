@@ -8,6 +8,7 @@ ROS 2 Testing Framework Documentation
    :maxdepth: 2
    :hidden:
 
+   Concepts/index
    Installation
    Tutorials/index
    Contributing

@@ -33,6 +33,7 @@ public:
   void publishCopy();
   void publishUniquePtr();
   void publishLoanedMsg();
+  void publishIfSubscribersListening();
 
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
