@@ -4,21 +4,39 @@ BasedOnStyle: Google
 UseTab: Never
 IndentWidth: 2
 TabWidth: 2
-AllowShortIfStatementsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false  # Always use braces even for single line blocks
+AllowShortIfStatementsOnASingleLine: false  # No single-line if statements
+AllowShortLoopsOnASingleLine: false  # No single-line loops
 IndentCaseLabels: true
-ColumnLimit: 120
+ColumnLimit: 100 # Max line length is 100
 AccessModifierOffset: -2
 NamespaceIndentation: None
 FixNamespaceComments: true
-BreakConstructorInitializers: AfterColon
+AlwaysBreakTemplateDeclarations: Yes  # Always break after template declarations
+BreakConstructorInitializers: BeforeColon  # Break constructor initializers before colon
 AllowAllParametersOfDeclarationOnNextLine: false
 BinPackArguments: false
 BinPackParameters: false
 ExperimentalAutoDetectBinPacking: false
 AlignAfterOpenBracket: AlwaysBreak
-ConstructorInitializerIndentWidth: 6
+ConstructorInitializerIndentWidth: 0 # For constructor initializer lists
 DerivePointerAlignment: false
-PointerAlignment: Right
+PointerAlignment: Middle  # For "char * c" style pointer alignment
 PenaltyReturnTypeOnItsOwnLine: 10000000
 IncludeBlocks: Preserve
 SortIncludes: Never
+BraceWrapping:
+  AfterClass: true  # Open braces for class definitions
+  AfterFunction: true  # Open braces for function definitions
+  AfterNamespace: true  # Open braces for namespaces
+  AfterStruct: true  # Open braces for struct definitions
+  AfterEnum: true  # Open braces for enum definitions
+BreakBeforeBraces: Custom
+ContinuationIndentWidth: 2  # For wrapped function calls or conditions
+ReflowComments: false
+Standard: Cpp11  # Support C++11 features like nested templates without spaces
+SpacesInParentheses: false  # No spaces in parentheses
+SpaceBeforeCtorInitializerColon: true  # Space before constructor initializer colon
+SpaceBeforeInheritanceColon: true  # Space before inheritance colon
+AlignConsecutiveAssignments: false  # No alignment of consecutive assignments
+AlignConsecutiveDeclarations: false  # No alignment of consecutive declarations
