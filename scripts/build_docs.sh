@@ -12,4 +12,5 @@ rm -r cross_reference docs_build docs_output
 
 rosdoc2 build --package-path "${PACKAGE_DIR}"
 
+# Protect colcon from seeing a duplicated `rtest` package
 touch docs_build/COLCON_IGNORE

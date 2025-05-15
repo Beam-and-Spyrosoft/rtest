@@ -11,11 +11,11 @@ settings:
 
 builders:
     - doxygen: {
-        name: 'rtest Public C/C++ API',
+        name: 'RTEST Public C/C++ API',
         output_dir: 'generated/doxygen'
     }
     - sphinx: {
-        name: 'rtest',
+        name: 'RTEST',
         doxygen_xml_directory: 'generated/doxygen/xml',
         output_dir: ''
     }

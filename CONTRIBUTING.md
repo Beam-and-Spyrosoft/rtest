@@ -54,8 +54,8 @@ the code they are contributing to the project according to the
 ## Finding contributions to work on
 Looking at the existing issues is a great way to find something to contribute on.
 As this project, by default, uses the default GitHub issue labels
-  (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'][help-wanted] issues
-  is a great place to start.
+(enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'][help-wanted] issues
+is a great place to start.
 
 
 ## Licensing

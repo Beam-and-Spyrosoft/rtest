@@ -29,7 +29,6 @@ import time
 project = 'rtest'
 author = 'Spyrosoft Synergy S.A.'
 copyright = '{}, {}'.format(time.strftime('%Y'), author)
-release = '0.1.0'
 
 # The master toctree document.
 master_doc = 'index'
@@ -48,9 +47,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx_rtd_theme',
-    'sphinx_autorun',
-    'sphinx_tabs.tabs',
-    'notfound.extension',
     'myst_parser',
     'breathe'
 ]
