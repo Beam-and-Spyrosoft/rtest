@@ -79,8 +79,7 @@ TEST_F(PubSubTest, SubscriptionTest)
   auto node = std::make_shared<test_composition::Subscriber>(opts);
 
   /// Retrieve the subscription created by the Node
-  auto subscription =
-    rtest::findSubscription<std_msgs::msg::String>(node, "/test_topic");
+  auto subscription = rtest::findSubscription<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Subscription with topic: "/test_topic"
   ASSERT_TRUE(subscription);
@@ -135,10 +134,8 @@ TEST_F(PubSubTest, IntraProcessCommTest)
   auto subNode = std::make_shared<test_composition::Subscriber>(opts);
   auto pubNode = std::make_shared<test_composition::Publisher>(opts);
 
-  auto subscription =
-    rtest::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
-  auto publisher =
-    rtest::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
+  auto subscription = rtest::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
 
   ASSERT_TRUE(subscription);
   ASSERT_TRUE(publisher);

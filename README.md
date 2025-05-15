@@ -27,7 +27,7 @@ This repository and tooling was initally developed as a collaboration between [B
     ```
 2. To build and run the test examples:
     ```
-    colcon build && colcon test --packages-select ros2_test_framework_examples --event-handlers console_cohesion+
+    colcon build && colcon test --packages-select rtest_examples --event-handlers console_cohesion+
     ```
 
 ## Adding Testing Support to Your Package
@@ -47,7 +47,7 @@ Add a dependency to `rtest` in your `package.xml` file:
 
 Create a sub-folder `test` and add a `CMakeLists.txt` file there.
 
-> **WARNING**: The ROS 2 testing framework uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
+> **WARNING**: The RTEST uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
 
 Example `CMakeLists.txt`:
 

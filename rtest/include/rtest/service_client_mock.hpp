@@ -153,8 +153,13 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
+<<<<<<<< HEAD:rtest/include/ros2_test_framework/service_client_mock.hpp
       return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)
         ->async_send_request(request);
+========
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->async_send_request(
+        request);
+>>>>>>>> origin/main:rtest/include/rtest/service_client_mock.hpp
     }
     throw std::runtime_error("No mock attached");
   }
@@ -185,8 +190,12 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
+<<<<<<<< HEAD:rtest/include/ros2_test_framework/service_client_mock.hpp
       return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)
         ->service_is_ready();
+========
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->service_is_ready();
+>>>>>>>> origin/main:rtest/include/rtest/service_client_mock.hpp
     }
     return false;
   }

@@ -4,7 +4,7 @@ channels = ["conda-forge",
             "robostack-jazzy",
             "s3://conda-packages/beam-production"
             ]
-name = "ros2_test_framework_examples"
+name = "rtest_examples"
 platforms = ["linux-64", "win-64"]
 version = "0.1.0"
 
