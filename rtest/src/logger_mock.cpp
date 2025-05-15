@@ -18,9 +18,9 @@
 //
 // @brief     Mock implementation for ROS 2 logging.
 
-#include <ros2_test_framework/logger_mock.hpp>
+#include <rtest/logger_mock.hpp>
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 LoggerMock * LoggerMock::instance_{nullptr};
@@ -52,4 +52,4 @@ void logHandler(
   }
 }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

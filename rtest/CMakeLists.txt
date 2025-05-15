@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(ros2_test_framework
+project(rtest
   LANGUAGES CXX
   VERSION 0.1.0
 )
@@ -37,11 +37,11 @@ target_include_directories(common PUBLIC
 if(WIN32)
 MESSAGE ("WINDOWS")
   target_compile_options(common PUBLIC
-    "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.hpp"
+    "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
   )
 else()
   target_compile_options(common PUBLIC
-    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/ros2_test_framework/includes_mock.hpp"
+    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
   )
 endif()
 
@@ -68,7 +68,7 @@ target_link_libraries(publisher_mock INTERFACE
   ${PROJECT_NAME}::common
 )
 
-target_compile_definitions(publisher_mock INTERFACE ROS2_TEST_FRAMEWORK_PUBLISHER_MOCK)
+target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK)
 
 
 # Subscriber mock library
@@ -84,7 +84,7 @@ target_link_libraries(subscription_mock INTERFACE
   ${PROJECT_NAME}::common
 )
 
-target_compile_definitions(subscription_mock INTERFACE ROS2_TEST_FRAMEWORK_SUBSCRIPTION_MOCK)
+target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK)
 
 # Service mock library
 add_library(service_mock INTERFACE)
@@ -99,7 +99,7 @@ target_link_libraries(service_mock INTERFACE
   ${PROJECT_NAME}::common
 )
 
-target_compile_definitions(service_mock INTERFACE ROS2_TEST_FRAMEWORK_SERVICE_MOCK)
+target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK)
 
 add_library(service_client_mock INTERFACE)
 add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
@@ -113,7 +113,7 @@ target_link_libraries(service_client_mock INTERFACE
   ${PROJECT_NAME}::common
 )
 
-target_compile_definitions(service_client_mock INTERFACE ROS2_TEST_FRAMEWORK_CLIENT_MOCK)
+target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK)
 
 # Timer mock library
 add_library(timer_mock INTERFACE)
@@ -128,7 +128,7 @@ target_link_libraries(timer_mock INTERFACE
   ${PROJECT_NAME}::common
 )
 
-target_compile_definitions(timer_mock INTERFACE ROS2_TEST_FRAMEWORK_TIMER_MOCK)
+target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK)
 
 install(DIRECTORY include/
   DESTINATION include

@@ -31,7 +31,7 @@ TEST_F(ServiceProviderTest, WhenServiceRequestReceived_ThenStateIsUpdated)
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
   /// Retrieve the service created by the Node
-  auto service = ros2_test_framework::findService<std_srvs::srv::SetBool>(node, "/test_service");
+  auto service = rtest::findService<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Service
   ASSERT_TRUE(service);
@@ -65,7 +65,7 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
   auto node = std::make_shared<test_composition::ServiceProvider>(opts);
 
   /// Retrieve the service created by the Node
-  auto service = ros2_test_framework::findService<std_srvs::srv::SetBool>(node, "/test_service");
+  auto service = rtest::findService<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Service
   ASSERT_TRUE(service);

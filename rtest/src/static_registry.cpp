@@ -18,13 +18,13 @@
 //
 // @brief    Mock implementation for ROS 2 static registry.
 
-#include <ros2_test_framework/static_registry.hpp>
+#include <rtest/static_registry.hpp>
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 StaticMocksRegistry StaticMocksRegistry::theRegistry_;
 
 void enableVerboseLogs(bool on) { StaticMocksRegistry::instance().enableVerboseLogs(on); }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

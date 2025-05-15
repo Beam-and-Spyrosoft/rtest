@@ -1,4 +1,4 @@
-# ROS 2 Testing Framework
+# RTEST
 
 This repository provides a suite of tools and utilities tailored for testing and debugging ROS 2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS 2-based projects, particularly in scenarios involving unit and integration testing. 
 
@@ -21,23 +21,23 @@ This repository and tooling was initally developed as a collaboration between [B
 
 1. Clone the repository:
     ```
-    git clone https://github.com/yourusername/ros2_test_framework.git
+    git clone https://github.com/yourusername/rtest.git
     ```
 2. To build and run the test examples:
     ```
-    colcon build && colcon test --packages-select ros2_test_framework_examples --event-handlers console_cohesion+
+    colcon build && colcon test --packages-select rtest_examples --event-handlers console_cohesion+
     ```
 
 ## Adding Testing Support to Your Package
 
 ### 1. Add Dependencies
 
-Add a dependency to `ros2_test_framework` in your `package.xml` file:
+Add a dependency to `rtest` in your `package.xml` file:
 
 ```xml
 <package format="3">
   ...
-  <test_depend>ros2_test_framework</test_depend>
+  <test_depend>rtest</test_depend>
 </package>
 ```
 
@@ -45,13 +45,13 @@ Add a dependency to `ros2_test_framework` in your `package.xml` file:
 
 Create a sub-folder `test` and add a `CMakeLists.txt` file there.
 
-> **WARNING**: The ROS 2 testing framework uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
+> **WARNING**: The Rtest uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
 
 Example `CMakeLists.txt`:
 
 ```cmake
 find_package(ament_cmake_gmock REQUIRED)
-find_package(ros2_test_framework REQUIRED)
+find_package(rtest REQUIRED)
 
 ament_add_gmock(${PROJECT_NAME}-test
   main.cpp
@@ -60,11 +60,11 @@ ament_add_gmock(${PROJECT_NAME}-test
 )
 
 target_link_libraries(${PROJECT_NAME}-test
-  ros2_test_framework::publisher_mock
-  ros2_test_framework::subscription_mock
-  ros2_test_framework::timer_mock
-  ros2_test_framework::service_mock
-  ros2_test_framework::service_client_mock
+  rtest::publisher_mock
+  rtest::subscription_mock
+  rtest::timer_mock
+  rtest::service_mock
+  rtest::service_client_mock
 )
 
 ament_target_dependencies(${PROJECT_NAME}-test

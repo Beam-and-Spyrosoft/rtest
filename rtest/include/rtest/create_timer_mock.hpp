@@ -21,7 +21,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.hpp>
+#include <rtest/static_registry.hpp>
 
 #include <chrono>
 #include <exception>
@@ -147,7 +147,7 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
     std::move(clock), period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
 
-  ros2_test_framework::StaticMocksRegistry::instance().registerTimer(
+  rtest::StaticMocksRegistry::instance().registerTimer(
     node_base->get_fully_qualified_name(), timer);
 
   return timer;
@@ -180,14 +180,14 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
     period_ns, std::move(callback), node_base->get_context(), autostart);
   node_timers->add_timer(timer, group);
 
-  ros2_test_framework::StaticMocksRegistry::instance().registerTimer(
+  rtest::StaticMocksRegistry::instance().registerTimer(
     node_base->get_fully_qualified_name(), timer);
 
   return timer;
 }
 }  // namespace rclcpp
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 /**
@@ -223,4 +223,4 @@ static inline std::vector<std::shared_ptr<rclcpp::TimerBase>> findTimers(
   return findTimers(nodePtr->get_fully_qualified_name());
 }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

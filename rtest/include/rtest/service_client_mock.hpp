@@ -19,8 +19,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.hpp>
-#include <ros2_test_framework/client_base.hpp>
+#include <rtest/static_registry.hpp>
+#include <rtest/client_base.hpp>
 
 #include <memory>
 #include <string>
@@ -54,7 +54,7 @@
   __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
   TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 template <typename ServiceT>
@@ -88,7 +88,7 @@ private:
   rclcpp::ClientBase * client_{nullptr};
 };
 
-}  // namespace ros2_test_framework
+}  // namespace rtest
 
 namespace rclcpp
 {
@@ -151,19 +151,19 @@ public:
 
   FutureAndRequestId async_send_request(SharedRequest request)
   {
-    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
-        ->async_send_request(request);
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->async_send_request(
+        request);
     }
     throw std::runtime_error("No mock attached");
   }
 
   SharedFutureAndRequestId async_send_request(SharedRequest request, CallbackType cb)
   {
-    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)
         ->async_send_request_with_callback(request, cb);
     }
     throw std::runtime_error("No mock attached");
@@ -173,9 +173,9 @@ public:
     SharedRequest request,
     CallbackWithRequestType cb)
   {
-    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)
         ->async_send_request_with_callback_and_request(request, cb);
     }
     throw std::runtime_error("No mock attached");
@@ -183,17 +183,16 @@ public:
 
   bool service_is_ready()
   {
-    auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<ros2_test_framework::ServiceClientMock<ServiceT>>(mock)
-        ->service_is_ready();
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->service_is_ready();
     }
     return false;
   }
 
   void post_init_setup()
   {
-    ros2_test_framework::StaticMocksRegistry::instance().template registerServiceClient<ServiceT>(
+    rtest::StaticMocksRegistry::instance().template registerServiceClient<ServiceT>(
       fully_qualified_name_, service_name_, this->template weak_from_this());
   }
 
@@ -207,7 +206,7 @@ private:
 
 }  // namespace rclcpp
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 template <typename ServiceT>
@@ -221,7 +220,7 @@ std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
 
   if (client_base) {
     if (StaticMocksRegistry::instance().getMock(client_base.get()).lock()) {
-      std::cerr << "ros2_test_framework::findServiceClient() WARNING: ServiceClientMock already "
+      std::cerr << "rtest::findServiceClient() WARNING: ServiceClientMock already "
                    "attached to the Client\n";
     } else {
       client_mock = std::make_shared<ServiceClientMock<ServiceT>>(client_base.get());
@@ -243,4 +242,4 @@ std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
   return findServiceClient<ServiceT>(nodePtr->get_fully_qualified_name(), namePtr);
 }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

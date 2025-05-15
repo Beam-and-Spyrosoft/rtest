@@ -34,13 +34,13 @@ TEST_F(PubSubTest, PublisherTest)
   auto node = std::make_shared<test_composition::Publisher>(opts);
 
   /// Retrieve the publisher created by the Node
-  auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Publisher with topic: "/test_topic"
   ASSERT_TRUE(publisher);
 
   /// Retrieve the timers created by the Node
-  auto nodeTimers = ros2_test_framework::findTimers(node);
+  auto nodeTimers = rtest::findTimers(node);
 
   // There should be just one timer
   ASSERT_EQ(nodeTimers.size(), 1UL);
@@ -59,8 +59,7 @@ TEST_F(PubSubTest, SubscriptionTest)
   auto node = std::make_shared<test_composition::Subscriber>(opts);
 
   /// Retrieve the subscription created by the Node
-  auto subscription =
-    ros2_test_framework::findSubscription<std_msgs::msg::String>(node, "/test_topic");
+  auto subscription = rtest::findSubscription<std_msgs::msg::String>(node, "/test_topic");
 
   // Check that the Node actually created the Subscription with topic: "/test_topic"
   ASSERT_TRUE(subscription);
@@ -85,7 +84,7 @@ TEST_F(PubSubTest, SubscriptionTest)
 TEST_F(PubSubTest, PubSequenceTest)
 {
   auto node = std::make_shared<test_composition::Publisher>(opts);
-  auto publisher = ros2_test_framework::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
   auto expectedMsg1 = std_msgs::msg::String{};
   expectedMsg1.set__data("copy");
@@ -115,10 +114,8 @@ TEST_F(PubSubTest, IntraProcessCommTest)
   auto subNode = std::make_shared<test_composition::Subscriber>(opts);
   auto pubNode = std::make_shared<test_composition::Publisher>(opts);
 
-  auto subscription =
-    ros2_test_framework::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
-  auto publisher =
-    ros2_test_framework::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
+  auto subscription = rtest::findSubscription<std_msgs::msg::String>(subNode, "/test_topic");
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(pubNode, "/test_topic");
 
   ASSERT_TRUE(subscription);
   ASSERT_TRUE(publisher);

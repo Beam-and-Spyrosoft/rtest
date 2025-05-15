@@ -21,7 +21,7 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.hpp>
+#include <rtest/static_registry.hpp>
 
 #include <rmw/error_handling.h>
 #include <rmw/rmw.h>
@@ -169,7 +169,7 @@ public:
     (void)qos;
     (void)options;
 
-    ros2_test_framework::StaticMocksRegistry::instance().registerSubscription<MessageT>(
+    rtest::StaticMocksRegistry::instance().registerSubscription<MessageT>(
       node_base->get_fully_qualified_name(), get_topic_name(), weak_from_this());
   }
 
@@ -358,7 +358,7 @@ private:
 
 }  // namespace rclcpp
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 /**
@@ -404,4 +404,4 @@ std::shared_ptr<rclcpp::Subscription<MessageT>> findSubscription(
   return findSubscription<MessageT>(nodePtr->get_fully_qualified_name(), topicName);
 }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

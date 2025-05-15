@@ -19,8 +19,8 @@
 #pragma once
 
 #include <gmock/gmock.h>
-#include <ros2_test_framework/static_registry.hpp>
-#include <ros2_test_framework/service_base.hpp>
+#include <rtest/static_registry.hpp>
+#include <rtest/service_base.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -57,7 +57,7 @@
   __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
   TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 template <typename ServiceT>
@@ -102,7 +102,7 @@ private:
   rclcpp::Service<ServiceT> * service_{nullptr};
 };
 
-}  // namespace ros2_test_framework
+}  // namespace rtest
 
 namespace rclcpp
 {
@@ -136,7 +136,7 @@ public:
   /// Called after construction to continue setup that requires shared_from_this().
   void post_init_setup()
   {
-    ros2_test_framework::StaticMocksRegistry::instance().template registerService<ServiceT>(
+    rtest::StaticMocksRegistry::instance().template registerService<ServiceT>(
       fully_qualified_name_, service_name_, this->template weak_from_this());
   }
 
@@ -157,9 +157,9 @@ public:
     auto typed_request = std::static_pointer_cast<typename ServiceT::Request>(request);
     auto response = handle_request(request_header, typed_request);
     if (response) {
-      auto mock = ros2_test_framework::StaticMocksRegistry::instance().getMock(this).lock();
+      auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
       if (mock) {
-        std::static_pointer_cast<ros2_test_framework::ServiceMock<ServiceT>>(mock)->send_response(
+        std::static_pointer_cast<rtest::ServiceMock<ServiceT>>(mock)->send_response(
           *request_header, *response);
       }
     }
@@ -184,7 +184,7 @@ private:
 
 }  // namespace rclcpp
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 template <typename ServiceT>
@@ -198,7 +198,7 @@ std::shared_ptr<ServiceMock<ServiceT>> findService(
 
   if (service_base) {
     if (StaticMocksRegistry::instance().getMock(service_base.get()).lock()) {
-      std::cerr << "ros2_test_framework::findService() WARNING: ServiceMock already attached to "
+      std::cerr << "rtest::findService() WARNING: ServiceMock already attached to "
                    "the Service\n";
     } else {
       service_mock = std::make_shared<ServiceMock<ServiceT>>(service_base.get());
@@ -220,7 +220,7 @@ std::shared_ptr<ServiceMock<ServiceT>> findService(
   return findService<ServiceT>(nodePtr->get_fully_qualified_name(), namePtr);
 }
 
-}  // namespace ros2_test_framework
+}  // namespace rtest
 
 static bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs)
 {

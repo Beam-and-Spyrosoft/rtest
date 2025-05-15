@@ -30,8 +30,7 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   /// Retrieve the client created by the Node
-  auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -53,8 +52,7 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   /// Retrieve the client created by the Node
-  auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -91,8 +89,7 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
 
   /// Retrieve the client created by the Node
-  auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -126,8 +123,7 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
 TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds)
 {
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
-  auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
@@ -163,8 +159,7 @@ TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds)
 TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceeds)
 {
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
-  auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();

@@ -16,12 +16,12 @@
 // @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
 // @date      2024-12-04
 //
-// @brief     Example unit tests using the `ros2_test_framework::TestClock` class.
+// @brief     Example unit tests using the `rtest::TestClock` class.
 
 #include <gtest/gtest.h>
 
 #include <test_composition/debounce.hpp>
-#include <ros2_test_framework/test_clock.hpp>
+#include <rtest/test_clock.hpp>
 
 using namespace std::chrono_literals;
 
@@ -36,19 +36,19 @@ TEST_F(DebounceTest, When_NodeUseSimTimeParameter_NotSetTrue_ThrowException)
   auto node = std::make_shared<test_composition::DebounceNode>("default_opts", 123ms, opts);
 
   // No use_sim_time option
-  EXPECT_THROW(ros2_test_framework::TestClock{node}, std::invalid_argument);
+  EXPECT_THROW(rtest::TestClock{node}, std::invalid_argument);
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", false)});
   node = std::make_shared<test_composition::DebounceNode>("use_sim_time_false", 123ms, opts);
 
   // use_sim_time option set to false
-  EXPECT_THROW(ros2_test_framework::TestClock{node}, std::invalid_argument);
+  EXPECT_THROW(rtest::TestClock{node}, std::invalid_argument);
 
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
   node = std::make_shared<test_composition::DebounceNode>("use_sim_time_true", 123ms, opts);
 
   // use_sim_time option set to true
-  EXPECT_NO_THROW(ros2_test_framework::TestClock{node});
+  EXPECT_NO_THROW(rtest::TestClock{node});
 }
 
 TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce)
@@ -59,7 +59,7 @@ TEST_F(DebounceTest, When_TimeElapsedIsLessThanDebounceTime_ValueIsSetOnlyOnce)
   auto debounce_int =
     std::make_shared<test_composition::DebounceNode>("test_node", DEBOUNCE_TIME, opts);
 
-  auto test_clock = ros2_test_framework::TestClock{debounce_int};
+  auto test_clock = rtest::TestClock{debounce_int};
 
   // Allow to set the value initially by advancing the time to t > DEBOUNCE_TIME
   test_clock.advance(DEBOUNCE_TIME + 1ms);

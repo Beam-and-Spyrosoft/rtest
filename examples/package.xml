@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>ros2_test_framework_examples</name>
+  <name>rtest_examples</name>
   <version>0.1.0</version>
   <description>Examples of using test tools</description>
   <maintainer email="slawomir.cielepak@gmail.com">Sławomir Cielepak</maintainer>
@@ -14,7 +14,7 @@
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
 
-  <test_depend>ros2_test_framework</test_depend>
+  <test_depend>rtest</test_depend>
   <test_depend>ament_cmake_copyright</test_depend>
 
   <export>
