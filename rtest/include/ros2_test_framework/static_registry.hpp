@@ -29,7 +29,7 @@
 
 #include <boost/type_index.hpp>
 
-#include <ros2_test_framework/single_instance.hpp>
+#include <rtest/single_instance.hpp>
 
 namespace rclcpp
 {
@@ -40,7 +40,7 @@ class ServiceBase;
 class ClientBase;
 }  // namespace rclcpp
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 class MockBase
@@ -338,4 +338,4 @@ private:
 
 void enableVerboseLogs(bool on);
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

@@ -27,7 +27,7 @@
 
 #include <boost/type_index.hpp>
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 template <typename T>
@@ -52,4 +52,4 @@ private:
 template <typename T>
 std::atomic_flag SingleInstance<T>::instanceCreated_ = ATOMIC_FLAG_INIT;
 
-}  // namespace ros2_test_framework
+}  // namespace rtest

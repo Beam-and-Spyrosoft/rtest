@@ -20,4 +20,4 @@ The best way to approach the tutorials is to walk through them for the first tim
 Examples
 --------
 
-* `C++ minimal examples <https://github.com/Beam-and-Spyrosoft/ros2_test_framework/tree/main/examples/test>`__.
+* `C++ minimal examples <https://github.com/Beam-and-Spyrosoft/rtest/tree/main/examples/test>`__.

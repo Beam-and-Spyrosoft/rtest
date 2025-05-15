@@ -6,7 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 echo "===== BUILDING DOCUMENTATION ====="
 
 # package directory
-PACKAGE_DIR="${SCRIPT_DIR}/../ros2_test_framework"
+PACKAGE_DIR="${SCRIPT_DIR}/../rtest"
+
+rm -r cross_reference docs_build docs_output
 
 rosdoc2 build --package-path "${PACKAGE_DIR}"
 

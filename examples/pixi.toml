@@ -43,5 +43,5 @@ cwd = "build"
 build = ["build"]
 
 [dependencies]
-ros2_test_framework = ">=0.1.0,<0.2"
+rtest = ">=0.1.0,<0.2"
 

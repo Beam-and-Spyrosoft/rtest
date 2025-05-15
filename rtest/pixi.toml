@@ -1,10 +1,10 @@
 [project]
-name = "ros2_test_framework"
+name = "rtest"
 version = "0.1.1"
-description = "ros2_test_framework"
+description = "rtest"
 authors = ["Guy Burroughes"]
 license = "BSD-3-Clause"
-repository = "https://github.com/rovco/ros2_test_framework"
+repository = "https://github.com/rovco/rtest"
 channels = ["https://repo.prefix.dev/conda-forge", 
             "conda-forge",
             "robostack-jazzy",  
@@ -32,7 +32,7 @@ gmock = "*"
 
 
 [package] 
-name = "ros2_test_framework"
+name = "rtest"
 version = "0.1.1"
 
 [package.build]

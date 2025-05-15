@@ -11,11 +11,11 @@ settings:
 
 builders:
     - doxygen: {
-        name: 'ros2_test_framework Public C/C++ API',
+        name: 'rtest Public C/C++ API',
         output_dir: 'generated/doxygen'
     }
     - sphinx: {
-        name: 'ros2_test_framework',
+        name: 'rtest',
         doxygen_xml_directory: 'generated/doxygen/xml',
         output_dir: ''
     }

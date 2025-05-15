@@ -14,7 +14,7 @@
   <depend>std_srvs</depend>
   <depend>std_msgs</depend>
 
-  <test_depend>ros2_test_framework</test_depend>
+  <test_depend>rtest</test_depend>
   <test_depend>ament_cmake_copyright</test_depend>
 
   <export>

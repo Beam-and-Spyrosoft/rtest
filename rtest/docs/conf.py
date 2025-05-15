@@ -26,7 +26,7 @@
 
 import time
 
-project = 'ROS 2 Testing Framework'
+project = 'rtest'
 author = 'Spyrosoft Synergy S.A.'
 copyright = '{}, {}'.format(time.strftime('%Y'), author)
 release = '0.1.0'
@@ -48,20 +48,29 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx_rtd_theme',
+    'sphinx_autorun',
+    'sphinx_tabs.tabs',
+    'notfound.extension',
     'myst_parser',
     'breathe'
 ]
 
+# allow to build Unicode chars
+latex_engine = 'xelatex'
 
-templates_path = ['_templates']
-exclude_patterns = []
+autosectionlabel_prefix_document = True
+hoverxref_auto_ref = True
+hoverxref_roles = [
+    'term',
+]
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
-html_logo = "_static/logo.png"
+html_extra_path = ['static']
+html_logo = "logo.png"
 html_theme_options = {
     'logo_only': True,
     'display_version': True,

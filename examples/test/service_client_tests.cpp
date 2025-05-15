@@ -31,7 +31,7 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
 
   /// Retrieve the client created by the Node
   auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+    rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -54,7 +54,7 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
 
   /// Retrieve the client created by the Node
   auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+    rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -92,7 +92,7 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
 
   /// Retrieve the client created by the Node
   auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+    rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
 
   // Check that the Node actually created the Client
   ASSERT_TRUE(client);
@@ -127,7 +127,7 @@ TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds)
 {
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
   auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+    rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
@@ -164,7 +164,7 @@ TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceed
 {
   auto node = std::make_shared<test_composition::ServiceClient>(opts);
   auto client =
-    ros2_test_framework::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+    rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
   ASSERT_TRUE(client);
 
   auto response = std::make_shared<std_srvs::srv::SetBool::Response>();

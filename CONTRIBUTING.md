@@ -1,5 +1,5 @@
 # Contributing Guidelines
-Thank you for your interest in contributing to `ros2_test_framework`.
+Thank you for your interest in contributing to `rtest`.
 Whether it's a bug report, new feature, correction, or additional
 documentation, we greatly value feedback and contributions from our community.
 
@@ -73,6 +73,6 @@ be under the Apache 2 License, as dictated by that
    with Licensor regarding such Contributions.
 ~~~
 
-[issues]: https://github.com/ros-controls/ros2_control/issues
-[closed-issues]: https://github.com/ros-controls/ros2_control/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20
-[help-wanted]: https://github.com/ros-controls/ros2_control/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22
+[issues]: https://github.com/Beam-and-Spyrosoft/rtest/issues
+[closed-issues]: https://github.com/Beam-and-Spyrosoft/rtest/issues?q=is%3Aissue%20state%3Aclosed
+[help-wanted]: https://github.com/Beam-and-Spyrosoft/rtest/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22help%20wanted%22

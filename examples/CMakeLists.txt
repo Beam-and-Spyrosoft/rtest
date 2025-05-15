@@ -110,7 +110,7 @@ install(TARGETS
 )
 
 if(BUILD_TESTING)
-  find_package(ros2_test_framework REQUIRED)
+  find_package(rtest REQUIRED)
   find_package(ament_cmake_copyright REQUIRED)
   ament_copyright()
   test_tools_add_doubles(publisher_component

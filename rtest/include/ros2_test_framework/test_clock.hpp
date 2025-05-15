@@ -21,7 +21,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>
 
-namespace ros2_test_framework
+namespace rtest
 {
 
 /**
@@ -67,4 +67,4 @@ private:
   rcl_clock_t * clock_{nullptr};
   rcl_time_point_value_t now_{0L};
 };
-}  // namespace ros2_test_framework
+}  // namespace rtest
