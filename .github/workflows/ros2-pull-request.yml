@@ -134,39 +134,39 @@ jobs:
         run: |
           bash ./scripts/check_coverage_thresholds.sh "${REQUIRED_LINES_COVERAGE:-0.0}" "${REQUIRED_FUNCTION_COVERAGE:-0.0}"
 
-    clang-tidy-check:
-      needs: format-check
-      runs-on: ubuntu-24.04
-      container:
-        image: osrf/ros:jazzy-desktop
-        options: --user root
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
+  clang-tidy-check:
+    needs: format-check
+    runs-on: ubuntu-24.04
+    container:
+      image: osrf/ros:jazzy-desktop
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-        - name: Install build tools
-          run: |
-            apt-get update
-            apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-            clang-tidy ros-jazzy-ament-cmake-clang-tidy
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
+          clang-tidy ros-jazzy-ament-cmake-clang-tidy
 
-        - name: Update rosdep database
-          run: rosdep update || true
+      - name: Update rosdep database
+        run: rosdep update || true
 
-        - name: Install dependencies
-          run: |
-            rosdep install --from-paths . --ignore-src -r -y
+      - name: Install dependencies
+        run: |
+          rosdep install --from-paths . --ignore-src -r -y
 
-        - name: Run clang-tidy tests
-          shell: bash
-          run: |
-            bash ./scripts/check_clang_tidy.sh
+      - name: Run clang-tidy tests
+        shell: bash
+        run: |
+          bash ./scripts/check_clang_tidy.sh
 
-        - name: Upload clang-tidy results
-          if: ${{ !env.ACT && always() }}
-          uses: actions/upload-artifact@v4
-          with:
-            name: clang-tidy-results
-            path: build/*/ament_clang_tidy/*.txt
-            if-no-files-found: warn
+      - name: Upload clang-tidy results
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-results
+          path: build/*/ament_clang_tidy/*.txt
+          if-no-files-found: warn
