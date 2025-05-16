@@ -111,7 +111,6 @@ install(TARGETS
 
 if(BUILD_TESTING)
   find_package(rtest REQUIRED)
-
   # Option to enable clang-tidy tests (default: disabled)
   option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
   if(ENABLE_CLANG_TIDY)
