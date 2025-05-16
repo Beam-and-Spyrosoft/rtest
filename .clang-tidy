@@ -1,0 +1,4 @@
+---
+Checks: 'bugprone-*,modernize-use-nullptr,modernize-use-override'
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
