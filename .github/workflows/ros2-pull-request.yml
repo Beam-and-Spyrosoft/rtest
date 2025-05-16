@@ -2,9 +2,13 @@ name: ROS 2 Jazzy CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - jazzy
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - jazzy
 
 # Global variables
 env:
