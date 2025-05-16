@@ -149,7 +149,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          clang-tidy ros-jazzy-ament-cmake-clang-tidy
+          libboost-all-dev libgmock-dev python3-pip clang-tidy ros-jazzy-ament-cmake-clang-tidy
 
       - name: Update rosdep database
         run: rosdep update || true
