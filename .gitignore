@@ -34,7 +34,9 @@ compile_commands.json
 *.orig
 *.rej
 *.conda
-doxygen_output/
-cross_reference/
-docs_build/
-docs_output/
+
+# Documentation artifacts
+rtest/doc/_build
+rtest/doc/html
+rtest/doc/api
+rtest/doc/xml

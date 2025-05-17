@@ -1,3 +1,5 @@
+![RTEST Logo](rtest/doc/logo.png)
+
 [![ROS 2 Jazzy CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
 
 # RTEST
@@ -19,15 +21,15 @@ This repository and tooling was initally developed as a collaboration between [B
 - Direct timer callbacks firing and simulated time control, resulting in immediate and precise time-dependent implementations testing.
 - Single-threaded, controllable test execution.
 
+## Documentation
+
+Please find detailed documentation, including concepts explanations, tutorials and examples, and detailed API reference documentation at: [RTEST Documentation](https://app.readthedocs.org/projects/rtest)
+
 ## Requirements
 
 - rclcpp
 - GoogleTest
 - ament_cmake_ros
-
-## Documentation
-
-Please find detailed documentation, including concepts explanations, tutorials and examples, and detailed API reference documentation at: [RTEST Documentation](https://app.readthedocs.org/projects/rtest)
 
 ## Quick-Start
 

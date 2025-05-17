@@ -46,10 +46,22 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.todo',
     'sphinx_rtd_theme',
     'myst_parser',
-    'breathe'
+    'breathe',
+    'exhale'
 ]
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
+
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+root_doc = 'index'
 
 # allow to build Unicode chars
 latex_engine = 'xelatex'
@@ -71,3 +83,54 @@ html_theme_options = {
     'logo_only': True,
     'display_version': True,
 }
+
+# -- MyST-Parser specific options (optional) ---------------------------------
+myst_enable_extensions = [
+    "amsmath",          # For math equations
+    "colon_fence",      # For .. directive like blocks
+    "deflist",
+    "dollarmath",       # For inline and block math
+    "html_admonition",
+    "html_image",
+    "linkify",          # Autolink URLs
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
+]
+myst_heading_anchors = 3 # Auto-generate header anchors up to level 3
+
+
+# -- Breathe Configuration ---------------------------------------------------
+# Tells Breathe where to find the Doxygen XML output.
+# The path is relative to the conf.py file.
+breathe_projects = {
+    "rtest": "xml/" # Path to Doxygen XML output folder
+}
+breathe_default_project = "rtest"
+
+
+# -- Exhale Configuration ----------------------------------------------------
+# Setup Exhale to generate API documentation from Doxygen output.
+exhale_args = {
+    # These arguments are required
+    "containmentFolder":     "./api",    # Folder in `doc/` to generate API files
+    "rootFileName":          "library_root.rst", # Root file for the API section
+    "doxygenStripFromPath":  "..",      # Strips '..' from Doxygen paths
+    # Suggested arguments
+    "createTreeView":        True,      # Create a tree view for better navigation
+    # TIP: exhaleExecutesDoxygen is True by default, you can skip this line
+    "exhaleExecutesDoxygen": True,
+    # "exhaleDoxygenStdin":    "INPUT = ../include ../src" # Basic Doxygen config
+    # It's usually better to use a Doxyfile for more complex projects:
+    "exhaleUseDoxyfile":     True,
+    # "exhaleDoxygenDoxyfile": "Doxyfile", # Path to your Doxyfile relative to conf.py
+}
+
+# Tell sphinx what the primary language being documented is.
+primary_domain = 'cpp'
+
+# Tell sphinx what the pygments highlight language should be.
+highlight_language = 'cpp'
+
+todo_include_todos = True
