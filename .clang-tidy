@@ -4,6 +4,7 @@ bugprone-*,
 modernize-use-nullptr,
 modernize-use-override,
 cppcoreguidelines-*
+-cppcoreguidelines-avoid-magic-numbers
 '
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
