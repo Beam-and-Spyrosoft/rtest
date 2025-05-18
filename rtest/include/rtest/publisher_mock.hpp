@@ -183,12 +183,7 @@ public:
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return PublisherBase::get_subscription_count() +
-<<<<<<<< HEAD:rtest/include/ros2_test_framework/publisher_mock.hpp
-             (std::static_pointer_cast<rtest::PublisherMock<MessageT>>(mock))
-               ->subscriptions_count_;
-========
              (std::static_pointer_cast<rtest::PublisherMock<MessageT>>(mock))->subscriptions_count_;
->>>>>>>> origin/main:rtest/include/rtest/publisher_mock.hpp
     }
 
     return PublisherBase::get_subscription_count();
