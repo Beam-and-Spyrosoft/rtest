@@ -58,6 +58,7 @@ jobs:
 
           if [ "$failures" -gt 1 ]; then
             echo "❌ Static analysis has found ${failures} issues. Please check the report."
+            exit 1
           else
             echo "✅ Static analysis clear, no issues found"
           fi
