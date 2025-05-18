@@ -70,11 +70,15 @@ private:
 class DisableLogs : public rtest::SingleInstance<DisableLogs>
 {
 public:
-  DisableLogs()
+  DisableLogs() : orig_log_handler_{rcutils_logging_get_output_handler()}
   {
-    orig_log_handler_ = rcutils_logging_get_output_handler();
     rcutils_logging_set_output_handler(nullptr);
   }
+
+  DisableLogs(const DisableLogs &) = delete;
+  DisableLogs(DisableLogs &&) = delete;
+  DisableLogs & operator=(const DisableLogs &) = delete;
+  DisableLogs & operator=(DisableLogs &&) = delete;
 
   ~DisableLogs() { rcutils_logging_set_output_handler(orig_log_handler_); }
 

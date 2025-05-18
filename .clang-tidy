@@ -1,4 +1,9 @@
 ---
-Checks: 'bugprone-*,modernize-use-nullptr,modernize-use-override'
+Checks: '
+bugprone-*,
+modernize-use-nullptr,
+modernize-use-override,
+cppcoreguidelines-*
+'
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
