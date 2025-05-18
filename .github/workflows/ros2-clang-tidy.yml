@@ -1,4 +1,4 @@
-name: ROS 2 Jazzy nighly build
+name: Static Code Analysis with clang-tidy
 
 on:
   push:
@@ -50,6 +50,14 @@ jobs:
           . /opt/ros/jazzy/setup.bash
           ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands.json --jobs $(nproc)
 
+      - name: Upload clang-tidy report
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-report
+          path: build/clang-tidy-report.xml
+          if-no-files-found: warn
+
       - name: Check analysis status
         if: always()
         run: |
@@ -63,10 +71,3 @@ jobs:
             echo "✅ Static analysis clear, no issues found"
           fi
 
-      - name: Upload clang-tidy report
-        if: ${{ !env.ACT && always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: clang-tidy-report
-          path: build/clang-tidy-report.xml
-          if-no-files-found: warn
