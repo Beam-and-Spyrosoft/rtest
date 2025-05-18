@@ -1,6 +1,8 @@
 name: ROS 2 Jazzy nighly build
 
 on:
+  push:
+    branches: [slci/clang-tidy]
   schedule:
     - cron: "0 0 * * *" # Nightly at midnight UTC
   workflow_dispatch:
