@@ -5,8 +5,7 @@ on:
     branches: [slci/clang-tidy]
   schedule:
     - cron: "0 0 * * *" # Nightly at midnight UTC
-  workflow_dispatch:
-    # On-demand trigger
+  workflow_dispatch: # On-demand trigger
 
 jobs:
   clang-tidy-check:
@@ -62,17 +61,6 @@ jobs:
           else
             echo "✅ Static analysis clear, no issues found"
           fi
-
-      - name: Generate JaCoCo Badge
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          jacoco-csv-file: build/jacoco/test/jacocoTestReport.csv
-          badges-directory: build/jacoco/test/html/badges
-
-      - name: Publish coverage report to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: build/jacoco/test/html
 
       - name: Upload clang-tidy report
         if: ${{ !env.ACT && always() }}
