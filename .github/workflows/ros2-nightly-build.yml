@@ -1,8 +1,6 @@
 name: ROS 2 Jazzy nighly build
 
 on:
-  push:
-    branches: [main]
   schedule:
     - cron: "0 0 * * *" # Nightly at midnight UTC
   workflow_dispatch:
