@@ -48,12 +48,12 @@ jobs:
         shell: bash
         run: |
           . /opt/ros/jazzy/setup.bash
-          ament_clang_tidy --config .clang-tidy --xunit-file $GITHUB_WORKSPACE/build/clang-tidy-report.xml $GITHUB_WORKSPACE/build/compile_commands.json --jobs $(nproc)
+          ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands.json --jobs $(nproc)
 
       - name: Check analysis status
         if: always()
         run: |
-          failures=$(tr -d '\n' < $GITHUB_WORKSPACE/build/clang-tidy-report.xml | sed -n 's/.*failures="\([0-9]\+\)".*/\1/p')
+          failures=$(grep 'failures' build/clang-tidy-report.xml | sed -E 's/.*failures="([0-9]+)".*/\1/' | head -n 1)
           failures=${failures:-0} # If nothing was found, set failures to 0
 
           if [ "$failures" -gt 1 ]; then
@@ -67,5 +67,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: clang-tidy-report
-          path: $GITHUB_WORKSPACE/build/clang-tidy-report.xml
+          path: build/clang-tidy-report.xml
           if-no-files-found: warn
