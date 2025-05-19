@@ -1,0 +1,94 @@
+name: ROS 2 Release Workflow
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release_deb_pkg:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        arch: [amd64, arm64, arm32]
+    runs-on: ${{ matrix.os }}
+    container:
+      image: osrf/ros:jazzy-desktop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: get_version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-jazzy-ament-copyright \
+          python3-bloom python3-rosdep fakeroot debhelper dh-python
+
+      - name: Update rosdep database
+        run: |
+          rosdep init || true
+          rosdep update || true
+
+      - name: Install dependencies
+        run: |
+          rosdep install --from-paths . --ignore-src -r -y || true
+
+      - name: Build and package rtest
+        shell: bash
+        run: |
+          source /opt/ros/jazzy/setup.bash
+
+          # Create directory for packages
+          mkdir -p $GITHUB_WORKSPACE/deb_packages
+
+          # Build rtest package
+          echo "Building and packaging rtest for ${{ matrix.arch }}"
+          cd rtest
+          bloom-generate rosdebian
+          fakeroot debian/rules binary
+          cd ..
+          find . -maxdepth 1 -name "*.deb" -exec cp {} $GITHUB_WORKSPACE/deb_packages/ \; || true
+
+          echo "Built packages:"
+          ls -la $GITHUB_WORKSPACE/deb_packages/
+
+      - name: Upload .deb packages as artifacts
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ros-deb-packages-${{ matrix.arch }}
+          path: deb_packages/*.deb
+          if-no-files-found: warn
+
+  create_release:
+    needs: release_deb_pkg
+    runs-on: ubuntu-24.04
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+
+      - name: List downloaded artifacts
+        run: |
+          find all-artifacts -type f | sort
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: all-artifacts/**/*.deb
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
