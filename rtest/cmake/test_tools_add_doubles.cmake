@@ -104,7 +104,7 @@ function(test_tools_add_doubles target)
       rtest::service_mock
       rtest::service_client_mock
       rtest::timer_mock
-      rtest::common
+      rtest::rtest_common
     )
 
     ament_target_dependencies(${LIB_DOUBLES_NAME}

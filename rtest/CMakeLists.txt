@@ -22,31 +22,31 @@ find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 
-# Common mocking library
-add_library(common SHARED
+# Rtest_common mocking library
+add_library(rtest_common SHARED
   src/static_registry.cpp
   src/logger_mock.cpp
 )
-add_library(${PROJECT_NAME}::common ALIAS common)
-set_property(TARGET common PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_library(${PROJECT_NAME}::rtest_common ALIAS rtest_common)
+set_property(TARGET rtest_common PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_include_directories(common PUBLIC
+target_include_directories(rtest_common PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 if(WIN32)
 MESSAGE ("WINDOWS")
-  target_compile_options(common PUBLIC
+  target_compile_options(rtest_common PUBLIC
     "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
   )
 else()
-  target_compile_options(common PUBLIC
+  target_compile_options(rtest_common PUBLIC
     "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
   )
 endif()
 
 
-ament_target_dependencies(common
+ament_target_dependencies(rtest_common
   PUBLIC rclcpp gmock_vendor
 )
 
@@ -65,7 +65,7 @@ target_include_directories(publisher_mock
 )
 
 target_link_libraries(publisher_mock INTERFACE
-  ${PROJECT_NAME}::common
+  ${PROJECT_NAME}::rtest_common
 )
 
 target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK)
@@ -81,7 +81,7 @@ target_include_directories(subscription_mock
 )
 
 target_link_libraries(subscription_mock INTERFACE
-  ${PROJECT_NAME}::common
+  ${PROJECT_NAME}::rtest_common
 )
 
 target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK)
@@ -96,7 +96,7 @@ target_include_directories(service_mock
 )
 
 target_link_libraries(service_mock INTERFACE
-  ${PROJECT_NAME}::common
+  ${PROJECT_NAME}::rtest_common
 )
 
 target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK)
@@ -110,7 +110,7 @@ target_include_directories(service_client_mock
 )
 
 target_link_libraries(service_client_mock INTERFACE
-  ${PROJECT_NAME}::common
+  ${PROJECT_NAME}::rtest_common
 )
 
 target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK)
@@ -125,7 +125,7 @@ target_include_directories(timer_mock
 )
 
 target_link_libraries(timer_mock INTERFACE
-  ${PROJECT_NAME}::common
+  ${PROJECT_NAME}::rtest_common
 )
 
 target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK)
@@ -142,7 +142,7 @@ install(DIRECTORY cmake/
 
 install(
   TARGETS
-    common
+    rtest_common
     subscription_mock
     publisher_mock
     service_mock
