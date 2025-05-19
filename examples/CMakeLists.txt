@@ -111,36 +111,45 @@ install(TARGETS
 
 if(BUILD_TESTING)
   find_package(rtest REQUIRED)
-  find_package(ament_cmake_copyright REQUIRED)
-  ament_copyright()
-  test_tools_add_doubles(publisher_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-  )
-  test_tools_add_doubles(subscriber_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-  )
-  test_tools_add_doubles(service_provider_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-      std_srvs
-  )
-  test_tools_add_doubles(service_client_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-      std_srvs
-  )
-  
-  add_subdirectory(test)
+  # Option to enable clang-tidy tests (default: disabled)
+  option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
+  if(ENABLE_CLANG_TIDY)
+    find_package(ament_lint_auto REQUIRED)
+    find_package(ament_cmake_clang_tidy REQUIRED)
+    set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
+    ament_lint_auto_find_test_dependencies()
+  else()
+    find_package(ament_cmake_copyright REQUIRED)
+    ament_copyright()
+
+    test_tools_add_doubles(publisher_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+    )
+    test_tools_add_doubles(subscriber_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+    )
+    test_tools_add_doubles(service_provider_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+        std_srvs
+    )
+    test_tools_add_doubles(service_client_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+        std_srvs
+    )
+    add_subdirectory(test)
+  endif()
 endif()
 
 ament_package()

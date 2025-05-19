@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: osrf/ros:jazzy-desktop
-      options: --user root
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +43,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     container:
       image: osrf/ros:jazzy-desktop
-      options: --user root
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,7 +65,7 @@ jobs:
         shell: bash
         run: |
           . /opt/ros/jazzy/setup.bash
-          colcon build --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_C_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
+          colcon build --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
 
       - name: Run tests
         shell: bash
@@ -133,3 +131,4 @@ jobs:
         shell: bash
         run: |
           bash ./scripts/check_coverage_thresholds.sh "${REQUIRED_LINES_COVERAGE:-0.0}" "${REQUIRED_FUNCTION_COVERAGE:-0.0}"
+

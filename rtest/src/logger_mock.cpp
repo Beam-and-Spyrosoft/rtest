@@ -38,15 +38,23 @@ void logHandler(
   (void)timestamp;
   if (LoggerMock::instance_ != nullptr) {
     std::string msg;
-    va_list args_copy;
-    va_copy(args_copy, *args);
-    size_t len = vsnprintf(nullptr, 0, format, args_copy);
-    va_end(args_copy);
+    va_list args_copy;          // NOLINT(cppcoreguidelines-pro-type-vararg)
+    va_copy(args_copy, *args);  // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+    size_t len = vsnprintf(
+      nullptr,
+      0,
+      format,
+      args_copy);       // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+    va_end(args_copy);  // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
     if (len == 0UL) {
       return;
     }
     msg.resize(len + 1);
-    vsnprintf(&msg[0], len + 1, format, *args);
+    vsnprintf(
+      &msg[0],
+      len + 1,
+      format,
+      *args);         // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
     msg.resize(len);  // remove NUL
     LoggerMock::instance_->log(static_cast<RCUTILS_LOG_SEVERITY>(severity), msg);
   }
