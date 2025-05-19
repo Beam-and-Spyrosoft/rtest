@@ -1,9 +1,7 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package rtest
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Changelog for package rtest
 
-0.1.0 (2018-05-07)
-------------------
+### 0.1.0 (2018-05-07)
+
 * Initial release of rtest package.
 * Supports running tests in ROS 2 using the Google Test framework.
 * Provides mocks for ROS 2 publishers and subscribers.

@@ -14,7 +14,7 @@ Below are the rationales, notes, and caveats for this claim, organized by each r
 ### Version Stability [1.ii]
 
 `rtest` is not at a stable version yet, i.e. `< 1.0.0`.
-The current version can be found in its [package.xml](package.xml), and its change history can be found in its [CHANGELOG](CHANGELOG.rst).
+The current version can be found in its [package.xml](package.xml), and its change history can be found in its [CHANGELOG](CHANGELOG.md).
 
 ### Public API Declaration [1.iii]
 All symbols in the installed headers are considered part of the public API.
