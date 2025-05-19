@@ -80,13 +80,34 @@ jobs:
         with:
           path: all-artifacts
 
+      - name: Prepare files for release
+        run: |
+          echo "Artifact structure:"
+          find all-artifacts -type f | sort
+          mkdir -p release-files
+          for arch_dir in all-artifacts/ros-deb-packages-*; do
+            if [ -d "$arch_dir" ]; then
+              arch=$(basename "$arch_dir" | sed 's/ros-deb-packages-//')
+              echo "Processing artifacts for $arch"
+
+              for deb in "$arch_dir"/*.deb; do
+                if [ -f "$deb" ]; then
+                  base_filename=$(basename "$deb")
+                  new_filename="${base_filename%.deb}_${arch}.deb"
+                  cp "$deb" "release-files/$new_filename"
+                  echo "Copied $deb to release-files/$new_filename"
+                fi
+              done
+            fi
+          done
+          echo "Files for release:"
+          ls -la release-files/
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           name: Release v${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: all-artifacts/**/*.deb
+          files: release-files/*.deb
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
