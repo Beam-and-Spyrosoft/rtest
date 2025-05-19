@@ -71,16 +71,32 @@ jobs:
   create_release:
     needs: release_deb_pkg
     runs-on: ubuntu-24.04
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ !env.ACT && startsWith(github.ref, 'refs/tags/') }}
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: all-artifacts
 
-      - name: List downloaded artifacts
+      - name: Debug artifact structure
         run: |
+          echo "Artifact structure:"
           find all-artifacts -type f | sort
+          mkdir -p release-files
+          for arch_dir in all-artifacts/ros-deb-packages-*; do
+            arch=$(basename "$arch_dir" | sed 's/ros-deb-packages-//')
+            for deb in "$arch_dir"/*.deb; do
+              if [ -f "$deb" ]; then
+                filename=$(basename "$deb")
+                cp "$deb" "release-files/${filename}"
+                echo "Copied $deb to release-files/${filename}"
+              fi
+            done
+          done
+          echo "Files:"
+          ls -la release-files/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -88,7 +104,7 @@ jobs:
           name: Release v${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: all-artifacts/**/*.deb
+          files: release-files/*.deb
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
