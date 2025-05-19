@@ -6,4 +6,4 @@ sphinx-tabs
 breathe==4.36.*
 myst-parser==4.0.*
 exhale==0.3.*
-linkify-it-py
+linkify-it-py==2.0.*
