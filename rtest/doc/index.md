@@ -24,23 +24,22 @@ It is compatible with the ROS 2 build system and can be used with any ROS 2 pack
 **RTEST** is open source and available under the Apache 2.0 license.
 
 
-Getting started
----------------
+## Getting started
 
 [Installation](Installation/index.md)
 
   - Integrating RTEST with your ROS 2 package tests
 
 [Tutorials](Tutorials/index.md)
-* :doc:`Tutorials <Tutorials/index>`
 
   - The best place to start for new users!
-  - Hands-on sample projects that help you build a progression of necessary skills
+  - Hands-on sample unit tests that help you write you ow test
 
 
-Concepts
---------
+[Concepts](Concepts/index.md)
 
-* :doc:`Concepts <Concepts/index>`
+  - Detailed explanation of underlying concepts and mechanisms
 
-  - Instructions to set up ROS 2 for the first time
+[C++ API](cpp_api_docs.md)
+
+  - Detailed API documentation

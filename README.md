@@ -28,7 +28,7 @@ This repository and tooling was initally developed as a collaboration between [B
 
 ## Documentation
 
-Please find detailed documentation, including concepts explanations, tutorials and examples, and detailed API reference documentation at: [RTEST Documentation](https://app.readthedocs.org/projects/rtest)
+Complete documentation: [RTEST Documentation](https://rtest.readthedocs.io/en/latest/)
 
 ## Requirements
 

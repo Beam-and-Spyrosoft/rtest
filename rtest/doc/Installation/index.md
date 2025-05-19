@@ -12,10 +12,7 @@ Binaries are only created for the Tier 1 operating systems listed in [REP-2000](
 
 We provide ROS 2 binary packages for the following platforms:
 
-- Ubuntu 24.04 (Focal Fossa)
-    - deb packages
-    - binary archive
-
+- [Ubuntu 24.04 (Noble Numbat)](https://github.com/Beam-and-Spyrosoft/rtest/releases/)
 
 
 ## Install From Source

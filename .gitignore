@@ -40,3 +40,6 @@ rtest/doc/_build
 rtest/doc/html
 rtest/doc/api
 rtest/doc/xml
+
+# draw.io
+*.drawio.bkp
