@@ -121,36 +121,35 @@ if(BUILD_TESTING)
   else()
     find_package(ament_cmake_copyright REQUIRED)
     ament_copyright()
-  endif()
 
-  test_tools_add_doubles(publisher_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-  )
-  test_tools_add_doubles(subscriber_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-  )
-  test_tools_add_doubles(service_provider_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-      std_srvs
-  )
-  test_tools_add_doubles(service_client_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      std_msgs
-      std_srvs
-  )
-  
-  add_subdirectory(test)
+    test_tools_add_doubles(publisher_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+    )
+    test_tools_add_doubles(subscriber_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+    )
+    test_tools_add_doubles(service_provider_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+        std_srvs
+    )
+    test_tools_add_doubles(service_client_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        std_msgs
+        std_srvs
+    )
+    add_subdirectory(test)
+  endif()
 endif()
 
 ament_package()
