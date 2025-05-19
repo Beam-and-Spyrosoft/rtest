@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: osrf/ros:jazzy-desktop
-      options: --user root
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,7 +43,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     container:
       image: osrf/ros:jazzy-desktop
-      options: --user root
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,7 +52,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          libboost-all-dev libgmock-dev python3-pip lcov gcovr
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-jazzy-ament-copyright
 
       - name: Update rosdep database
         run: rosdep update || true
@@ -139,7 +137,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: osrf/ros:jazzy-desktop
-      options: --user root
     steps:
       - uses: actions/checkout@v4
         with:
