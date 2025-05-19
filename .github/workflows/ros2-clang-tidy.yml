@@ -1,0 +1,71 @@
+name: Static Code Analysis with clang-tidy
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Nightly at midnight UTC
+  workflow_dispatch: # On-demand trigger
+
+jobs:
+  clang-tidy-check:
+    name: Static Code Analysis with clang-tidy
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        arch: [amd64]
+    runs-on: ${{ matrix.os }}
+    container:
+      image: osrf/ros:jazzy-desktop
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
+          libboost-all-dev libgmock-dev ros-jazzy-ament-clang-tidy
+
+      - name: Update rosdep database
+        run: rosdep update || true
+
+      - name: Install dependencies
+        run: |
+          rosdep install --from-paths . --ignore-src -r -y
+
+      - name: Build project and generate compile_commands.json
+        shell: bash
+        run: |
+          . /opt/ros/jazzy/setup.bash
+          colcon build --event-handlers console_cohesion+ --cmake-args -DBUILD_TESTING=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On
+
+      - name: Run clang-tidy
+        shell: bash
+        run: |
+          . /opt/ros/jazzy/setup.bash
+          ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands.json --jobs $(nproc)
+
+      - name: Upload clang-tidy report
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-report
+          path: build/clang-tidy-report.xml
+          if-no-files-found: warn
+
+      - name: Check analysis status
+        if: always()
+        run: |
+          failures=$(grep 'failures' build/clang-tidy-report.xml | sed -E 's/.*failures="([0-9]+)".*/\1/' | head -n 1)
+          failures=${failures:-0} # If nothing was found, set failures to 0
+
+          if [ "$failures" -gt 1 ]; then
+            echo "❌ Static analysis has found ${failures} issues. Please check the report."
+            exit 1
+          else
+            echo "✅ Static analysis clear, no issues found"
+          fi
+
