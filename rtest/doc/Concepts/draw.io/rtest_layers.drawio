@@ -16,7 +16,7 @@
         <mxCell id="8KfAuH7SRfaGY1whr0Hw-4" value="rclcpp&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;C++ API&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#2980B9;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;fontFamily=Helvetica;" parent="1" vertex="1">
           <mxGeometry x="955" y="304.37" width="220" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="8KfAuH7SRfaGY1whr0Hw-5" value="ROS 2&lt;div&gt;Node&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#AEBE80;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;fontFamily=Helvetica;" parent="1" vertex="1">
+        <mxCell id="8KfAuH7SRfaGY1whr0Hw-5" value="ROS 2&lt;div&gt;Node&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#739F6B;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;fontFamily=Helvetica;" parent="1" vertex="1">
           <mxGeometry x="955" y="134.37" width="220" height="85" as="geometry" />
         </mxCell>
         <mxCell id="8KfAuH7SRfaGY1whr0Hw-6" value="rcl&lt;div&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;ROS Core Library&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#ABABAB;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;" parent="1" vertex="1">
@@ -28,7 +28,7 @@
         <mxCell id="8KfAuH7SRfaGY1whr0Hw-8" value="DDS / Zenoh / ..&lt;br&gt;&lt;div&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Middleware Implementation&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#ABABAB;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;" parent="1" vertex="1">
           <mxGeometry x="955" y="664.37" width="220" height="85" as="geometry" />
         </mxCell>
-        <mxCell id="8KfAuH7SRfaGY1whr0Hw-9" value="ROS 2&lt;div&gt;Node Test&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#AEBE80;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;fontFamily=Helvetica;" parent="1" vertex="1">
+        <mxCell id="8KfAuH7SRfaGY1whr0Hw-9" value="ROS 2&lt;div&gt;Node Test&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;fillColor=#739F6B;fontSize=24;fontColor=#FFFFFF;align=center;gradientColor=none;gradientDirection=east;verticalAlign=middle;shadow=1;fontFamily=Helvetica;" parent="1" vertex="1">
           <mxGeometry x="1375" y="134.37" width="220" height="85" as="geometry" />
         </mxCell>
         <mxCell id="8KfAuH7SRfaGY1whr0Hw-10" value="" style="endArrow=blockThin;html=1;rounded=0;shadow=1;hachureGap=4;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=11;fontColor=default;labelBackgroundColor=default;flowAnimation=0;targetPerimeterSpacing=0;curved=0;endFill=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8KfAuH7SRfaGY1whr0Hw-4" target="8KfAuH7SRfaGY1whr0Hw-6" edge="1">
