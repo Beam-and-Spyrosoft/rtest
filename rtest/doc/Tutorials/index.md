@@ -1,9 +1,8 @@
 # Tutorials
 
-The tutorials are a collection of step-by-step instructions meant to help you get started with the ROS 2 Testing Framework.
-They cover a variety of topics, from basic usage to advanced features, and are designed to be easy to follow.
+These step-by-step tutorials will help you get started with RTEST. They cover various testing scenarios and are designed to be followed in sequence.
 
-The best way to approach the tutorials is to walk through them for the first time in order, as they build off of each other and are not meant to be comprehensive documentation.
+## Tutorial Sequence
 
 ```{toctree}
 ---
@@ -17,7 +16,33 @@ Clock-Test
 Service-Test
 ```
 
+## Quick Start Example
 
-## Examples
+Here's a simple example of testing a ROS 2 publisher node:
 
-All examples code can be found under [C++ minimal examples](https://github.com/Beam-and-Spyrosoft/rtest/tree/main/examples/test)
+```cpp
+#include "rtest/rtest.hpp"
+#include "my_package/publisher_node.hpp"
+
+TEST(PublisherNodeTest, PublishesCorrectMessage) {
+  // Create test environment
+  auto test_env = rtest::TestEnvironment::create();
+  
+  // Create node under test
+  auto node = std::make_shared<my_package::PublisherNode>();
+  
+  // Verify publisher was created
+  auto publisher = test_env->get_publisher_handle("/test_topic");
+  ASSERT_NE(publisher, nullptr);
+  
+  // Trigger publication and verify message
+  node->publish_message();
+  auto message = publisher->get_last_published_message();
+  ASSERT_NE(message, nullptr);
+  EXPECT_EQ(message->data, "expected data");
+}
+```
+
+## Examples Repository
+
+All example code can be found in the [C++ minimal examples](https://github.com/Beam-and-Spyrosoft/rtest/tree/main/examples/test) directory.
