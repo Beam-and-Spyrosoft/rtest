@@ -11,13 +11,13 @@ Binaries are available for the Tier 1 operating systems listed in [REP-2000](htt
 ### Using apt (recommended)
 
 ```bash
-# Add the repository
-sudo apt update && sudo apt install -y software-properties-common
-sudo add-apt-repository ppa:beam-and-spyrosoft/rtest
-sudo apt update
+$ # Add the repository
+$ sudo apt update && sudo apt install -y software-properties-common
+$ sudo add-apt-repository ppa:beam-and-spyrosoft/rtest
+$ sudo apt update
 
-# Install RTEST
-sudo apt install ros-jazzy-rtest
+$ # Install RTEST
+$ sudo apt install ros-jazzy-rtest
 ```
 
 ## Install From Source
@@ -25,22 +25,22 @@ sudo apt install ros-jazzy-rtest
 1. **Clone the RTEST repository**:
 
 ```bash
-cd ~/ros2_ws/src
-git clone https://github.com/Beam-and-Spyrosoft/rtest.git
+$ cd ~/ros2_ws/src
+$ git clone https://github.com/Beam-and-Spyrosoft/rtest.git
 ```
 
 2. **Build the package**:
 
 ```bash
-cd ~/ros2_ws
-colcon build --packages-select rtest
+$ cd ~/ros2_ws
+$ colcon build --packages-select rtest
 ```
 
 3. **Verify installation**:
 
 ```bash
-source ~/ros2_ws/install/setup.bash
-colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+$ source ~/ros2_ws/install/setup.bash
+$ colcon test --packages-select rtest_examples --event-handlers console_cohesion+
 ```
 
 ## Adding RTEST to Your Package

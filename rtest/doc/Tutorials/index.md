@@ -21,28 +21,30 @@ Service-Test
 Here's a simple example of testing a ROS 2 publisher node:
 
 ```cpp
-#include "rtest/rtest.hpp"
 #include "my_package/publisher_node.hpp"
 
-TEST(PublisherNodeTest, PublishesCorrectMessage) {
-  // Create test environment
-  auto test_env = rtest::TestEnvironment::create();
+TEST(PublisherNodeTest, PublishesExpectedMessage)
+{
+  auto node = std::make_shared<PublisherNode>();
   
-  // Create node under test
-  auto node = std::make_shared<my_package::PublisherNode>();
+  /// Retrieve the publisher created by the Node
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
   
-  // Verify publisher was created
-  auto publisher = test_env->get_publisher_handle("/test_topic");
-  ASSERT_NE(publisher, nullptr);
+  // Check that the Node actually created the Publisher with topic: "/test_topic"
+  ASSERT_TRUE(publisher);
   
-  // Trigger publication and verify message
-  node->publish_message();
-  auto message = publisher->get_last_published_message();
-  ASSERT_NE(message, nullptr);
-  EXPECT_EQ(message->data, "expected data");
+  /// Set up expectation that the Node will publish a message when triggered
+  auto expectedMsg = std_msgs::msg::String();
+  expectedMsg.set__data("test_msg");
+  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  
+  // Trigger the node
+  node->publishMsg();
 }
 ```
 
 ## Examples Repository
 
 All example code can be found in the [C++ minimal examples](https://github.com/Beam-and-Spyrosoft/rtest/tree/main/examples/test) directory.
+
+For a more comprehensive example, see the [publisher/subscriber tests](https://github.com/Beam-and-Spyrosoft/rtest/blob/main/examples/test/pub_sub_tests.cpp).

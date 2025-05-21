@@ -15,6 +15,29 @@ The tools in this repository address challenges posed by ROS 2's inter-process c
 
 This framework enables writing reliable, fully repeatable unit tests (and more) for C++ ROS 2 implementations, eliminating the issue of so-called "flaky tests".
 
+## Quick Example
+
+```cpp
+TEST(PublisherNodeTest, PublishesExpectedMessage)
+{
+  auto node = std::make_shared<PublisherNode>();
+  
+  // Retrieve the publisher created by the Node
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+  
+  // Check that the Node actually created the Publisher
+  ASSERT_TRUE(publisher);
+  
+  // Set up expectation that the Node will publish a message when triggered
+  auto expectedMsg = std_msgs::msg::String();
+  expectedMsg.set__data("test_msg");
+  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  
+  // Trigger the node
+  node->publishMsg();
+}
+```
+
 ## Contributors
 This repository and tooling was initally developed as a collaboration between [BEAM](https://beam.global/) and [Spyrosoft](https://spyro-soft.com/); and is maintained as a collaboration.
 
