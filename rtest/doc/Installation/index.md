@@ -33,7 +33,7 @@ $ git clone https://github.com/Beam-and-Spyrosoft/rtest.git
 
 ```bash
 $ cd ~/ros2_ws
-$ colcon build --packages-select rtest
+$ colcon build
 ```
 
 3. **Verify installation**:
