@@ -22,21 +22,27 @@ $ sudo apt install ros-jazzy-rtest
 
 ## Install From Source
 
-1. **Clone the RTEST repository**:
+1. **Create a ROS 2 workspace (if you don't have one already)**:
+
+```bash
+$ mkdir -p ~/ros2_ws/src
+```
+
+2. **Clone the RTEST repository**:
 
 ```bash
 $ cd ~/ros2_ws/src
 $ git clone https://github.com/Beam-and-Spyrosoft/rtest.git
 ```
 
-2. **Build the package**:
+3. **Build the package**:
 
 ```bash
 $ cd ~/ros2_ws
 $ colcon build
 ```
 
-3. **Verify installation**:
+4. **Verify installation**:
 
 ```bash
 $ source ~/ros2_ws/install/setup.bash
