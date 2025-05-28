@@ -60,11 +60,15 @@
 #include "tracetools/tracetools.h"
 
 // Helper to detect if a type has _data_type
-template<typename T, typename = void>
-struct has_data_type : std::false_type {};
+template <typename T, typename = void>
+struct has_data_type : std::false_type
+{
+};
 
-template<typename T>
-struct has_data_type<T, std::void_t<typename T::_data_type>> : std::true_type {};
+template <typename T>
+struct has_data_type<T, std::void_t<typename T::_data_type>> : std::true_type
+{
+};
 
 namespace rclcpp
 {
