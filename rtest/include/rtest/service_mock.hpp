@@ -137,7 +137,7 @@ public:
   void post_init_setup()
   {
     rtest::StaticMocksRegistry::instance().template registerService<ServiceT>(
-      fully_qualified_name_, service_name_, this->template weak_from_this());
+      fully_qualified_name_, service_name_, this->weak_from_this());
   }
 
   std::shared_ptr<void> create_request() override
