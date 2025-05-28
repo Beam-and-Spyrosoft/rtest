@@ -1,0 +1,350 @@
+// Copyright 2025 Spyrosoft Limited.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// @file      action_client_mock.hpp
+// @author    Mariusz Szczepanik (mua@spyro-soft.com)
+// @date      2025-05-28
+
+#pragma once
+
+#include <gmock/gmock.h>
+#include <rtest/static_registry.hpp>
+#include <rtest/action_client_base.hpp>
+#include "rclcpp/node_interfaces/node_base_interface.hpp"
+#include "rclcpp/node_interfaces/node_graph_interface.hpp"
+#include "rclcpp/node_interfaces/node_logging_interface.hpp"
+#include <future>
+
+#include "rcl_action/action_client.h"
+#include "rcl_action/types.h"
+
+#include "rclcpp/macros.hpp"
+
+#define TEST_TOOLS_SMART_PTR_DEFINITIONS(...) \
+  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__)      \
+  __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)        \
+  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)
+
+// Forward declarations
+namespace rtest
+{
+template <typename ActionT>
+class ActionClientMock;
+}
+
+namespace rclcpp_action
+{
+template <typename ActionT>
+class ClientGoalHandle
+{
+public:
+  using Result = typename ActionT::Result;
+  using Feedback = typename ActionT::Feedback;
+  using Goal = typename ActionT::Goal;
+  using SharedPtr = std::shared_ptr<ClientGoalHandle>;
+  using WeakPtr = std::weak_ptr<ClientGoalHandle>;
+
+  struct WrappedResult
+  {
+    ResultCode code;
+    std::shared_ptr<Result> result;
+    GoalUUID goal_id;
+  };
+
+  using FeedbackCallback = std::function<void(SharedPtr, std::shared_ptr<const Feedback>)>;
+  using ResultCallback = std::function<void(const WrappedResult &)>;
+
+  FeedbackCallback feedback_callback;
+  ResultCallback result_callback;
+
+  GoalUUID get_goal_id() const { return goal_id_; }
+  bool is_invalidated() const { return false; }
+  std::shared_future<WrappedResult> async_get_result()
+  {
+    std::promise<WrappedResult> p;
+    WrappedResult result;
+    result.code = ResultCode::SUCCEEDED;
+    result.result = std::make_shared<Result>();
+    result.goal_id = goal_id_;
+    p.set_value(result);
+    return p.get_future().share();
+  }
+  void set_result_callback(ResultCallback cb) { result_callback = cb; }
+  void set_feedback_callback(FeedbackCallback cb) { feedback_callback = cb; }
+  bool set_result_awareness(bool aware)
+  {
+    (void)aware;
+    return false;
+  }
+  void call_feedback_callback(SharedPtr handle, std::shared_ptr<const Feedback> feedback)
+  {
+    if (feedback_callback)
+      feedback_callback(handle, feedback);
+  }
+  void set_result(const WrappedResult & result) { (void)result; }
+  void invalidate(std::exception_ptr ex) { (void)ex; }
+  void set_status(int status) { (void)status; }
+
+private:
+  GoalUUID goal_id_;
+};
+
+template <typename ActionT>
+class Client : public ClientBase, public std::enable_shared_from_this<Client<ActionT>>
+{
+public:
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(Client<ActionT>)
+  using Goal = typename ActionT::Goal;
+  using Feedback = typename ActionT::Feedback;
+  using Result = typename ActionT::Result;
+  using GoalHandle = ClientGoalHandle<ActionT>;
+  using GoalHandleSharedPtr = typename GoalHandle::SharedPtr;
+  using WrappedResult = typename GoalHandle::WrappedResult;
+  using GoalResponseCallback = std::function<void(GoalHandleSharedPtr)>;
+  using FeedbackCallback = typename GoalHandle::FeedbackCallback;
+  using ResultCallback = typename GoalHandle::ResultCallback;
+  using CancelRequest = typename ActionT::Impl::CancelGoalService::Request;
+  using CancelResponse = typename ActionT::Impl::CancelGoalService::Response;
+  using CancelCallback = std::function<void(typename CancelResponse::SharedPtr)>;
+
+  struct SendGoalOptions
+  {
+    SendGoalOptions()
+    : goal_response_callback(nullptr), feedback_callback(nullptr), result_callback(nullptr)
+    {
+    }
+    GoalResponseCallback goal_response_callback;
+    FeedbackCallback feedback_callback;
+    ResultCallback result_callback;
+  };
+
+  Client(
+    rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base,
+    rclcpp::node_interfaces::NodeGraphInterface::SharedPtr node_graph,
+    rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging,
+    const std::string & action_name,
+    const rcl_action_client_options_t & options)
+  : node_base_(node_base), action_name_(action_name)
+  {
+    (void)node_graph;
+    (void)node_logging;
+    (void)options;
+    rtest::StaticMocksRegistry::instance().registerLazyInitClient(
+      this, node_base_->get_fully_qualified_name(), action_name_, [this]() {
+        this->post_init_setup();
+      });
+  }
+
+  ~Client() { rtest::StaticMocksRegistry::instance().removeLazyInitClient(this); }
+
+  void post_init_setup()
+  {
+    rtest::StaticMocksRegistry::instance().registerActionClient<ActionT>(
+      node_base_->get_fully_qualified_name(), action_name_, this->shared_from_this());
+  }
+
+  bool action_server_is_ready() const
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(const_cast<Client *>(this)).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)
+        ->action_server_is_ready();
+    }
+    return false;
+  }
+
+  std::shared_future<WrappedResult> async_get_result(const GoalHandleSharedPtr & goal_handle)
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_get_result(
+        goal_handle);
+    }
+    std::promise<WrappedResult> promise;
+    WrappedResult result;
+    result.code = ResultCode::SUCCEEDED;
+    result.result = std::make_shared<Result>();
+    promise.set_value(result);
+    return promise.get_future().share();
+  }
+
+  std::shared_future<WrappedResult> async_get_result(
+    GoalHandleSharedPtr goal_handle,
+    ResultCallback result_callback = nullptr)
+  {
+    if (result_callback) {
+      goal_handle->set_result_callback(result_callback);
+    }
+    return async_get_result(goal_handle);
+  }
+
+  std::shared_future<GoalHandleSharedPtr> async_send_goal(
+    const Goal & goal,
+    const SendGoalOptions & options)
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_send_goal(
+        goal, options);
+    }
+    std::promise<GoalHandleSharedPtr> promise;
+    promise.set_value(nullptr);
+    return promise.get_future().share();
+  }
+
+  std::shared_future<WrappedResult> async_cancel_all_goals()
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_all_goals();
+    }
+    std::promise<WrappedResult> promise;
+    WrappedResult result;
+    result.code = ResultCode::SUCCEEDED;
+    result.result = std::make_shared<Result>();
+    promise.set_value(result);
+    return promise.get_future().share();
+  }
+
+  std::shared_future<typename CancelResponse::SharedPtr> async_cancel_goals_before(
+    const rclcpp::Time & stamp,
+    CancelCallback cancel_callback = nullptr)
+  {
+    (void)stamp;
+    (void)cancel_callback;
+    std::promise<typename CancelResponse::SharedPtr> promise;
+    auto response = std::make_shared<CancelResponse>();
+    promise.set_value(response);
+    return promise.get_future().share();
+  }
+
+  void stop_callbacks(GoalHandleSharedPtr goal_handle)
+  {
+    if (goal_handle) {
+      goal_handle->set_feedback_callback(FeedbackCallback());
+      goal_handle->set_result_callback(ResultCallback());
+    }
+    std::lock_guard<std::recursive_mutex> guard(goal_handles_mutex_);
+    auto it = goal_handles_.find(goal_handle->get_goal_id());
+    if (it != goal_handles_.end()) {
+      goal_handles_.erase(it);
+    }
+  }
+
+  void stop_callbacks(const GoalUUID & goal_id)
+  {
+    GoalHandleSharedPtr goal_handle;
+    {
+      std::lock_guard<std::recursive_mutex> guard(goal_handles_mutex_);
+      auto it = goal_handles_.find(goal_id);
+      if (it != goal_handles_.end()) {
+        goal_handle = it->second.lock();
+      }
+    }
+    if (goal_handle) {
+      stop_callbacks(goal_handle);
+    }
+  }
+
+private:
+  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;
+  std::string action_name_;
+  std::map<GoalUUID, typename GoalHandle::WeakPtr> goal_handles_;
+  std::recursive_mutex goal_handles_mutex_;
+};
+}  // namespace rclcpp_action
+
+namespace rtest
+{
+template <typename ActionT>
+class ActionClientMock : public MockBase
+{
+public:
+  using Goal = typename ActionT::Goal;
+  using GoalHandle = typename rclcpp_action::ClientGoalHandle<ActionT>;
+  using GoalHandleSharedPtr = typename GoalHandle::SharedPtr;
+  using WrappedResult = typename GoalHandle::WrappedResult;
+  using SendGoalOptions = typename rclcpp_action::Client<ActionT>::SendGoalOptions;
+
+  explicit ActionClientMock(rclcpp_action::ClientBase * client) : client_(client) {}
+  ~ActionClientMock() { StaticMocksRegistry::instance().detachMock(client_); }
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionClientMock<ActionT>)
+
+  MOCK_METHOD(
+    std::shared_future<GoalHandleSharedPtr>,
+    async_send_goal,
+    (const Goal &, const SendGoalOptions &),
+    ());
+  MOCK_METHOD(
+    std::shared_future<WrappedResult>,
+    async_get_result,
+    (const GoalHandleSharedPtr &),
+    ());
+  MOCK_METHOD(
+    std::shared_future<WrappedResult>,
+    async_cancel_goal,
+    (const GoalHandleSharedPtr &),
+    ());
+  MOCK_METHOD(std::shared_future<WrappedResult>, async_cancel_all_goals, (), ());
+  MOCK_METHOD(bool, action_server_is_ready, (), ());
+
+  void simulate_feedback(
+    const GoalHandleSharedPtr & goal_handle,
+    const typename ActionT::Feedback & feedback)
+  {
+    if (goal_handle && goal_handle->feedback_callback) {
+      auto feedback_msg = std::make_shared<const typename ActionT::Feedback>(feedback);
+      goal_handle->feedback_callback(goal_handle, feedback_msg);
+    }
+  }
+
+  void simulate_result(const GoalHandleSharedPtr & goal_handle, const WrappedResult & result)
+  {
+    if (goal_handle && goal_handle->result_callback) {
+      goal_handle->result_callback(result);
+    }
+  }
+
+private:
+  rclcpp_action::ClientBase * client_{nullptr};
+};
+
+template <typename ActionT>
+std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
+  const std::string & fullyQualifiedNodeName,
+  const std::string & actionName)
+{
+  std::shared_ptr<ActionClientMock<ActionT>> client_mock{};
+  auto client_base =
+    StaticMocksRegistry::instance().getActionClient(fullyQualifiedNodeName, actionName).lock();
+  if (client_base) {
+    if (StaticMocksRegistry::instance().getMock(client_base.get()).lock()) {
+      std::cerr << "WARNING: ActionClientMock already attached\n";
+    } else {
+      client_mock = std::make_shared<ActionClientMock<ActionT>>(client_base.get());
+      StaticMocksRegistry::instance().attachMock(client_base.get(), client_mock);
+    }
+  }
+  return client_mock;
+}
+
+template <typename ActionT, typename NodeT>
+std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
+  const std::shared_ptr<NodeT> & node,
+  const std::string & actionName)
+{
+  return findActionClient<ActionT>(node->get_fully_qualified_name(), actionName);
+}
+}  // namespace rtest

@@ -192,7 +192,7 @@ public:
 
   void post_init_setup()
   {
-    rtest::StaticMocksRegistry::instance().template registerServiceClient<ServiceT>(
+    rtest::StaticMocksRegistry::instance().registerServiceClient<ServiceT>(
       fully_qualified_name_, service_name_, this->weak_from_this());
   }
 

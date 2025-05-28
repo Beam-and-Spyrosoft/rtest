@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(rtest_examples 
-  LANGUAGES CXX
+  LANGUAGES C CXX
   VERSION 0.1.0
 )
 
@@ -19,9 +19,19 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
+find_package(rosidl_default_generators REQUIRED)
+find_package(Threads REQUIRED)
+
+# Generate action interfaces
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "action/MoveRobot.action"
+)
+
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 
 # Publisher component
 add_library(publisher_component SHARED src/publisher.cpp)
@@ -82,6 +92,46 @@ ament_target_dependencies(service_client_component
 )
 rclcpp_components_register_nodes(service_client_component "test_composition::ServiceClient")
 
+
+# Action server component
+add_library(action_server_component SHARED src/action_server.cpp)
+target_compile_definitions(action_server_component PRIVATE "COMPOSITION_BUILDING_DLL")
+target_include_directories(action_server_component PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Link with generated action interfaces and threads
+target_link_libraries(action_server_component ${cpp_typesupport_target} Threads::Threads)
+ament_target_dependencies(action_server_component
+  rclcpp
+  rclcpp_components
+  rclcpp_action
+  std_msgs
+  std_srvs
+)
+rclcpp_components_register_nodes(action_server_component "test_composition::ActionServer")
+
+# Action client component
+add_library(action_client_component SHARED src/action_client.cpp)
+target_compile_definitions(action_client_component PRIVATE "COMPOSITION_BUILDING_DLL")
+target_include_directories(action_client_component PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Link with generated action interfaces and threads
+target_link_libraries(action_client_component ${cpp_typesupport_target} Threads::Threads)
+ament_target_dependencies(action_client_component
+  rclcpp
+  rclcpp_components
+  rclcpp_action
+  std_msgs
+  std_srvs
+)
+rclcpp_components_register_nodes(action_client_component "test_composition::ActionClient")
+
+
 # Manual/static Node composition
 add_executable(manual_composition src/manual_composition.cpp)
 target_link_libraries(manual_composition
@@ -89,6 +139,9 @@ target_link_libraries(manual_composition
   subscriber_component
   service_provider_component
   service_client_component
+  action_server_component
+  action_client_component
+  ${cpp_typesupport_target}
 )
 ament_target_dependencies(manual_composition
   rclcpp
@@ -99,6 +152,8 @@ install(TARGETS
   subscriber_component
   service_provider_component
   service_client_component
+  action_server_component
+  action_client_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -148,6 +203,24 @@ if(BUILD_TESTING)
         std_msgs
         std_srvs
     )
+    test_tools_add_doubles(action_server_component
+    AMENT_DEPENDENCIES
+      rclcpp
+      rclcpp_components
+      rclcpp_action
+      std_msgs
+      std_srvs
+    )
+    target_link_libraries(action_server_component_test_doubles ${cpp_typesupport_target})
+    test_tools_add_doubles(action_client_component
+      AMENT_DEPENDENCIES
+        rclcpp
+        rclcpp_components
+        rclcpp_action
+        std_msgs
+        std_srvs
+    )
+    target_link_libraries(action_client_component_test_doubles ${cpp_typesupport_target})
     add_subdirectory(test)
   endif()
 endif()

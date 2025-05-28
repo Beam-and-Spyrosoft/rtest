@@ -115,7 +115,7 @@ public:
     const std::shared_ptr<typename ServiceT::Request>,
     std::shared_ptr<typename ServiceT::Response>)>;
 
-  TEST_TOOLS_SMART_PTR_DEFINITIONS(Service)
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(Service<ServiceT>)
 
   Service(
     std::shared_ptr<rcl_node_t> node_handle,
@@ -136,7 +136,7 @@ public:
   /// Called after construction to continue setup that requires shared_from_this().
   void post_init_setup()
   {
-    rtest::StaticMocksRegistry::instance().template registerService<ServiceT>(
+    rtest::StaticMocksRegistry::instance().registerService<ServiceT>(
       fully_qualified_name_, service_name_, this->weak_from_this());
   }
 

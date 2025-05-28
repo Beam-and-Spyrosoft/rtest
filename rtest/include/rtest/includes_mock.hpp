@@ -46,3 +46,13 @@
 #ifdef RTEST_TIMER_MOCK
 #include <rtest/create_timer_mock.hpp>
 #endif
+
+#ifdef RTEST_ACTION_SERVER_MOCK
+#include <rtest/action_server_base.hpp>
+#include <rtest/action_server_mock.hpp>
+#endif
+
+#ifdef RTEST_ACTION_CLIENT_MOCK
+#include <rtest/action_client_base.hpp>
+#include <rtest/action_client_mock.hpp>
+#endif
