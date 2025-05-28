@@ -33,6 +33,7 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <type_traits>
 
 #include "rcl/error_handling.h"
 #include "rcl/subscription.h"
@@ -57,6 +58,17 @@
 #include "rclcpp/waitable.hpp"
 #include "rclcpp/topic_statistics/subscription_topic_statistics.hpp"
 #include "tracetools/tracetools.h"
+
+// Helper to detect if a type has _data_type
+template <typename T, typename = void>
+struct has_data_type : std::false_type
+{
+};
+
+template <typename T>
+struct has_data_type<T, std::void_t<typename T::_data_type>> : std::true_type
+{
+};
 
 namespace rclcpp
 {
@@ -210,6 +222,23 @@ public:
   std::shared_ptr<rclcpp::SerializedMessage> create_serialized_message() override
   {
     return message_memory_strategy_->borrow_serialized_message();
+  }
+
+  // Only enabled for std_msgs which have _data_type and data member
+  template <typename T = MessageT>
+  typename std::enable_if<has_data_type<T>::value>::type handle_message(
+    const typename T::_data_type & data)
+  {
+    auto sptr = std::make_shared<MessageT>();
+    sptr->set__data(data);
+    handle_message(sptr);
+  }
+
+  void handle_message(MessageT & message)
+  {
+    // The message is referenced from outside, so make non-deleting shared_ptr
+    auto sptr = std::shared_ptr<MessageT>(&message, [](MessageT * msg) { (void)msg; });
+    handle_message(sptr);
   }
 
   void handle_message(std::shared_ptr<MessageT> message)
