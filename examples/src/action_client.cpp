@@ -82,6 +82,11 @@ void ActionClient::feedback_callback(
     feedback->current_x,
     feedback->current_y,
     feedback->distance_remaining);
+  {
+    std::lock_guard<std::mutex> lock(feedback_mutex_);
+    last_feedback_ = *feedback;
+    feedback_received_ = true;
+  }
 }
 
 void ActionClient::result_callback(const GoalHandleMoveRobot::WrappedResult & result)
@@ -110,6 +115,18 @@ void ActionClient::result_callback(const GoalHandleMoveRobot::WrappedResult & re
       RCLCPP_ERROR(get_logger(), "Unknown result code");
       break;
   }
+}
+
+bool ActionClient::has_received_feedback() const
+{
+  std::lock_guard<std::mutex> lock(feedback_mutex_);
+  return feedback_received_;
+}
+
+ActionClient::MoveRobot::Feedback ActionClient::get_last_feedback() const
+{
+  std::lock_guard<std::mutex> lock(feedback_mutex_);
+  return last_feedback_;
 }
 
 }  // namespace test_composition

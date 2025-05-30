@@ -38,6 +38,8 @@ public:
   bool has_active_goal() const { return current_goal_handle_ != nullptr; }
   bool get_last_result_success() const { return last_result_success_; }
   std::string get_last_result_message() const { return last_result_message_; }
+  bool has_received_feedback() const;
+  MoveRobot::Feedback get_last_feedback() const;
 
 private:
   void goal_response_callback(const GoalHandleMoveRobot::SharedPtr & goal_handle);
@@ -49,6 +51,9 @@ private:
   GoalHandleMoveRobot::SharedPtr current_goal_handle_;
   bool last_result_success_{false};
   std::string last_result_message_;
+  mutable std::mutex feedback_mutex_;
+  MoveRobot::Feedback last_feedback_;
+  bool feedback_received_{false};
 };
 
 }  // namespace test_composition
