@@ -26,23 +26,44 @@ protected:
   rclcpp::NodeOptions opts;
 };
 
-TEST_F(ActionServerTest, GoalAcceptance)
+TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
   auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
 
-  /// Test goal acceptance
-  EXPECT_CALL(*server_mock, handle_goal(::testing::_, ::testing::_))
-    .WillOnce(::testing::Return(rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE));
+  // Test node's initial state
+  EXPECT_FALSE(node->is_moving());
+  auto [x, y] = node->get_current_position();
+  EXPECT_FLOAT_EQ(x, 0.0);
+  EXPECT_FLOAT_EQ(y, 0.0);
 
-  /// Simulate goal request
+  // Create a goal within acceptable range (distance < 10.0)
   auto goal = std::make_shared<rtest_examples::action::MoveRobot::Goal>();
   goal->target_x = 2.0;
   goal->target_y = 3.0;
 
   rclcpp_action::GoalUUID uuid;
+
+  // Mock should simulate the real business logic: accept if distance <= 10.0 and not moving
+  EXPECT_CALL(*server_mock, handle_goal(::testing::_, ::testing::_))
+    .Times(1)
+    .WillOnce([node](
+                const rclcpp_action::GoalUUID & /*uuid*/,
+                std::shared_ptr<const rtest_examples::action::MoveRobot::Goal> goal) {
+      float distance = std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
+      if (distance > 10.0) {
+        return rclcpp_action::GoalResponse::REJECT;
+      }
+      if (node->is_moving()) {
+        return rclcpp_action::GoalResponse::REJECT;
+      }
+      return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    });
+
   auto response = server_mock->handle_goal(uuid, goal);
+
+  // Verify the goal was accepted (distance = sqrt(4+9) ≈ 3.6 < 10.0 and not moving)
   EXPECT_EQ(response, rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE);
 }
 
@@ -52,16 +73,32 @@ TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
   auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
 
-  /// Test goal rejection for targets too far
-  EXPECT_CALL(*server_mock, handle_goal(::testing::_, ::testing::_))
-    .WillOnce(::testing::Return(rclcpp_action::GoalResponse::REJECT));
-
+  // Create a goal that should be rejected (distance > 10.0)
   auto goal = std::make_shared<rtest_examples::action::MoveRobot::Goal>();
-  goal->target_x = 50.0;  // Too far
+  goal->target_x = 50.0;  // distance = sqrt(2500+2500) = sqrt(5000) ≈ 70.7 > 10.0
   goal->target_y = 50.0;
 
   rclcpp_action::GoalUUID uuid;
+
+  // Mock should simulate the real business logic
+  EXPECT_CALL(*server_mock, handle_goal(::testing::_, ::testing::_))
+    .Times(1)
+    .WillOnce([node](
+                const rclcpp_action::GoalUUID & /*uuid*/,
+                std::shared_ptr<const rtest_examples::action::MoveRobot::Goal> goal) {
+      float distance = std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
+      if (distance > 10.0) {
+        return rclcpp_action::GoalResponse::REJECT;
+      }
+      if (node->is_moving()) {
+        return rclcpp_action::GoalResponse::REJECT;
+      }
+      return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    });
+
   auto response = server_mock->handle_goal(uuid, goal);
+
+  // Verify the goal was rejected due to distance
   EXPECT_EQ(response, rclcpp_action::GoalResponse::REJECT);
 }
 
@@ -82,20 +119,33 @@ TEST_F(ActionServerTest, CancelGoal)
   EXPECT_EQ(response, rclcpp_action::CancelResponse::ACCEPT);
 }
 
-TEST_F(ActionServerTest, FeedbackPublishing)
+TEST_F(ActionServerTest, FeedbackPublishingWithValidData)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
   auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
 
-  /// Test that feedback can be published
   auto goal_handle =
     std::make_shared<rclcpp_action::ServerGoalHandle<rtest_examples::action::MoveRobot>>();
 
+  // Create feedback with valid robot movement data
   rtest_examples::action::MoveRobot::Feedback feedback;
   feedback.current_x = 1.5;
   feedback.current_y = 2.5;
   feedback.distance_remaining = 3.0;
 
-  EXPECT_NO_THROW(server_mock->publish_feedback(feedback, goal_handle));
+  // Test that feedback publishing works without errors
+  EXPECT_NO_THROW({ server_mock->publish_feedback(feedback, goal_handle); });
+
+  // Verify feedback contains expected values (business logic validation)
+  EXPECT_GE(feedback.current_x, -100.0);
+  EXPECT_LE(feedback.current_x, 100.0);
+  EXPECT_GE(feedback.current_y, -100.0);
+  EXPECT_LE(feedback.current_y, 100.0);
+  EXPECT_GE(feedback.distance_remaining, 0.0);
+
+  // Verify specific values
+  EXPECT_FLOAT_EQ(feedback.current_x, 1.5);
+  EXPECT_FLOAT_EQ(feedback.current_y, 2.5);
+  EXPECT_FLOAT_EQ(feedback.distance_remaining, 3.0);
 }

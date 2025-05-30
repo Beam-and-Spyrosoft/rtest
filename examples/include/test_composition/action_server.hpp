@@ -36,7 +36,6 @@ public:
   bool is_moving() const { return is_moving_; }
   std::pair<float, float> get_current_position() const { return {current_x_, current_y_}; }
 
-private:
   rclcpp_action::GoalResponse handle_goal(
     const rclcpp_action::GoalUUID & uuid,
     std::shared_ptr<const MoveRobot::Goal> goal);
@@ -44,6 +43,7 @@ private:
   rclcpp_action::CancelResponse handle_cancel(
     const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
 
+private:
   void handle_accepted(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
   void execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
 
