@@ -102,50 +102,31 @@ TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
   EXPECT_EQ(response, rclcpp_action::GoalResponse::REJECT);
 }
 
-TEST_F(ActionServerTest, CancelGoal)
-{
-  auto node = std::make_shared<test_composition::ActionServer>(opts);
-  auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
-  ASSERT_TRUE(server_mock);
-
-  /// Mock goal handle for cancel test
-  auto goal_handle =
-    std::make_shared<rclcpp_action::ServerGoalHandle<rtest_examples::action::MoveRobot>>();
-
-  EXPECT_CALL(*server_mock, handle_cancel(::testing::_))
-    .WillOnce(::testing::Return(rclcpp_action::CancelResponse::ACCEPT));
-
-  auto response = server_mock->handle_cancel(goal_handle);
-  EXPECT_EQ(response, rclcpp_action::CancelResponse::ACCEPT);
-}
-
 TEST_F(ActionServerTest, FeedbackPublishingWithValidData)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
   auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
+  auto goal = std::make_shared<rtest_examples::action::MoveRobot::Goal>();
+  goal->target_x = 3.0;
+  goal->target_y = 4.0;
+  auto mock_goal_handle = rtest::createMockGoalHandle<rtest_examples::action::MoveRobot>(goal);
+  EXPECT_CALL(*mock_goal_handle, publish_feedback(::testing::_))
+    .Times(5)
+    .WillRepeatedly(
+      [](std::shared_ptr<const rtest_examples::action::MoveRobot::Feedback> feedback) {
+        EXPECT_GE(feedback->current_x, 0.0);
+        EXPECT_GE(feedback->current_y, 0.0);
+        EXPECT_GE(feedback->distance_remaining, 0.0);
+        std::cout << "Mock feedback: (" << feedback->current_x << ", " << feedback->current_y
+                  << ") distance: " << feedback->distance_remaining << std::endl;
+      });
 
-  auto goal_handle =
-    std::make_shared<rclcpp_action::ServerGoalHandle<rtest_examples::action::MoveRobot>>();
-
-  // Create feedback with valid robot movement data
-  rtest_examples::action::MoveRobot::Feedback feedback;
-  feedback.current_x = 1.5;
-  feedback.current_y = 2.5;
-  feedback.distance_remaining = 3.0;
-
-  // Test that feedback publishing works without errors
-  EXPECT_NO_THROW({ server_mock->publish_feedback(feedback, goal_handle); });
-
-  // Verify feedback contains expected values (business logic validation)
-  EXPECT_GE(feedback.current_x, -100.0);
-  EXPECT_LE(feedback.current_x, 100.0);
-  EXPECT_GE(feedback.current_y, -100.0);
-  EXPECT_LE(feedback.current_y, 100.0);
-  EXPECT_GE(feedback.distance_remaining, 0.0);
-
-  // Verify specific values
-  EXPECT_FLOAT_EQ(feedback.current_x, 1.5);
-  EXPECT_FLOAT_EQ(feedback.current_y, 2.5);
-  EXPECT_FLOAT_EQ(feedback.distance_remaining, 3.0);
+  // Execute test
+  for (int i = 0; i < 5; i++) {
+    node->execute_single_step(goal, mock_goal_handle);
+  }
+  auto [final_x, final_y] = node->get_current_position();
+  EXPECT_GT(final_x, 0.0);
+  EXPECT_GT(final_y, 0.0);
 }
