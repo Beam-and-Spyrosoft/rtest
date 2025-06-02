@@ -85,20 +85,16 @@ TEST_F(PubSubTest, SubscriptionTest)
   ASSERT_TRUE(subscription);
 
   /// Inject a message to the subscription
-  auto msg = std::make_shared<std_msgs::msg::String>();
-  msg->set__data("someId");
-  subscription->handle_message(msg);
-  auto lastMsg = *msg;
+  subscription->handle_message("someId");
 
   // Test the side effects
-  EXPECT_EQ(node->getLastMsg(), lastMsg);
+  EXPECT_EQ(node->getLastMsg().data, "someId");
 
   // Send another msg
-  msg->set__data("otherId");
-  subscription->handle_message(msg);
+  subscription->handle_message("otherId");
 
   // Test the side effects
-  EXPECT_NE(node->getLastMsg(), lastMsg);
+  EXPECT_EQ(node->getLastMsg().data, "otherId");
 }
 
 TEST_F(PubSubTest, PubSequenceTest)
@@ -142,13 +138,12 @@ TEST_F(PubSubTest, IntraProcessCommTest)
 
   // Test the subscription
   {
-    auto msg = std::make_shared<std_msgs::msg::String>();
-    msg->set__data("test_msg");
+    const std::string test_msg{"test_msg"};
 
-    EXPECT_NE(subNode->getLastMsg(), *msg);
+    EXPECT_NE(subNode->getLastMsg().data, test_msg);
 
-    subscription->handle_message(msg);
-    EXPECT_EQ(subNode->getLastMsg(), *msg);
+    subscription->handle_message(test_msg);
+    EXPECT_EQ(subNode->getLastMsg().data, test_msg);
   }
 
   // Test the publisher
