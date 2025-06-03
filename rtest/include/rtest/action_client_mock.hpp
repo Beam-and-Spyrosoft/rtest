@@ -39,9 +39,12 @@
 // Forward declarations
 namespace rtest
 {
+namespace experimental
+{
 template <typename ActionT>
 class ActionClientMock;
 }
+}  // namespace rtest
 
 namespace rclcpp_action
 {
@@ -158,7 +161,7 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(const_cast<Client *>(this)).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
         ->action_server_is_ready();
     }
     return false;
@@ -168,8 +171,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_get_result(
-        goal_handle);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_get_result(goal_handle);
     }
     std::promise<WrappedResult> promise;
     WrappedResult result;
@@ -195,8 +198,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_send_goal(
-        goal, options);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_send_goal(goal, options);
     }
     std::promise<GoalHandleSharedPtr> promise;
     promise.set_value(nullptr);
@@ -207,7 +210,7 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
         ->async_cancel_all_goals();
     }
     std::promise<WrappedResult> promise;
@@ -267,6 +270,8 @@ private:
 }  // namespace rclcpp_action
 
 namespace rtest
+{
+namespace experimental
 {
 template <typename ActionT>
 class ActionClientMock : public MockBase
@@ -347,4 +352,5 @@ std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
 {
   return findActionClient<ActionT>(node->get_fully_qualified_name(), actionName);
 }
+}  // namespace experimental
 }  // namespace rtest

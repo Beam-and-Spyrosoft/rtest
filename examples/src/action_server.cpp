@@ -32,9 +32,15 @@ ActionServer::ActionServer(const rclcpp::NodeOptions & options)
   action_server_ = rclcpp_action::create_server<MoveRobot>(
     this,
     "move_robot",
-    std::bind(&ActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
-    std::bind(&ActionServer::handle_cancel, this, std::placeholders::_1),
-    std::bind(&ActionServer::handle_accepted, this, std::placeholders::_1));
+    [this](const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const MoveRobot::Goal> goal) {
+      return handle_goal(uuid, goal);
+    },
+    [this](const std::shared_ptr<GoalHandleMoveRobot> & goal_handle) {
+      return handle_cancel(goal_handle);
+    },
+    [this](const std::shared_ptr<GoalHandleMoveRobot> & goal_handle) {
+      handle_accepted(goal_handle);
+    });
 
   RCLCPP_INFO(get_logger(), "Move robot action server started");
 }
@@ -73,7 +79,7 @@ void ActionServer::handle_accepted(const std::shared_ptr<GoalHandleMoveRobot> go
   current_goal_handle_ = goal_handle;
   is_moving_ = true;
 
-  std::thread{std::bind(&ActionServer::execute_move, this, goal_handle)}.detach();
+  std::thread{[this, goal_handle]() { execute_move(goal_handle); }}.detach();
 }
 
 void ActionServer::execute_single_step(

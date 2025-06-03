@@ -29,7 +29,8 @@ protected:
 TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
-  auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
 
   // Test node's initial state
@@ -70,7 +71,8 @@ TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
 TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
-  auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
 
   // Create a goal that should be rejected (distance > 10.0)
@@ -105,22 +107,29 @@ TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
 TEST_F(ActionServerTest, FeedbackPublishingWithValidData)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
-  auto server_mock = rtest::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(server_mock);
   auto goal = std::make_shared<rtest_examples::action::MoveRobot::Goal>();
   goal->target_x = 3.0;
   goal->target_y = 4.0;
-  auto mock_goal_handle = rtest::createMockGoalHandle<rtest_examples::action::MoveRobot>(goal);
-  EXPECT_CALL(*mock_goal_handle, publish_feedback(::testing::_))
+  auto mock_goal_handle =
+    rtest::experimental::createMockGoalHandle<rtest_examples::action::MoveRobot>(goal);
+  EXPECT_CALL(
+    *mock_goal_handle,
+    publish_feedback(::testing::AllOf(
+      ::testing::Pointee(::testing::Field(
+        &rtest_examples::action::MoveRobot::Feedback::current_x, ::testing::Ge(0.0))),
+      ::testing::Pointee(::testing::Field(
+        &rtest_examples::action::MoveRobot::Feedback::current_y, ::testing::Ge(0.0))),
+      ::testing::Pointee(::testing::Field(
+        &rtest_examples::action::MoveRobot::Feedback::distance_remaining, ::testing::Ge(0.0))))))
     .Times(5)
-    .WillRepeatedly(
+    .WillRepeatedly(::testing::Invoke(
       [](std::shared_ptr<const rtest_examples::action::MoveRobot::Feedback> feedback) {
-        EXPECT_GE(feedback->current_x, 0.0);
-        EXPECT_GE(feedback->current_y, 0.0);
-        EXPECT_GE(feedback->distance_remaining, 0.0);
         std::cout << "Mock feedback: (" << feedback->current_x << ", " << feedback->current_y
                   << ") distance: " << feedback->distance_remaining << std::endl;
-      });
+      }));
 
   // Execute test
   for (int i = 0; i < 5; i++) {

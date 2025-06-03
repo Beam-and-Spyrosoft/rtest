@@ -43,12 +43,15 @@ void ActionClient::send_goal(float x, float y)
   RCLCPP_INFO(get_logger(), "Sending goal: move to (%.2f, %.2f)", x, y);
 
   auto send_goal_options = rclcpp_action::Client<MoveRobot>::SendGoalOptions();
-  send_goal_options.goal_response_callback =
-    std::bind(&ActionClient::goal_response_callback, this, std::placeholders::_1);
-  send_goal_options.feedback_callback =
-    std::bind(&ActionClient::feedback_callback, this, std::placeholders::_1, std::placeholders::_2);
-  send_goal_options.result_callback =
-    std::bind(&ActionClient::result_callback, this, std::placeholders::_1);
+  send_goal_options.goal_response_callback = [this](const auto & goal_handle) {
+    goal_response_callback(goal_handle);
+  };
+
+  send_goal_options.feedback_callback = [this](const auto & goal_handle, const auto & feedback) {
+    feedback_callback(goal_handle, feedback);
+  };
+
+  send_goal_options.result_callback = [this](const auto & result) { result_callback(result); };
 
   action_client_->async_send_goal(goal_msg, send_goal_options);
 }

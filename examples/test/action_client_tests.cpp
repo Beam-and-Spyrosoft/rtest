@@ -29,20 +29,22 @@ protected:
 TEST_F(ActionClientTest, SendGoal)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
 
   /// Check specific goal values inside lambda
-  EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
+  EXPECT_CALL(
+    *client_mock,
+    async_send_goal(
+      ::testing::AllOf(
+        ::testing::Field(&rtest_examples::action::MoveRobot::Goal::target_x, 2.0f),
+        ::testing::Field(&rtest_examples::action::MoveRobot::Goal::target_y, 3.0f)),
+      ::testing::_))
     .Times(1)
-    .WillOnce([](const auto & goal, const auto & options) {
-      /// Check if goal contains expected values
-      EXPECT_FLOAT_EQ(goal.target_x, 2.0f);
-      EXPECT_FLOAT_EQ(goal.target_y, 3.0f);
-
-      (void)options;
+    .WillOnce(::testing::Invoke([](const auto & /*goal*/, const auto & /*options*/) {
       std::promise<
         std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>>
         promise;
@@ -50,7 +52,7 @@ TEST_F(ActionClientTest, SendGoal)
         std::make_shared<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>();
       promise.set_value(goal_handle);
       return promise.get_future().share();
-    });
+    }));
 
   EXPECT_TRUE(client_mock->action_server_is_ready());
   node->send_goal(2.0, 3.0);
@@ -59,7 +61,8 @@ TEST_F(ActionClientTest, SendGoal)
 TEST_F(ActionClientTest, ReceiveFeedback)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -118,7 +121,8 @@ TEST_F(ActionClientTest, ReceiveFeedback)
 TEST_F(ActionClientTest, ReceiveResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -181,7 +185,8 @@ TEST_F(ActionClientTest, ReceiveResult)
 TEST_F(ActionClientTest, ReceiveCanceledResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -232,7 +237,8 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
 TEST_F(ActionClientTest, ServerNotReady)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   /// Mock server not ready

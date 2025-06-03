@@ -146,7 +146,8 @@ private:
 
 namespace rtest
 {
-
+namespace experimental
+{
 template <typename ActionT>
 class ActionServerMock : public MockBase
 {
@@ -237,5 +238,5 @@ std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
 {
   return findActionServer<ActionT>(node->get_fully_qualified_name(), actionName);
 }
-
+}  // namespace experimental
 }  // namespace rtest
