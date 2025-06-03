@@ -30,6 +30,7 @@
 #include "rcl_action/types.h"
 
 #include "rclcpp/macros.hpp"
+#include "rclcpp_action/exceptions.hpp"
 
 #define TEST_TOOLS_SMART_PTR_DEFINITIONS(...) \
   __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__)      \
@@ -69,6 +70,11 @@ public:
   ResultCallback result_callback;
 
   GoalUUID get_goal_id() const { return goal_id_; }
+  rclcpp::Time get_goal_stamp() const { return time_stamp_; }
+  int8_t get_status();
+  bool is_feedback_aware() { return feedback_callback != nullptr; }
+  bool is_result_aware() { return is_result_aware_; }
+
   bool is_invalidated() const { return false; }
   std::shared_future<WrappedResult> async_get_result()
   {
@@ -80,25 +86,39 @@ public:
     p.set_value(result);
     return p.get_future().share();
   }
-  void set_result_callback(ResultCallback cb) { result_callback = cb; }
-  void set_feedback_callback(FeedbackCallback cb) { feedback_callback = cb; }
   bool set_result_awareness(bool aware)
   {
-    (void)aware;
-    return false;
-  }
-  void call_feedback_callback(SharedPtr handle, std::shared_ptr<const Feedback> feedback)
-  {
-    if (feedback_callback)
-      feedback_callback(handle, feedback);
+    bool previous = is_result_aware_;
+    is_result_aware_ = aware;
+    return previous;
   }
   void set_result(const WrappedResult & result) { (void)result; }
-  void invalidate(std::exception_ptr ex) { (void)ex; }
-  void set_status(int status) { (void)status; }
+  void invalidate(const exceptions::UnawareGoalHandleError & ex) { (void)ex; }
+  void set_status(int8_t status) { status_ = status; }
+  void set_goal_id(const GoalUUID & goal_id) { goal_id_ = goal_id; }
+  void set_goal_stamp(const rclcpp::Time & stamp) { time_stamp_ = stamp; }
 
 private:
   GoalUUID goal_id_;
+  rclcpp::Time time_stamp_;
+  int8_t status_{0};
+  bool is_result_aware_{false};
 };
+
+template <typename ActionT>
+auto makeClientGoalHandle()
+{
+  return std::make_shared<rclcpp_action::ClientGoalHandle<ActionT>>();
+}
+
+template <typename ActionT>
+auto makeClientGoalHandleFuture(
+  typename rclcpp_action::ClientGoalHandle<ActionT>::SharedPtr goal_handle = nullptr)
+{
+  std::promise<decltype(goal_handle)> promise{};
+  promise.set_value(goal_handle);
+  return promise.get_future().share();
+}
 
 template <typename ActionT>
 class Client : public ClientBase, public std::enable_shared_from_this<Client<ActionT>>
@@ -127,6 +147,13 @@ public:
     GoalResponseCallback goal_response_callback;
     FeedbackCallback feedback_callback;
     ResultCallback result_callback;
+
+    void call_feedback_callback(std::shared_ptr<const Feedback> feedback)
+    {
+      if (feedback_callback) {
+        feedback_callback(nullptr, feedback);
+      }
+    }
   };
 
   Client(
@@ -195,12 +222,14 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_send_goal(
+      auto f = std::static_pointer_cast<rtest::ActionClientMock<ActionT>>(mock)->async_send_goal(
         goal, options);
+      if (f.valid()) {
+        return f;
+      }
     }
-    std::promise<GoalHandleSharedPtr> promise;
-    promise.set_value(nullptr);
-    return promise.get_future().share();
+
+    return makeClientGoalHandleFuture<ActionT>(nullptr);  // reject goal by default
   }
 
   std::shared_future<WrappedResult> async_cancel_all_goals()
@@ -268,6 +297,7 @@ private:
 
 namespace rtest
 {
+
 template <typename ActionT>
 class ActionClientMock : public MockBase
 {
@@ -300,14 +330,18 @@ public:
   MOCK_METHOD(std::shared_future<WrappedResult>, async_cancel_all_goals, (), ());
   MOCK_METHOD(bool, action_server_is_ready, (), ());
 
-  void simulate_feedback(
-    const GoalHandleSharedPtr & goal_handle,
-    const typename ActionT::Feedback & feedback)
+  // Convenience method to create ClientGoalHandle
+  std::shared_ptr<rclcpp_action::ClientGoalHandle<ActionT>> makeClientGoalHandle()
   {
-    if (goal_handle && goal_handle->feedback_callback) {
-      auto feedback_msg = std::make_shared<const typename ActionT::Feedback>(feedback);
-      goal_handle->feedback_callback(goal_handle, feedback_msg);
-    }
+    return rclcpp_action::makeClientGoalHandle<ActionT>();
+  }
+
+  // Convenience method to create ClientGoalHandleFuture
+  std::shared_future<typename rclcpp_action::ClientGoalHandle<ActionT>::SharedPtr>
+  makeClientGoalHandleFuture(
+    typename rclcpp_action::ClientGoalHandle<ActionT>::SharedPtr goal_handle = nullptr)
+  {
+    return rclcpp_action::makeClientGoalHandleFuture<ActionT>(goal_handle);
   }
 
   void simulate_result(const GoalHandleSharedPtr & goal_handle, const WrappedResult & result)
@@ -347,4 +381,20 @@ std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
 {
   return findActionClient<ActionT>(node->get_fully_qualified_name(), actionName);
 }
+
+// Expose rclcpp_action::makeClientGoalHandle<ActionT> in the rtest namespace
+template <typename ActionT>
+std::shared_ptr<rclcpp_action::ClientGoalHandle<ActionT>> makeClientGoalHandle()
+{
+  return rclcpp_action::makeClientGoalHandle<ActionT>();
+}
+
+// Custom action for async_send_goal() return value
+ACTION_P(ReturnGoalHandleFuture, goal_handle)
+{
+  std::promise<decltype(goal_handle)> promise{};
+  promise.set_value(goal_handle);
+  return promise.get_future().share();
+}
+
 }  // namespace rtest

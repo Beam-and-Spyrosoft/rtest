@@ -16,11 +16,14 @@
 // @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
 // @date      2024-11-26
 
+#include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <test_composition/publisher.hpp>
 #include <test_composition/subscriber.hpp>
 #include <test_composition/service_provider.hpp>
 #include <test_composition/service_client.hpp>
+#include <test_composition/action_server.hpp>
+#include <test_composition/action_client.hpp>
 
 int main(int argc, char ** argv)
 {
@@ -37,6 +40,10 @@ int main(int argc, char ** argv)
   exec.add_node(service_provider);
   auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
   exec.add_node(service_client);
+  auto action_server = std::make_shared<test_composition::ActionServer>(opts);
+  exec.add_node(action_server);
+  auto action_client = std::make_shared<test_composition::ActionClient>(opts);
+  exec.add_node(action_client);
 
   exec.spin();
 

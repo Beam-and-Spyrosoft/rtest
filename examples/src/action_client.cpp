@@ -19,6 +19,8 @@
 #include "test_composition/action_client.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
+using namespace std::chrono_literals;
+
 namespace test_composition
 {
 
@@ -42,15 +44,37 @@ void ActionClient::send_goal(float x, float y)
 
   RCLCPP_INFO(get_logger(), "Sending goal: move to (%.2f, %.2f)", x, y);
 
-  auto send_goal_options = rclcpp_action::Client<MoveRobot>::SendGoalOptions();
-  send_goal_options.goal_response_callback =
-    std::bind(&ActionClient::goal_response_callback, this, std::placeholders::_1);
-  send_goal_options.feedback_callback =
-    std::bind(&ActionClient::feedback_callback, this, std::placeholders::_1, std::placeholders::_2);
-  send_goal_options.result_callback =
-    std::bind(&ActionClient::result_callback, this, std::placeholders::_1);
+  rclcpp_action::Client<MoveRobot>::SendGoalOptions send_goal_options{};
 
-  action_client_->async_send_goal(goal_msg, send_goal_options);
+  send_goal_options.goal_response_callback =
+    [this](const GoalHandleMoveRobot::SharedPtr & goal_handle) {
+      goal_response_callback(goal_handle);
+    };
+  send_goal_options.feedback_callback =
+    [this](
+      GoalHandleMoveRobot::SharedPtr, const std::shared_ptr<const MoveRobot::Feedback> feedback) {
+      feedback_callback(feedback);
+    };
+  send_goal_options.result_callback = [this](const GoalHandleMoveRobot::WrappedResult & result) {
+    result_callback(result);
+  };
+
+  auto f = action_client_->async_send_goal(goal_msg, send_goal_options);
+  if (f.wait_for(1s) == std::future_status::timeout) {
+    RCLCPP_ERROR(get_logger(), "Failed to send goal within timeout");
+    return;
+  }
+  current_goal_handle_ = f.get();
+
+  if (current_goal_handle_) {
+    RCLCPP_INFO_STREAM(
+      get_logger(),
+      "Goal handle Id: " << rclcpp_action::to_string(current_goal_handle_->get_goal_id())
+                         << " accepted by server at "
+                         << current_goal_handle_->get_goal_stamp().seconds());
+  } else {
+    RCLCPP_ERROR(get_logger(), "Goal was rejected by server");
+  }
 }
 
 void ActionClient::cancel_current_goal()
@@ -72,9 +96,7 @@ void ActionClient::goal_response_callback(const GoalHandleMoveRobot::SharedPtr &
   }
 }
 
-void ActionClient::feedback_callback(
-  GoalHandleMoveRobot::SharedPtr,
-  const std::shared_ptr<const MoveRobot::Feedback> feedback)
+void ActionClient::feedback_callback(const std::shared_ptr<const MoveRobot::Feedback> feedback)
 {
   RCLCPP_INFO(
     get_logger(),
