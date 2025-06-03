@@ -43,6 +43,30 @@ public:
   rclcpp_action::CancelResponse handle_cancel(
     const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
 
+  std::pair<float, float> calculate_next_position(
+    float current_x,
+    float current_y,
+    float target_x,
+    float target_y,
+    float step_size) const;
+
+  MoveRobot::Feedback calculate_feedback(
+    float current_x,
+    float current_y,
+    float target_x,
+    float target_y) const;
+
+  bool is_goal_reached(
+    float current_x,
+    float current_y,
+    float target_x,
+    float target_y,
+    float tolerance = 0.1) const;
+
+  void execute_single_step(
+    const std::shared_ptr<const MoveRobot::Goal> goal,
+    const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
+
 private:
   void handle_accepted(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
   void execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);

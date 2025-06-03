@@ -40,9 +40,12 @@
 // Forward declarations
 namespace rtest
 {
+namespace experimental
+{
 template <typename ActionT>
 class ActionClientMock;
-}
+}  // namespace experimental
+}  // namespace rtest
 
 namespace rclcpp_action
 {
@@ -297,7 +300,8 @@ private:
 
 namespace rtest
 {
-
+namespace experimental
+{
 template <typename ActionT>
 class ActionClientMock : public MockBase
 {
@@ -397,4 +401,5 @@ ACTION_P(ReturnGoalHandleFuture, goal_handle)
   return promise.get_future().share();
 }
 
+}  // namespace experimental
 }  // namespace rtest

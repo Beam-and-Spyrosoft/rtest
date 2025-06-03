@@ -47,19 +47,42 @@ public:
   using Feedback = typename ActionT::Feedback;
   using Goal = typename ActionT::Goal;
 
+  explicit ServerGoalHandle(std::shared_ptr<const Goal> goal) : goal_(goal) {}
+  ServerGoalHandle() = default;
+  virtual ~ServerGoalHandle() = default;
+
   std::shared_ptr<const Goal> get_goal() const { return goal_; }
   bool is_canceling() const { return canceling_; }
   void set_canceling(bool canceling = true) { canceling_ = canceling; }
   bool is_active() const { return !canceling_; }
 
-  void publish_feedback(std::shared_ptr<const Feedback> feedback) { (void)feedback; }
-  void succeed(std::shared_ptr<Result> result) { (void)result; }
-  void abort(std::shared_ptr<Result> result) { (void)result; }
-  void canceled(std::shared_ptr<Result> result) { (void)result; }
+  virtual void publish_feedback(std::shared_ptr<const Feedback> feedback) { (void)feedback; }
+  virtual void succeed(std::shared_ptr<Result> result) { (void)result; }
+  virtual void abort(std::shared_ptr<Result> result) { (void)result; }
+  virtual void canceled(std::shared_ptr<Result> result) { (void)result; }
 
 private:
-  std::shared_ptr<const Goal> goal_;
+  std::shared_ptr<const Goal> goal_{nullptr};
   bool canceling_ = false;
+};
+
+// Mock GoalHandle that can intercept publish_feedback calls
+template <typename ActionT>
+class GoalHandleMock : public rclcpp_action::ServerGoalHandle<ActionT>
+{
+public:
+  using Goal = typename ActionT::Goal;
+  using Feedback = typename ActionT::Feedback;
+  using Result = typename ActionT::Result;
+
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(GoalHandleMock<ActionT>)
+
+  GoalHandleMock(std::shared_ptr<const Goal> goal) : rclcpp_action::ServerGoalHandle<ActionT>(goal)
+  {
+  }
+
+  // Mock the feedback publishing
+  MOCK_METHOD(void, publish_feedback, (std::shared_ptr<const Feedback>), (override));
 };
 
 template <typename ActionT>
@@ -123,7 +146,8 @@ private:
 
 namespace rtest
 {
-
+namespace experimental
+{
 template <typename ActionT>
 class ActionServerMock : public MockBase
 {
@@ -149,17 +173,11 @@ public:
   MOCK_METHOD(CancelResponse, handle_cancel, (const GoalHandleSharedPtr &), ());
 
   MOCK_METHOD(void, handle_accepted, (const GoalHandleSharedPtr &), ());
-
-  // Helper methods for testing
-  void publish_feedback(
-    const typename ActionT::Feedback & feedback,
-    const GoalHandleSharedPtr & goal_handle)
-  {
-    if (goal_handle) {
-      auto feedback_ptr = std::make_shared<const typename ActionT::Feedback>(feedback);
-      goal_handle->publish_feedback(feedback_ptr);
-    }
-  }
+  MOCK_METHOD(
+    void,
+    publish_feedback,
+    (const typename ActionT::Feedback &, const GoalHandleSharedPtr &),
+    ());
 
   void succeed(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
   {
@@ -206,6 +224,13 @@ std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
   return server_mock;
 }
 
+template <typename ActionT>
+std::shared_ptr<rclcpp_action::GoalHandleMock<ActionT>> createMockGoalHandle(
+  std::shared_ptr<const typename ActionT::Goal> goal)
+{
+  return std::make_shared<rclcpp_action::GoalHandleMock<ActionT>>(goal);
+}
+
 template <typename ActionT, typename NodeT>
 std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
   const std::shared_ptr<NodeT> & node,
@@ -213,5 +238,5 @@ std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
 {
   return findActionServer<ActionT>(node->get_fully_qualified_name(), actionName);
 }
-
+}  // namespace experimental
 }  // namespace rtest

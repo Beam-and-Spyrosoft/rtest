@@ -32,9 +32,15 @@ ActionServer::ActionServer(const rclcpp::NodeOptions & options)
   action_server_ = rclcpp_action::create_server<MoveRobot>(
     this,
     "move_robot",
-    std::bind(&ActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
-    std::bind(&ActionServer::handle_cancel, this, std::placeholders::_1),
-    std::bind(&ActionServer::handle_accepted, this, std::placeholders::_1));
+    [this](const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const MoveRobot::Goal> goal) {
+      return handle_goal(uuid, goal);
+    },
+    [this](const std::shared_ptr<GoalHandleMoveRobot> & goal_handle) {
+      return handle_cancel(goal_handle);
+    },
+    [this](const std::shared_ptr<GoalHandleMoveRobot> & goal_handle) {
+      handle_accepted(goal_handle);
+    });
 
   RCLCPP_INFO(get_logger(), "Move robot action server started");
 }
@@ -73,7 +79,26 @@ void ActionServer::handle_accepted(const std::shared_ptr<GoalHandleMoveRobot> go
   current_goal_handle_ = goal_handle;
   is_moving_ = true;
 
-  std::thread{std::bind(&ActionServer::execute_move, this, goal_handle)}.detach();
+  std::thread{[this, goal_handle]() { execute_move(goal_handle); }}.detach();
+}
+
+void ActionServer::execute_single_step(
+  const std::shared_ptr<const MoveRobot::Goal> goal,
+  const std::shared_ptr<GoalHandleMoveRobot> goal_handle)
+{
+  const float step_size = 0.01;
+
+  // Calculate next position using real business logic
+  auto [new_x, new_y] =
+    calculate_next_position(current_x_, current_y_, goal->target_x, goal->target_y, step_size);
+
+  current_x_ = new_x;
+  current_y_ = new_y;
+
+  // Create and publish feedback using real business logic
+  auto feedback = std::make_shared<MoveRobot::Feedback>(
+    calculate_feedback(current_x_, current_y_, goal->target_x, goal->target_y));
+  goal_handle->publish_feedback(feedback);
 }
 
 void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_handle)
@@ -83,9 +108,6 @@ void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_
   const auto goal = goal_handle->get_goal();
   auto feedback = std::make_shared<MoveRobot::Feedback>();
   auto result = std::make_shared<MoveRobot::Result>();
-
-  float dx = goal->target_x - current_x_;
-  float dy = goal->target_y - current_y_;
 
   const float speed = 1.0;
   const auto update_rate = 10ms;
@@ -104,12 +126,10 @@ void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_
     }
 
     // Calculate remaining distance
-    dx = goal->target_x - current_x_;
-    dy = goal->target_y - current_y_;
-    float remaining_distance = std::sqrt(dx * dx + dy * dy);
+    *feedback = calculate_feedback(current_x_, current_y_, goal->target_x, goal->target_y);
 
     // Check if reached target
-    if (remaining_distance < 0.1) {
+    if (is_goal_reached(current_x_, current_y_, goal->target_x, goal->target_y)) {
       result->success = true;
       result->final_x = current_x_;
       result->final_y = current_y_;
@@ -120,19 +140,65 @@ void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_
     }
 
     // Move towards target
-    float step_x = (dx / remaining_distance) * step_size;
-    float step_y = (dy / remaining_distance) * step_size;
-    current_x_ += step_x;
-    current_y_ += step_y;
-
-    // Publish feedback
-    feedback->current_x = current_x_;
-    feedback->current_y = current_y_;
-    feedback->distance_remaining = remaining_distance;
+    auto [new_x, new_y] =
+      calculate_next_position(current_x_, current_y_, goal->target_x, goal->target_y, step_size);
+    current_x_ = new_x;
+    current_y_ = new_y;
     goal_handle->publish_feedback(feedback);
 
     std::this_thread::sleep_for(update_rate);
   }
+}
+
+std::pair<float, float> ActionServer::calculate_next_position(
+  float current_x,
+  float current_y,
+  float target_x,
+  float target_y,
+  float step_size) const
+{
+  float dx = target_x - current_x;
+  float dy = target_y - current_y;
+  float distance = std::sqrt(dx * dx + dy * dy);
+
+  if (distance < 0.001) {  // Avoid division by zero
+    return {current_x, current_y};
+  }
+
+  float step_x = (dx / distance) * step_size;
+  float step_y = (dy / distance) * step_size;
+
+  return {current_x + step_x, current_y + step_y};
+}
+
+ActionServer::MoveRobot::Feedback ActionServer::calculate_feedback(
+  float current_x,
+  float current_y,
+  float target_x,
+  float target_y) const
+{
+  MoveRobot::Feedback feedback;
+  feedback.current_x = current_x;
+  feedback.current_y = current_y;
+
+  float dx = target_x - current_x;
+  float dy = target_y - current_y;
+  feedback.distance_remaining = std::sqrt(dx * dx + dy * dy);
+
+  return feedback;
+}
+
+bool ActionServer::is_goal_reached(
+  float current_x,
+  float current_y,
+  float target_x,
+  float target_y,
+  float tolerance) const
+{
+  float dx = target_x - current_x;
+  float dy = target_y - current_y;
+  float distance = std::sqrt(dx * dx + dy * dy);
+  return distance < tolerance;
 }
 
 }  // namespace test_composition
