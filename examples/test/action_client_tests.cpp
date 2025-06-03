@@ -29,7 +29,8 @@ protected:
 TEST_F(ActionClientTest, SendGoal)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -49,7 +50,8 @@ TEST_F(ActionClientTest, SendGoal)
 TEST_F(ActionClientTest, ReceiveFeedback)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -65,7 +67,7 @@ TEST_F(ActionClientTest, ReceiveFeedback)
   // Expect that client will call async_send_goal and capture the goal options
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::ReturnGoalHandleFuture(goal_handle)));
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   // Trigger the node to send goal
   node->send_goal(2.0, 3.0);
@@ -90,7 +92,8 @@ TEST_F(ActionClientTest, ReceiveFeedback)
 TEST_F(ActionClientTest, ReceiveResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -108,7 +111,7 @@ TEST_F(ActionClientTest, ReceiveResult)
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
     .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::ReturnGoalHandleFuture(goal_handle)));
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   // Send goal through the real node - this sets up the real callbacks
   node->send_goal(2.0, 3.0);
@@ -139,7 +142,8 @@ TEST_F(ActionClientTest, ReceiveResult)
 TEST_F(ActionClientTest, ReceiveCanceledResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -152,7 +156,7 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
     .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::ReturnGoalHandleFuture(goal_handle)));
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   /// Send goal to register callbacks
   node->send_goal(2.0, 3.0);
@@ -177,7 +181,8 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
 TEST_F(ActionClientTest, ServerNotReady)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
-  auto client_mock = rtest::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+  auto client_mock =
+    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   /// Mock server not ready
