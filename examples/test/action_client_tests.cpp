@@ -39,9 +39,8 @@ TEST_F(ActionClientTest, SendGoal)
   expected_goal.set__target_x(2.0f);
   expected_goal.set__target_y(3.0f);
 
-  rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
-
-  // Just check if the async_send_goal() was called exactly one (by default client will be notified that goal was rejected)
+  // Just check if the async_send_goal() was called exactly onecw with expected goal values
+  // (by default client will be notified that goal was rejected)
   EXPECT_CALL(*client_mock, async_send_goal(expected_goal, ::testing::_)).Times(1);
 
   node->send_goal(2.0, 3.0);
