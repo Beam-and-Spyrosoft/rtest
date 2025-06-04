@@ -4,6 +4,25 @@ project(rtest
   VERSION 0.1.0
 )
 
+# Detect ROS distribution
+if(NOT DEFINED ROS_DISTRO_TARGET)
+  if(DEFINED ENV{ROS_DISTRO})
+    set(ROS_DISTRO_TARGET $ENV{ROS_DISTRO})
+  else()
+    message(FATAL_ERROR "ROS_DISTRO environment variable not set. Please source ROS setup or set ROS_DISTRO_TARGET manually.")
+  endif()
+endif()
+message(STATUS "Building RTEST for ROS distribution: ${ROS_DISTRO_TARGET}")
+
+# Validate supported distributions
+set(SUPPORTED_DISTROS "jazzy" "kilted")
+if(NOT ROS_DISTRO_TARGET IN_LIST SUPPORTED_DISTROS)
+  message(FATAL_ERROR "Unsupported ROS distribution: ${ROS_DISTRO_TARGET}. Supported: ${SUPPORTED_DISTROS}")
+endif()
+
+# Set distribution-specific include path (no src needed - all header-only)
+set(DISTRO_INCLUDE_DIR "distributions/${ROS_DISTRO_TARGET}/include")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -17,31 +36,29 @@ find_package(gmock_vendor REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 
-
-
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 
 # Rtest_common mocking library
 add_library(rtest_common SHARED
-  src/static_registry.cpp
-  src/logger_mock.cpp
+  common/src/static_registry.cpp
+  common/src/logger_mock.cpp
 )
 add_library(${PROJECT_NAME}::rtest_common ALIAS rtest_common)
 set_property(TARGET rtest_common PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(rtest_common PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:include>)
 
 if(WIN32)
 MESSAGE ("WINDOWS")
   target_compile_options(rtest_common PUBLIC
-    "/FI${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
+    "/FI${CMAKE_CURRENT_SOURCE_DIR}/common/include/rtest/includes_mock.hpp"
   )
 else()
   target_compile_options(rtest_common PUBLIC
-    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/rtest/includes_mock.hpp"
+    "SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/common/include/rtest/includes_mock.hpp"
   )
 endif()
 
@@ -60,7 +77,8 @@ add_library(publisher_mock INTERFACE)
 add_library(${PROJECT_NAME}::publisher_mock ALIAS publisher_mock)
 target_include_directories(publisher_mock
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -76,7 +94,8 @@ add_library(subscription_mock INTERFACE)
 add_library(${PROJECT_NAME}::subscription_mock ALIAS subscription_mock)
 target_include_directories(subscription_mock
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -91,7 +110,8 @@ add_library(service_mock INTERFACE)
 add_library(${PROJECT_NAME}::service_mock ALIAS service_mock)
 target_include_directories(service_mock
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -105,7 +125,8 @@ add_library(service_client_mock INTERFACE)
 add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
 target_include_directories(service_client_mock
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -120,7 +141,8 @@ add_library(timer_mock INTERFACE)
 add_library(${PROJECT_NAME}::timer_mock ALIAS timer_mock)
 target_include_directories(timer_mock
   INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/common/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
@@ -130,7 +152,10 @@ target_link_libraries(timer_mock INTERFACE
 
 target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK)
 
-install(DIRECTORY include/
+install(DIRECTORY common/include/
+  DESTINATION include
+)
+install(DIRECTORY ${DISTRO_INCLUDE_DIR}/
   DESTINATION include
 )
 
@@ -165,6 +190,12 @@ if(BUILD_TESTING)
     find_package(ament_cmake_clang_tidy REQUIRED)
     set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
     ament_lint_auto_find_test_dependencies()
+    # Exclude other distribution folders from linting/coverage
+    foreach(DISTRO IN LISTS SUPPORTED_DISTROS)
+      if(NOT DISTRO STREQUAL ROS_DISTRO_TARGET)
+        list(APPEND AMENT_LINT_AUTO_EXCLUDE "distributions/${DISTRO}")
+      endif()
+    endforeach()
   else()
     find_package(ament_cmake_copyright REQUIRED)
     ament_copyright()
