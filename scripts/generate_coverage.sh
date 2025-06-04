@@ -10,8 +10,8 @@ check_dependencies() {
   fi
 
   # Check if ROS Jazzy is installed
-  if [ ! -f "/opt/ros/jazzy/setup.bash" ]; then
-    echo "ERROR: ROS Jazzy not found"
+  if [ ! -f "/opt/ros/${ROS_DISTRO}/setup.bash" ]; then
+    echo "ERROR: ROS ${ROS_DISTRO} not found"
     missing_deps=1
   fi
 
@@ -24,7 +24,7 @@ check_dependencies() {
 check_dependencies
 
 # Source ROS environment
-. /opt/ros/jazzy/setup.bash
+. /opt/ros/${ROS_DISTRO}/setup.bash
 
 # Generate coverage report for framework library
 echo "===== GENERATING COVERAGE REPORT ====="
