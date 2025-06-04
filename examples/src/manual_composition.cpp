@@ -16,6 +16,7 @@
 // @author    Sławomir Cielepak (slawomir.cielepak@gmail.com)
 // @date      2024-11-26
 
+#include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <test_composition/publisher.hpp>
 #include <test_composition/subscriber.hpp>

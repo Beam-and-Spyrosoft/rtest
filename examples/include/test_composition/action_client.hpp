@@ -43,9 +43,7 @@ public:
 
 private:
   void goal_response_callback(const GoalHandleMoveRobot::SharedPtr & goal_handle);
-  void feedback_callback(
-    GoalHandleMoveRobot::SharedPtr,
-    const std::shared_ptr<const MoveRobot::Feedback> feedback);
+  void feedback_callback(const std::shared_ptr<const MoveRobot::Feedback> feedback);
   void result_callback(const GoalHandleMoveRobot::WrappedResult & result);
   rclcpp_action::Client<MoveRobot>::SharedPtr action_client_;
   GoalHandleMoveRobot::SharedPtr current_goal_handle_;

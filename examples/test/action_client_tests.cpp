@@ -35,26 +35,14 @@ TEST_F(ActionClientTest, SendGoal)
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
 
-  /// Check specific goal values inside lambda
-  EXPECT_CALL(
-    *client_mock,
-    async_send_goal(
-      ::testing::AllOf(
-        ::testing::Field(&rtest_examples::action::MoveRobot::Goal::target_x, 2.0f),
-        ::testing::Field(&rtest_examples::action::MoveRobot::Goal::target_y, 3.0f)),
-      ::testing::_))
-    .Times(1)
-    .WillOnce(::testing::Invoke([](const auto & /*goal*/, const auto & /*options*/) {
-      std::promise<
-        std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>>
-        promise;
-      auto goal_handle =
-        std::make_shared<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>();
-      promise.set_value(goal_handle);
-      return promise.get_future().share();
-    }));
+  test_composition::ActionClient::MoveRobot::Goal expected_goal{};
+  expected_goal.set__target_x(2.0f);
+  expected_goal.set__target_y(3.0f);
 
-  EXPECT_TRUE(client_mock->action_server_is_ready());
+  // Just check if the async_send_goal() was called exactly onecw with expected goal values
+  // (by default client will be notified that goal was rejected)
+  EXPECT_CALL(*client_mock, async_send_goal(expected_goal, ::testing::_)).Times(1);
+
   node->send_goal(2.0, 3.0);
 }
 
@@ -70,52 +58,34 @@ TEST_F(ActionClientTest, ReceiveFeedback)
   // Initially no feedback should be received
   EXPECT_FALSE(node->has_received_feedback());
 
-  // Store the goal handle that will be created with real callbacks
-  std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>
-    stored_goal_handle;
+  // Store the SendGoalOptions that client may set up with callbacks
+  rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
 
-  // Mock async_send_goal to capture the real callbacks from the node
+  auto goal_handle = client_mock->makeClientGoalHandle();
+
+  // Expect that client will call async_send_goal and capture the goal options
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
-    .Times(1)
-    .WillOnce([&stored_goal_handle](const auto & goal, const auto & options) {
-      (void)goal;
-      // Create goal handle and set up the REAL callbacks from the node
-      auto goal_handle =
-        std::make_shared<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>();
-      goal_handle->feedback_callback = options.feedback_callback;
-      goal_handle->result_callback = options.result_callback;
-      stored_goal_handle = goal_handle;
+    .WillOnce(::testing::DoAll(
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
-      std::promise<
-        std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>>
-        promise;
-      promise.set_value(goal_handle);
-      return promise.get_future().share();
-    });
-
-  // Send goal through the real node - this sets up the real callbacks
+  // Trigger the node to send goal
   node->send_goal(2.0, 3.0);
 
-  // Verify we captured the goal handle with real callbacks
-  ASSERT_TRUE(stored_goal_handle);
-  ASSERT_TRUE(stored_goal_handle->feedback_callback);
+  // Verify if the node had set up the feedback callback correctly
+  ASSERT_TRUE(goal_opts.feedback_callback != nullptr);
 
   // Create feedback with specific test values
-  rtest_examples::action::MoveRobot::Feedback feedback;
-  feedback.current_x = 1.5;
-  feedback.current_y = 2.5;
-  feedback.distance_remaining = 3.0;
+  auto feedback = std::make_shared<rtest_examples::action::MoveRobot::Feedback>();
+  feedback->current_x = 1.5f;
+  feedback->current_y = 2.5f;
+  feedback->distance_remaining = 3.0f;
 
-  // Simulate feedback - this calls the REAL node's feedback_callback
-  client_mock->simulate_feedback(stored_goal_handle, feedback);
+  // Simulate feedback - this calls the node's feedback callback
+  goal_opts.call_feedback_callback(feedback);
 
   // Now verify the node's state was updated correctly
   EXPECT_TRUE(node->has_received_feedback());
-
-  auto received_feedback = node->get_last_feedback();
-  EXPECT_FLOAT_EQ(received_feedback.current_x, 1.5);
-  EXPECT_FLOAT_EQ(received_feedback.current_y, 2.5);
-  EXPECT_FLOAT_EQ(received_feedback.distance_remaining, 3.0);
+  EXPECT_EQ(node->get_last_feedback(), *feedback);
 }
 
 TEST_F(ActionClientTest, ReceiveResult)
@@ -131,36 +101,22 @@ TEST_F(ActionClientTest, ReceiveResult)
   EXPECT_FALSE(node->get_last_result_success());
   EXPECT_TRUE(node->get_last_result_message().empty());
 
-  // Store the goal handle that will be created with real callbacks
-  std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>
-    stored_goal_handle;
+  // Store the SendGoalOptions that client may set up with callbacks
+  rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
+
+  auto goal_handle = client_mock->makeClientGoalHandle();
 
   // Mock async_send_goal to capture the real callbacks from the node
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
-    .WillOnce([&stored_goal_handle](const auto & goal, const auto & options) {
-      (void)goal;
-      // Create goal handle and set up the REAL callbacks from the node
-      auto goal_handle =
-        std::make_shared<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>();
-      // Only set callbacks that actually exist in ClientGoalHandle
-      goal_handle->feedback_callback = options.feedback_callback;
-      goal_handle->result_callback = options.result_callback;
-      stored_goal_handle = goal_handle;
-
-      std::promise<
-        std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>>
-        promise;
-      promise.set_value(goal_handle);
-      return promise.get_future().share();
-    });
+    .WillOnce(::testing::DoAll(
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   // Send goal through the real node - this sets up the real callbacks
   node->send_goal(2.0, 3.0);
 
   // Verify we captured the goal handle with real callbacks
-  ASSERT_TRUE(stored_goal_handle);
-  ASSERT_TRUE(stored_goal_handle->result_callback);
+  ASSERT_TRUE(goal_opts.result_callback != nullptr);
 
   // Create successful result with specific test values
   rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>::WrappedResult result;
@@ -172,7 +128,7 @@ TEST_F(ActionClientTest, ReceiveResult)
   result.result->message = "Target reached successfully";
 
   // Simulate result - this calls the REAL node's result_callback
-  client_mock->simulate_result(stored_goal_handle, result);
+  goal_opts.result_callback(result);
 
   // Now verify the node's state was updated correctly through the real callback
   EXPECT_TRUE(node->get_last_result_success());
@@ -191,27 +147,15 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
 
-  /// Store reference to goal handle to use later
-  std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>
-    stored_goal_handle;
+  // Store the SendGoalOptions that client may set up with callbacks
+  rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
+
+  auto goal_handle = client_mock->makeClientGoalHandle();
 
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
-    .WillOnce([&stored_goal_handle](const auto & goal, const auto & options) {
-      (void)goal;
-
-      /// Create goal handle and set up callbacks
-      auto goal_handle =
-        std::make_shared<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>();
-      goal_handle->result_callback = options.result_callback;
-      stored_goal_handle = goal_handle;
-
-      std::promise<
-        std::shared_ptr<rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>>>
-        promise;
-      promise.set_value(goal_handle);
-      return promise.get_future().share();
-    });
+    .WillOnce(::testing::DoAll(
+      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   /// Send goal to register callbacks
   node->send_goal(2.0, 3.0);
@@ -223,11 +167,10 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
   result.result->success = false;
 
   // Use the stored goal handle with callback
-  ASSERT_TRUE(stored_goal_handle);
-  ASSERT_TRUE(stored_goal_handle->result_callback);
+  ASSERT_TRUE(goal_opts.result_callback);
 
   /// Manually trigger the result callback
-  stored_goal_handle->result_callback(result);
+  goal_opts.result_callback(result);
 
   /// Check that the client properly handled the canceled result
   EXPECT_FALSE(node->get_last_result_success());
