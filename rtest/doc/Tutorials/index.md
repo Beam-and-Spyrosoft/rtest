@@ -1,6 +1,6 @@
 # Tutorials
 
-The tutorials are a collection of step-by-step instructions meant to help you get started with the RTEST framework.
+The tutorials are a collection of step-by-step instructions meant to help you get started with the Rtest framework.
 They cover a variety of topics, from basic usage to advanced features, and are designed to be easy to follow.
 
 There is no strict rule to follow the tutorial in order, but it is suggested to start with the Subscription Test.

@@ -1,6 +1,6 @@
 # Feature Status
 
-The table below lists all features of RTEST, available in the current release, and planned for future
+The table below lists all features of Rtest, available in the current release, and planned for future
 
  ● - available
  ○ - planned

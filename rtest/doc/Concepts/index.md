@@ -25,11 +25,11 @@ local: true
 
 
 
-## 5 Testing Philosophy of RTEST
+## 5 Testing Philosophy of Rtest
 
 
 
-## 6 Core Components of RTEST
+## 6 Core Components of Rtest
 
 
 
