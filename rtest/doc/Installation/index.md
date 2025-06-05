@@ -1,8 +1,8 @@
 # Installation
 
 
-RTEST is distributed as an open source project and can be installed from source or downloaded as a pre-built package. The installation process is straightforward and can be done in a few simple steps.
-To get started with RTEST, you can follow the instructions below to install it in your ROS 2 environment.
+Rtest is distributed as an open source project and can be installed from source or downloaded as a pre-built package. The installation process is straightforward and can be done in a few simple steps.
+To get started with Rtest, you can follow the instructions below to install it in your ROS 2 environment.
 The installation process is designed to be simple and quick, allowing you to start writing and running tests in no time.
 
 
@@ -18,11 +18,11 @@ We provide ROS 2 binary packages for the following platforms:
 ## Install From Source
 
 
-RTEST can be installed from source. We support building RTEST from source on the Tier 1 operating systems. The following steps outline how to install RTEST from source in your ROS 2 environment.
+Rtest can be installed from source. We support building Rtest from source on the Tier 1 operating systems. The following steps outline how to install Rtest from source in your ROS 2 environment.
 
-1. **Clone the RTEST repository**:
+1. **Clone the Rtest repository**:
 
-Open a terminal and navigate to your ROS 2 workspace (e.g., `~/ros2_ws/src`). Then, clone the RTEST repository using the following command:
+Open a terminal and navigate to your ROS 2 workspace (e.g., `~/ros2_ws/src`). Then, clone the Rtest repository using the following command:
 
 ```shell
 $ git clone https://github.com/yourusername/rtest.git

@@ -1,4 +1,4 @@
-![RTEST Logo](rtest/doc/logo.png)
+![Rtest Logo](rtest/doc/logo_h_grey.png)
 
 [![Licence](https://img.shields.io/github/license/Beam-and-Spyrosoft/rtest?style=for-the-badge)](./LICENSE)
 
@@ -7,7 +7,7 @@
 [![Static Code Analysis with clang-tidy](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml/badge.svg)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml)
 
 
-# RTEST
+# Rtest
 
 This repository provides a suite of tools and utilities tailored for testing and debugging ROS 2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS 2-based projects, particularly in scenarios involving unit and integration testing. 
 
@@ -28,7 +28,7 @@ This repository and tooling was initally developed as a collaboration between [B
 
 ## Documentation
 
-Complete documentation: [RTEST Documentation](https://rtest.readthedocs.io/en/latest/)
+Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/latest/)
 
 ## Requirements
 
@@ -64,7 +64,7 @@ Add a dependency to `rtest` in your `package.xml` file:
 
 Create a sub-folder `test` and add a `CMakeLists.txt` file there.
 
-> **WARNING**: The RTEST uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
+> **WARNING**: The Rtest uses C++ template code substitution at the source level. You must build the unit under test directly from sources. Linking with a static or dynamic library will not work.
 
 Example `CMakeLists.txt`:
 

@@ -66,7 +66,7 @@ All pull requests must resolve related documentation changes before merging.
 
 ### Feature Documentation [3.i]
 
-`rtest` has a documented feature list and it is hosted [RTEST Documentation](https://rtest.readthedocs.io/en/latest/).
+`rtest` has a documented feature list and it is hosted [Rtest Documentation](https://rtest.readthedocs.io/en/latest/).
 
 ### Public API Documentation [3.ii]
 
