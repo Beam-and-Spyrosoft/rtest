@@ -11,7 +11,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
-  <build_depend>libboost-all-dev</build_depend>
+  <build_depend>boost</build_depend>
   <depend>gmock_vendor</depend>
   <depend>rclcpp</depend>
 
