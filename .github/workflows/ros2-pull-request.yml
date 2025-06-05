@@ -54,7 +54,7 @@ jobs:
           - ros_distro: kilted
             container_image: osrf/ros:kilted-desktop
             ubuntu_version: ubuntu-24.04
-            ubuntu_codename: plucky
+            ubuntu_codename: noble
     runs-on: ${{ matrix.ubuntu_version }}
     container:
       image: ${{ matrix.container_image }}
