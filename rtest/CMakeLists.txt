@@ -22,6 +22,8 @@ endif()
 
 if(ROS_DISTRO_TARGET STREQUAL "rolling")
   message(WARNING "ROS 2 Rolling distribution detected. This is experimental support, we don't guarantee that rolling will work correctly.")
+  # Falling back to kilted distro
+  set(ROS_DISTRO_TARGET "kilted")
 endif()
 
 # Set distribution-specific include path (no src needed - all header-only)
