@@ -1,14 +1,16 @@
-name: ROS 2 Jazzy CI
+name: ROS 2 Multi-Distribution CI
 
 on:
   push:
     branches:
       - main
       - jazzy
+      - kilted
   pull_request:
     branches:
       - main
       - jazzy
+      - kilted
 
 # Global variables
 env:
@@ -42,11 +44,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04]
+        ros_distro: [jazzy, kilted]
         arch: [amd64, arm64, arm32]
-    runs-on: ${{ matrix.os }}
+        include:
+          - ros_distro: jazzy
+            container_image: osrf/ros:jazzy-desktop
+            ubuntu_version: ubuntu-24.04
+            ubuntu_codename: noble
+          - ros_distro: kilted
+            container_image: osrf/ros:kilted-desktop
+            ubuntu_version: ubuntu-24.04
+            ubuntu_codename: noble
+    runs-on: ${{ matrix.ubuntu_version }}
     container:
-      image: osrf/ros:jazzy-desktop
+      image: ${{ matrix.container_image }}
+    env:
+      ROS_DISTRO: ${{ matrix.ros_distro }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,7 +68,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-jazzy-ament-copyright
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-${{ matrix.ros_distro }}-ament-copyright
 
       - name: Update rosdep database
         run: rosdep update || true
@@ -67,13 +80,13 @@ jobs:
       - name: Build project with coverage flags
         shell: bash
         run: |
-          . /opt/ros/jazzy/setup.bash
+          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
           colcon build --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
 
       - name: Run tests
         shell: bash
         run: |
-          . /opt/ros/jazzy/setup.bash
+          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
           . install/setup.bash
           colcon test --event-handlers console_cohesion+
           colcon test-result
@@ -82,13 +95,13 @@ jobs:
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-ubuntu-${{ matrix.arch }}
+          name: test-results-ubuntu-${{ matrix.ros_distro }}-${{ matrix.arch }}
           path: build/rtest_examples/test_results
 
       - name: Verify test results
         shell: bash
         run: |
-          . /opt/ros/jazzy/setup.bash
+          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
           test_results=$(colcon test-result --verbose | tee /dev/stderr)
           if echo "$test_results" | grep -q "0 errors, 0 failures"; then
             echo "[  PASSED  ] All tests passed with no errors and no failures."
@@ -108,7 +121,7 @@ jobs:
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: framework-coverage-report-${{ matrix.arch }}
+          name: framework-coverage-report-${{ matrix.ros_distro }}-${{ matrix.arch }}
           path: coverage_artifacts
           if-no-files-found: warn
 
@@ -116,7 +129,7 @@ jobs:
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-html-report-${{ matrix.arch }}
+          name: coverage-html-report-${{ matrix.ros_distro }}-${{ matrix.arch }}
           path: coverage_report_framework
           if-no-files-found: warn
 
@@ -124,9 +137,9 @@ jobs:
         if: always()
         run: |
           if [ "${TESTS_PASSED}" = "true" ]; then
-            echo "✅ All tests passed successfully"
+            echo "✅ All tests passed successfully for ${{ matrix.ros_distro }}"
           else
-            echo "❌ Tests failed or had errors"
+            echo "❌ Tests failed or had errors for ${{ matrix.ros_distro }}"
             exit 1
           fi
 

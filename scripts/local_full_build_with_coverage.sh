@@ -30,9 +30,9 @@ check_dependencies() {
     missing_deps=1
   fi
 
-  # Check if ROS Jazzy is installed
-  if [ ! -f "/opt/ros/jazzy/setup.bash" ]; then
-    echo "ERROR: ROS Jazzy not found."
+  # Check if ROS is installed
+  if [ ! -f "/opt/ros/${ROS_DISTRO}/setup.bash" ]; then
+    echo "ERROR: ROS ${ROS_DISTRO} not found."
     missing_deps=1
   fi
 
@@ -58,8 +58,8 @@ check_dependencies
 echo "===== RUNNING LOCAL COVERAGE REPORT ====="
 echo "Using thresholds: ${LINES_THRESHOLD}% (lines), ${FUNCTIONS_THRESHOLD}% (functions)"
 
-if [ -f "/opt/ros/jazzy/setup.bash" ]; then
-  . /opt/ros/jazzy/setup.bash
+if [ -f "/opt/ros/${ROS_DISTRO}/setup.bash" ]; then
+  . /opt/ros/${ROS_DISTRO}/setup.bash
 fi
 
 # Step 1: Build the project with coverage flags

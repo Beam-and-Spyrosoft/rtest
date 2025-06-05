@@ -18,9 +18,12 @@
   <depend>rcl</depend>
   <depend>rcl_action</depend>
 
+  <build_depend>libboost-dev</build_depend>
+  <build_depend>libgmock-dev</build_depend>
+
+  <test_depend>ament_clang_tidy</test_depend>
   <test_depend>ament_cmake_copyright</test_depend>
   <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_clang_tidy</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <export>
