@@ -25,7 +25,7 @@ RTEST can be installed from source. We support building RTEST from source on the
 Open a terminal and navigate to your ROS 2 workspace (e.g., `~/ros2_ws/src`). Then, clone the RTEST repository using the following command:
 
 ```shell
-$ git clone https://github.com/yourusername/rtest.git
+$ git clone https://github.com/Beam-and-Spyrosoft/rtest.git
 ```
 
 2. **Build and run the test examples**:
