@@ -72,15 +72,15 @@ else()
   )
 endif()
 
-
-ament_target_dependencies(rtest_common
-  PUBLIC rclcpp rclcpp_action rcl_action gmock_vendor
+target_link_libraries(rtest_common PUBLIC
+  rcl_action::rcl_action
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
 )
 
 ament_export_dependencies(
   rclcpp rclcpp_action rcl_action gmock_vendor
 )
-
 
 # Publisher mock library
 add_library(publisher_mock INTERFACE)
@@ -161,7 +161,10 @@ target_link_libraries(action_server_mock INTERFACE
 )
 
 #Add explicit ament dependency for action mock
-ament_target_dependencies(action_server_mock INTERFACE rclcpp_action rcl_action)
+target_link_libraries(action_server_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
 
 target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK)
 
@@ -179,7 +182,10 @@ target_link_libraries(action_client_mock INTERFACE
 )
 
 #Add explicit ament dependency for action mock
-ament_target_dependencies(action_client_mock INTERFACE rclcpp_action rcl_action)
+target_link_libraries(action_client_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
 
 target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK)
 

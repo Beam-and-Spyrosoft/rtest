@@ -34,11 +34,12 @@ target_include_directories(publisher_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(publisher_component
-  rclcpp
-  rclcpp_components
-  std_msgs
+target_link_libraries(publisher_component PUBLIC
+  ${std_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(publisher_component "test_composition::Publisher")
 
 # Subscriber component
@@ -48,11 +49,12 @@ target_include_directories(subscriber_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(subscriber_component
-  rclcpp
-  rclcpp_components
-  std_msgs
+target_link_libraries(subscriber_component PUBLIC
+  ${std_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(subscriber_component "test_composition::Subscriber")
 
 # Service provider component
@@ -62,12 +64,13 @@ target_include_directories(service_provider_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(service_provider_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  std_srvs
+target_link_libraries(service_provider_component PUBLIC
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(service_provider_component "test_composition::ServiceProvider")
 
 # Service client component
@@ -77,12 +80,13 @@ target_include_directories(service_client_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(service_client_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  std_srvs
+target_link_libraries(service_client_component PUBLIC
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(service_client_component "test_composition::ServiceClient")
 
 
@@ -95,14 +99,15 @@ target_include_directories(action_server_component PUBLIC
 )
 
 # Link with generated action interfaces and threads
-ament_target_dependencies(action_server_component
-  rclcpp
-  rclcpp_components
-  rclcpp_action
-  std_msgs
-  std_srvs
-  rtest_examples_interfaces
+target_link_libraries(action_server_component PUBLIC
+  ${rtest_examples_interfaces_TARGETS}
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(action_server_component "test_composition::ActionServer")
 
 # Action client component
@@ -114,16 +119,16 @@ target_include_directories(action_client_component PUBLIC
 )
 
 # Link with generated action interfaces and threads
-ament_target_dependencies(action_client_component
-  rclcpp
-  rclcpp_components
-  rclcpp_action
-  std_msgs
-  std_srvs
-  rtest_examples_interfaces
+target_link_libraries(action_client_component PUBLIC
+  ${rtest_examples_interfaces_TARGETS}
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
+  rclcpp_components::component
 )
-rclcpp_components_register_nodes(action_client_component "test_composition::ActionClient")
 
+rclcpp_components_register_nodes(action_client_component "test_composition::ActionClient")
 
 # Manual/static Node composition
 add_executable(manual_composition src/manual_composition.cpp)
