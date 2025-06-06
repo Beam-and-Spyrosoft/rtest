@@ -86,8 +86,8 @@ target_link_libraries(${PROJECT_NAME}-test
   rtest::service_client_mock
 )
 
-ament_target_dependencies(${PROJECT_NAME}-test
-  rclcpp
+target_link_libraries(${PROJECT_NAME}-test
+  rclcpp::rclcpp
 )
 ```
 

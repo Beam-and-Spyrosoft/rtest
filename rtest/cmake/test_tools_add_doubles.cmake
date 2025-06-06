@@ -44,11 +44,11 @@
 #     src/actuator.cpp)
 #
 #   set(AMENT_TARGET_DEPS Eigen3 rclcpp std_msgs)
-#   ament_target_dependencies(my_robot ${AMENT_TARGET_DEPS})
+#   target_link_libraries(my_robot ${AMENT_TARGET_DEPS})
 #
 #   # Create test doubles target for the original implementation
 #   test_tools_add_doubles(my_robot
-#     AMENT_DEPENDENCIES ${AMENT_TARGET_DEPS})
+#     AMENT_DEPENDENCIES ${AMENT_TARGET_DEPS_TARGETS})
 #
 #   ---
 #
@@ -83,7 +83,7 @@ function(test_tools_add_doubles target)
       rtest::timer_mock
     )
 
-    ament_target_dependencies(${LIB_DOUBLES_NAME} INTERFACE
+    target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE
       ${arg_AMENT_DEPENDENCIES}
     )
   else()
@@ -109,7 +109,7 @@ function(test_tools_add_doubles target)
       rtest::rtest_common
     )
 
-    ament_target_dependencies(${LIB_DOUBLES_NAME}
+    target_link_libraries(${LIB_DOUBLES_NAME}
       ${arg_AMENT_DEPENDENCIES}
     )
   endif()

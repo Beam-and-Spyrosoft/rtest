@@ -141,9 +141,7 @@ target_link_libraries(manual_composition
   action_client_component
   ${cpp_typesupport_target}
 )
-ament_target_dependencies(manual_composition
-  rclcpp
-)
+target_link_libraries(manual_composition rclcpp::rclcpp)
 
 install(TARGETS
   publisher_component
@@ -177,47 +175,47 @@ if(BUILD_TESTING)
 
     test_tools_add_doubles(publisher_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(subscriber_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(service_provider_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
-        std_srvs
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
     )
     test_tools_add_doubles(service_client_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
-        std_srvs
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
     )
     test_tools_add_doubles(action_server_component
-    AMENT_DEPENDENCIES
-      rclcpp
-      rclcpp_components
-      rclcpp_action
-      std_msgs
-      std_srvs
-      rtest_examples_interfaces
+      AMENT_DEPENDENCIES
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${rclcpp_action_TARGETS}
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
     )
     test_tools_add_doubles(action_client_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        rclcpp_action
-        std_msgs
-        std_srvs
-        rtest_examples_interfaces
+        ${rclcpp_TARGETS}
+        ${rclcpp_components_TARGETS}
+        ${rclcpp_action_TARGETS}
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
     )
     add_subdirectory(test)
   endif()
