@@ -20,7 +20,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
-#include <rtest_examples/action/move_robot.hpp>
+#include <rtest_examples_interfaces/action/move_robot.hpp>
 
 namespace test_composition
 {
@@ -28,7 +28,7 @@ namespace test_composition
 class ActionClient : public rclcpp::Node
 {
 public:
-  using MoveRobot = rtest_examples::action::MoveRobot;
+  using MoveRobot = rtest_examples_interfaces::action::MoveRobot;
   using GoalHandleMoveRobot = rclcpp_action::ClientGoalHandle<MoveRobot>;
 
   explicit ActionClient(const rclcpp::NodeOptions & options);

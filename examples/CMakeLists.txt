@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(rtest_examples 
-  LANGUAGES C CXX
+  LANGUAGES CXX
   VERSION 0.2.0
 )
 
@@ -20,18 +20,11 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(rtest_examples_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
-find_package(rosidl_default_generators REQUIRED)
 find_package(Threads REQUIRED)
-
-# Generate action interfaces
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/MoveRobot.action"
-)
-
-rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 
 # Publisher component
 add_library(publisher_component SHARED src/publisher.cpp)
@@ -102,13 +95,13 @@ target_include_directories(action_server_component PUBLIC
 )
 
 # Link with generated action interfaces and threads
-target_link_libraries(action_server_component ${cpp_typesupport_target} Threads::Threads)
 ament_target_dependencies(action_server_component
   rclcpp
   rclcpp_components
   rclcpp_action
   std_msgs
   std_srvs
+  rtest_examples_interfaces
 )
 rclcpp_components_register_nodes(action_server_component "test_composition::ActionServer")
 
@@ -121,13 +114,13 @@ target_include_directories(action_client_component PUBLIC
 )
 
 # Link with generated action interfaces and threads
-target_link_libraries(action_client_component ${cpp_typesupport_target} Threads::Threads)
 ament_target_dependencies(action_client_component
   rclcpp
   rclcpp_components
   rclcpp_action
   std_msgs
   std_srvs
+  rtest_examples_interfaces
 )
 rclcpp_components_register_nodes(action_client_component "test_composition::ActionClient")
 
@@ -210,8 +203,8 @@ if(BUILD_TESTING)
       rclcpp_action
       std_msgs
       std_srvs
+      rtest_examples_interfaces
     )
-    target_link_libraries(action_server_component_test_doubles ${cpp_typesupport_target})
     test_tools_add_doubles(action_client_component
       AMENT_DEPENDENCIES
         rclcpp
@@ -219,8 +212,8 @@ if(BUILD_TESTING)
         rclcpp_action
         std_msgs
         std_srvs
+        rtest_examples_interfaces
     )
-    target_link_libraries(action_client_component_test_doubles ${cpp_typesupport_target})
     add_subdirectory(test)
   endif()
 endif()

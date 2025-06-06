@@ -30,7 +30,8 @@ TEST_F(ActionClientTest, SendGoal)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
   auto client_mock =
-    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+    rtest::experimental::findActionClient<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -50,7 +51,8 @@ TEST_F(ActionClientTest, ReceiveFeedback)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
   auto client_mock =
-    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+    rtest::experimental::findActionClient<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -75,7 +77,7 @@ TEST_F(ActionClientTest, ReceiveFeedback)
   ASSERT_TRUE(goal_opts.feedback_callback != nullptr);
 
   // Create feedback with specific test values
-  auto feedback = std::make_shared<rtest_examples::action::MoveRobot::Feedback>();
+  auto feedback = std::make_shared<rtest_examples_interfaces::action::MoveRobot::Feedback>();
   feedback->current_x = 1.5f;
   feedback->current_y = 2.5f;
   feedback->distance_remaining = 3.0f;
@@ -92,7 +94,8 @@ TEST_F(ActionClientTest, ReceiveResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
   auto client_mock =
-    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+    rtest::experimental::findActionClient<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -119,9 +122,10 @@ TEST_F(ActionClientTest, ReceiveResult)
   ASSERT_TRUE(goal_opts.result_callback != nullptr);
 
   // Create successful result with specific test values
-  rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>::WrappedResult result;
+  rclcpp_action::ClientGoalHandle<rtest_examples_interfaces::action::MoveRobot>::WrappedResult
+    result;
   result.code = rclcpp_action::ResultCode::SUCCEEDED;
-  result.result = std::make_shared<rtest_examples::action::MoveRobot::Result>();
+  result.result = std::make_shared<rtest_examples_interfaces::action::MoveRobot::Result>();
   result.result->success = true;
   result.result->final_x = 2.5;
   result.result->final_y = 3.5;
@@ -142,7 +146,8 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
   auto client_mock =
-    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+    rtest::experimental::findActionClient<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
@@ -161,9 +166,10 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
   node->send_goal(2.0, 3.0);
 
   /// Create canceled result
-  rclcpp_action::ClientGoalHandle<rtest_examples::action::MoveRobot>::WrappedResult result;
+  rclcpp_action::ClientGoalHandle<rtest_examples_interfaces::action::MoveRobot>::WrappedResult
+    result;
   result.code = rclcpp_action::ResultCode::CANCELED;
-  result.result = std::make_shared<rtest_examples::action::MoveRobot::Result>();
+  result.result = std::make_shared<rtest_examples_interfaces::action::MoveRobot::Result>();
   result.result->success = false;
 
   // Use the stored goal handle with callback
@@ -181,7 +187,8 @@ TEST_F(ActionClientTest, ServerNotReady)
 {
   auto node = std::make_shared<test_composition::ActionClient>(opts);
   auto client_mock =
-    rtest::experimental::findActionClient<rtest_examples::action::MoveRobot>(node, "move_robot");
+    rtest::experimental::findActionClient<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
   ASSERT_TRUE(client_mock);
 
   /// Mock server not ready
