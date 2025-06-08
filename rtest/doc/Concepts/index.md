@@ -120,6 +120,8 @@ Rtest was designed specifically to address these challenges. It provides a compr
 
 ## Rtest design
 
+### ROS Client Library interposition
+
 At its core, Rtest employs an architectural approach that intercepts the communication chain between a ROS 2 Node and the Client Library. By inserting a thin interposition layer above the rclcpp API, Rtest effectively disables the underlying asynchronous mechanisms while preserving the familiar API surface.
 
 This strategic interception provides developers with complete control over execution paths during testing. Rather than relying on the inherently uncontrolled behaviors of the full ROS 2 stack, Rtest offers precise orchestration capabilities that enable robust, reproducible test scenarios.
@@ -141,7 +143,7 @@ Rtest includes a suite of specialized testing utilities designed to enhance deve
 
 - **Static Registry**: Verify if a Node creates expected entities—publishers, subscriptions, service clients and servers, actions, and timers
 - **Publishers and Subscription Mocks**: Capture publish events and verify messages. Directly inject messages and trigger subscription callbacks in a controlled manner
-- **Service Client and Server Mocks**: Capture service calls, verify arguments, and provide predetermined responses. Inject service requests to servers, capture responses, and validate them
+- **Service Client and Service Provider Mocks**: Capture service calls, verify arguments, and provide predetermined responses. Inject service requests to servers, capture responses, and validate them
 - **Timer Mocks**: Validate timer creation with expected time intervals. Trigger timer callbacks directly without waiting for actual time periods
 - **Simulated Time**: Leverage ROS 2 simulated time source to control time flow with absolute precision
 - **Logger Inspection Tools**: Capture and verify logging events by message content and severity level

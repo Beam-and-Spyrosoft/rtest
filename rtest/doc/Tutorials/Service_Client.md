@@ -1,4 +1,4 @@
-# Writing a Client test
+# Writing a Service Client test
 
 ```{contents} Contents
 ---

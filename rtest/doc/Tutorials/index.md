@@ -13,10 +13,10 @@ titlesonly: true
 Subscription
 Publisher
 Timer
-Service
-Client
-Logger
 Clock
+Service_Client
+Service_Provider
+Logger
 ```
 
 
