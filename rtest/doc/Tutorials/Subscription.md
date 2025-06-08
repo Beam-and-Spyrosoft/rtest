@@ -92,9 +92,9 @@ target_include_directories(subscriber PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-ament_target_dependencies(subscriber
-  rclcpp
-  std_msgs
+target_link_libraries(subscriber PUBLIC
+  rclcpp::rclcpp
+  std_msgs::std_msgs
 )
 
 ament_package()
