@@ -175,44 +175,44 @@ if(BUILD_TESTING)
 
     test_tools_add_doubles(publisher_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
         ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(subscriber_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
         ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(service_provider_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
         ${std_msgs_TARGETS}
         ${std_srvs_TARGETS}
     )
     test_tools_add_doubles(service_client_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
         ${std_msgs_TARGETS}
         ${std_srvs_TARGETS}
     )
     test_tools_add_doubles(action_server_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
-        ${rclcpp_action_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
         ${std_msgs_TARGETS}
         ${std_srvs_TARGETS}
         ${rtest_examples_interfaces_TARGETS}
     )
     test_tools_add_doubles(action_client_component
       AMENT_DEPENDENCIES
-        ${rclcpp_TARGETS}
-        ${rclcpp_components_TARGETS}
-        ${rclcpp_action_TARGETS}
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
         ${std_msgs_TARGETS}
         ${std_srvs_TARGETS}
         ${rtest_examples_interfaces_TARGETS}
