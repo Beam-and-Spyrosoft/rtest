@@ -67,6 +67,15 @@ public:
   size_t get_number_of_ready_services() override { return 0; }
   std::vector<std::shared_ptr<rclcpp::TimerBase>> get_timers() const override { return {}; }
   size_t get_number_of_ready_guard_conditions() override { return 0; }
+  void configure_introspection(
+    rclcpp::Clock::SharedPtr clock,
+    const rclcpp::QoS & qos_service_event_pub,
+    rcl_service_introspection_state_t introspection_state)
+  {
+    (void)clock;
+    (void)qos_service_event_pub;
+    (void)introspection_state;
+  }
 
   void add_to_wait_set(rcl_wait_set_t & wait_set) override { (void)wait_set; }
   bool is_ready(const rcl_wait_set_t & wait_set) override

@@ -40,6 +40,16 @@ enum class ResultCode : int8_t
 class ClientBase : public rclcpp::Waitable
 {
 public:
+  /// Enum to identify entities belonging to the action client
+  enum class EntityType : std::size_t
+  {
+    GoalClient,
+    ResultClient,
+    CancelClient,
+    FeedbackSubscription,
+    StatusSubscription,
+  };
+
   ClientBase() = default;
   virtual ~ClientBase() = default;
 

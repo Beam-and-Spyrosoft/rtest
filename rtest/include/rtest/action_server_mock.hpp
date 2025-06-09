@@ -51,19 +51,28 @@ public:
   ServerGoalHandle() = default;
   virtual ~ServerGoalHandle() = default;
 
-  std::shared_ptr<const Goal> get_goal() const { return goal_; }
   bool is_canceling() const { return canceling_; }
   void set_canceling(bool canceling = true) { canceling_ = canceling; }
   bool is_active() const { return !canceling_; }
+  bool is_executing() const { return !executing_; }
+  void set_executing(bool executing = true) { executing_ = executing; }
 
   virtual void publish_feedback(std::shared_ptr<const Feedback> feedback) { (void)feedback; }
-  virtual void succeed(std::shared_ptr<Result> result) { (void)result; }
-  virtual void abort(std::shared_ptr<Result> result) { (void)result; }
-  virtual void canceled(std::shared_ptr<Result> result) { (void)result; }
+  virtual void succeed(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
+  virtual void abort(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
+  virtual void canceled(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
+  void execute() {}
+
+  const GoalUUID & get_goal_id() const { return uuid_; }
+
+  /// Get the user provided message describing the goal.
+  const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
 
 private:
   std::shared_ptr<const Goal> goal_{nullptr};
+  GoalUUID uuid_{};
   bool canceling_ = false;
+  bool executing_ = false;
 };
 
 // Mock GoalHandle that can intercept publish_feedback calls
@@ -91,16 +100,10 @@ class Server : public ServerBase, public std::enable_shared_from_this<Server<Act
 public:
   TEST_TOOLS_SMART_PTR_DEFINITIONS(Server<ActionT>)
 
-  using Goal = typename ActionT::Goal;
-  using Feedback = typename ActionT::Feedback;
-  using GoalHandle = ServerGoalHandle<ActionT>;
-  using GoalHandleSharedPtr = std::shared_ptr<GoalHandle>;
-  using GoalResponse = rclcpp_action::GoalResponse;
-  using CancelResponse = rclcpp_action::CancelResponse;
-
-  using GoalCallback = std::function<GoalResponse(const GoalUUID &, std::shared_ptr<const Goal>)>;
-  using CancelCallback = std::function<CancelResponse(GoalHandleSharedPtr)>;
-  using AcceptedCallback = std::function<void(GoalHandleSharedPtr)>;
+  using GoalCallback =
+    std::function<GoalResponse(const GoalUUID &, std::shared_ptr<const typename ActionT::Goal>)>;
+  using CancelCallback = std::function<CancelResponse(std::shared_ptr<ServerGoalHandle<ActionT>>)>;
+  using AcceptedCallback = std::function<void(std::shared_ptr<ServerGoalHandle<ActionT>>)>;
 
   Server(
     rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base,

@@ -72,7 +72,7 @@ public:
   FeedbackCallback feedback_callback;
   ResultCallback result_callback;
 
-  GoalUUID get_goal_id() const { return goal_id_; }
+  const GoalUUID & get_goal_id() const { return goal_id_; }
   rclcpp::Time get_goal_stamp() const { return time_stamp_; }
   int8_t get_status();
   bool is_feedback_aware() { return feedback_callback != nullptr; }
@@ -134,7 +134,7 @@ public:
   using GoalHandle = ClientGoalHandle<ActionT>;
   using GoalHandleSharedPtr = typename GoalHandle::SharedPtr;
   using WrappedResult = typename GoalHandle::WrappedResult;
-  using GoalResponseCallback = std::function<void(GoalHandleSharedPtr)>;
+  using GoalResponseCallback = std::function<void(typename GoalHandle::SharedPtr)>;
   using FeedbackCallback = typename GoalHandle::FeedbackCallback;
   using ResultCallback = typename GoalHandle::ResultCallback;
   using CancelRequest = typename ActionT::Impl::CancelGoalService::Request;
@@ -194,7 +194,7 @@ public:
     return false;
   }
 
-  std::shared_future<WrappedResult> async_get_result(const GoalHandleSharedPtr & goal_handle)
+  std::shared_future<WrappedResult> async_get_result(typename GoalHandle::SharedPtr & goal_handle)
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
@@ -210,7 +210,7 @@ public:
   }
 
   std::shared_future<WrappedResult> async_get_result(
-    GoalHandleSharedPtr goal_handle,
+    typename GoalHandle::SharedPtr goal_handle,
     ResultCallback result_callback = nullptr)
   {
     if (result_callback) {
@@ -219,7 +219,7 @@ public:
     return async_get_result(goal_handle);
   }
 
-  std::shared_future<GoalHandleSharedPtr> async_send_goal(
+  std::shared_future<typename GoalHandle::SharedPtr> async_send_goal(
     const Goal & goal,
     const SendGoalOptions & options)
   {
@@ -235,18 +235,30 @@ public:
     return makeClientGoalHandleFuture<ActionT>(nullptr);  // reject goal by default
   }
 
-  std::shared_future<WrappedResult> async_cancel_all_goals()
+  std::shared_future<typename CancelResponse::SharedPtr> async_cancel_all_goals()
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
         ->async_cancel_all_goals();
     }
-    std::promise<WrappedResult> promise;
-    WrappedResult result;
+    std::promise<typename CancelResponse::SharedPtr> promise;
+    CancelResponse result;
     result.code = ResultCode::SUCCEEDED;
     result.result = std::make_shared<Result>();
     promise.set_value(result);
+    return promise.get_future().share();
+  }
+
+  std::shared_future<typename CancelResponse::SharedPtr> async_cancel_goal(
+    typename GoalHandle::SharedPtr goal_handle,
+    CancelCallback cancel_callback = nullptr)
+  {
+    (void)goal_handle;
+    (void)cancel_callback;
+    std::promise<typename CancelResponse::SharedPtr> promise;
+    auto response = std::make_shared<CancelResponse>();
+    promise.set_value(response);
     return promise.get_future().share();
   }
 
@@ -262,7 +274,7 @@ public:
     return promise.get_future().share();
   }
 
-  void stop_callbacks(GoalHandleSharedPtr goal_handle)
+  void stop_callbacks(typename GoalHandle::SharedPtr goal_handle)
   {
     if (goal_handle) {
       goal_handle->set_feedback_callback(FeedbackCallback());
@@ -324,7 +336,7 @@ public:
   MOCK_METHOD(
     std::shared_future<WrappedResult>,
     async_get_result,
-    (const GoalHandleSharedPtr &),
+    (typename GoalHandle::SharedPtr),
     ());
   MOCK_METHOD(
     std::shared_future<WrappedResult>,
