@@ -81,6 +81,9 @@ function(test_tools_add_doubles target)
       rtest::service_mock
       rtest::service_client_mock
       rtest::timer_mock
+      rtest::action_server_mock
+      rtest::action_client_mock
+      rtest::rtest_common
     )
 
     target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE

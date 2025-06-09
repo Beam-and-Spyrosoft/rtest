@@ -3,7 +3,8 @@
 ### 0.2.0 (2025-06-03)
 
 * Experimental support for ROS 2 Actions
-
+* Provides Kilted Kaiju distro support
+* Provides a build for Rolling distro
 
 ### 0.1.0 (2025-05-19)
 
