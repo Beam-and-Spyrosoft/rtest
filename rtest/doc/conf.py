@@ -78,7 +78,7 @@ hoverxref_roles = [
 
 html_theme = 'sphinx_rtd_theme'
 html_extra_path = ['static']
-html_logo = "logo.png"
+html_logo = "logo_v.png"
 html_theme_options = {
     'logo_only': True,
     'display_version': True,

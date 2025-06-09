@@ -12,7 +12,7 @@ if(NOT DEFINED ROS_DISTRO_TARGET)
     message(FATAL_ERROR "ROS_DISTRO environment variable not set. Please source ROS setup or set ROS_DISTRO_TARGET manually.")
   endif()
 endif()
-message(STATUS "Building RTEST for ROS distribution: ${ROS_DISTRO_TARGET}")
+message(STATUS "Building Rtest for ROS distribution: ${ROS_DISTRO_TARGET}")
 
 # Validate supported distributions
 set(SUPPORTED_DISTROS "jazzy" "kilted" "rolling")
