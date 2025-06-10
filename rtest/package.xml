@@ -3,9 +3,10 @@
 <package format="3">
   <name>rtest</name>
   <version>0.2.0</version>
-  <description>ROS2-specific code to help with testing.</description>
+  <description>This framework enables writing reliable, fully repeatable tests for C++ ROS 2 implementations.</description>
   <maintainer email="gc19@beam.global">Gary Cross</maintainer>
   <maintainer email="slawomir.cielepak@gmail.com">Sławomir Cielepak</maintainer>
+  <maintainer email="mua@spyro-soft.com">Mariusz Szczepanik</maintainer>
 
   <license>Apache 2.0</license>
 
