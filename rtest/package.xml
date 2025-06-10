@@ -6,7 +6,7 @@
   <description>ROS2-specific code to help with testing.</description>
   <maintainer email="gc19@beam.global">Gary Cross</maintainer>
   <maintainer email="slawomir.cielepak@gmail.com">Sławomir Cielepak</maintainer>
-  <maintainer email="mua@spyro-soft.com">Mariusz Szzepanik</maintainer>
+  <maintainer email="mua@spyro-soft.com">Mariusz Szczepanik</maintainer>
 
   <license>Apache 2.0</license>
 
