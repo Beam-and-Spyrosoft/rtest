@@ -26,6 +26,16 @@ if(ROS_DISTRO_TARGET STREQUAL "rolling")
   set(ROS_DISTRO_TARGET "kilted")
 endif()
 
+# Define distribution-specific version number
+if(ROS_DISTRO_TARGET STREQUAL "jazzy")
+  set(ROS_VERSION_NUMBER 24)
+elseif(ROS_DISTRO_TARGET STREQUAL "kilted")
+  set(ROS_VERSION_NUMBER 25)
+else()
+  message(FATAL_ERROR "No ROS version number defined for distribution: ${ROS_DISTRO_TARGET}")
+endif()
+message(STATUS "Setting RTEST_ROS_VERSION=${ROS_VERSION_NUMBER} for ${ROS_DISTRO_TARGET}")
+
 # Set distribution-specific include path (no src needed - all header-only)
 set(DISTRO_INCLUDE_DIR "include/${ROS_DISTRO_TARGET}")
 
@@ -96,8 +106,9 @@ target_link_libraries(publisher_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK)
-
+target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Subscriber mock library
 add_library(subscription_mock INTERFACE)
@@ -113,7 +124,9 @@ target_link_libraries(subscription_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK)
+target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Service mock library
 add_library(service_mock INTERFACE)
@@ -129,7 +142,9 @@ target_link_libraries(service_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK)
+target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 add_library(service_client_mock INTERFACE)
 add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
@@ -144,7 +159,9 @@ target_link_libraries(service_client_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK)
+target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Action mock library
 add_library(action_server_mock INTERFACE)
@@ -166,7 +183,9 @@ target_link_libraries(action_server_mock INTERFACE
   rclcpp_action::rclcpp_action
 )
 
-target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK)
+target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 add_library(action_client_mock INTERFACE)
 add_library(${PROJECT_NAME}::action_client_mock ALIAS action_client_mock)
@@ -187,7 +206,9 @@ target_link_libraries(action_client_mock INTERFACE
   rclcpp_action::rclcpp_action
 )
 
-target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK)
+target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Timer mock library
 add_library(timer_mock INTERFACE)
@@ -203,7 +224,9 @@ target_link_libraries(timer_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK)
+target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 install(DIRECTORY include/
   DESTINATION include

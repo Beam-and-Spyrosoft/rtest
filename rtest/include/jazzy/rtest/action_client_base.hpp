@@ -29,14 +29,6 @@
 namespace rclcpp_action
 {
 
-enum class ResultCode : int8_t
-{
-  UNKNOWN = 0,
-  SUCCEEDED = 1,
-  CANCELED = 2,
-  ABORTED = 3
-};
-
 class ClientBase : public rclcpp::Waitable
 {
 public:

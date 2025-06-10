@@ -23,6 +23,8 @@
 // First, disable original implementations
 #include <rtest/mock_defines.hpp>
 
+#include "rtest/ros_versions.hpp"
+
 // Then include our mocks
 #ifdef RTEST_SERVICE_MOCK
 #include <rtest/service_base.hpp>
@@ -53,6 +55,10 @@
 #endif
 
 #ifdef RTEST_ACTION_CLIENT_MOCK
+// In the latest ROS2 distributions (such as Kilted), action ClientBase has been correctly separated from the action Client class.
+#if RTEST_ROS_VERSION <= RTEST_ROS_JAZZY
 #include <rtest/action_client_base.hpp>
+#endif
+
 #include <rtest/action_client_mock.hpp>
 #endif
