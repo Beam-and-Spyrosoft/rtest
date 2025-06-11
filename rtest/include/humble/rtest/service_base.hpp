@@ -26,10 +26,10 @@
 #include <mutex>
 #include <sstream>
 #include <string>
+
 #include "rcl/error_handling.h"
 #include "rcl/event_callback.h"
 #include "rcl/service.h"
-#include "rcl/service_introspection.h"
 
 #include "rmw/error_handling.h"
 #include "rmw/impl/cpp/demangle.hpp"
@@ -38,7 +38,6 @@
 #include "tracetools/tracetools.h"
 
 #include "rclcpp/any_service_callback.hpp"
-#include "rclcpp/clock.hpp"
 #include "rclcpp/detail/cpp_callback_trampoline.hpp"
 #include "rclcpp/exceptions.hpp"
 #include "rclcpp/expand_topic_or_service_name.hpp"

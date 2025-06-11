@@ -18,27 +18,25 @@
 
 #pragma once
 
+
 #include <atomic>
-#include <functional>
 #include <future>
+#include <unordered_map>
 #include <memory>
 #include <mutex>
-#include <optional>
+#include <optional>  // NOLINT, cpplint doesn't think this is a cpp std header
 #include <sstream>
 #include <string>
 #include <tuple>
-#include <unordered_map>
 #include <utility>
-#include <variant>
+#include <variant>  // NOLINT
 #include <vector>
 
 #include "rcl/client.h"
 #include "rcl/error_handling.h"
 #include "rcl/event_callback.h"
-#include "rcl/service_introspection.h"
 #include "rcl/wait.h"
 
-#include "rclcpp/clock.hpp"
 #include "rclcpp/detail/cpp_callback_trampoline.hpp"
 #include "rclcpp/exceptions.hpp"
 #include "rclcpp/expand_topic_or_service_name.hpp"
@@ -60,34 +58,46 @@ namespace rclcpp
 
 namespace detail
 {
-template <typename FutureT>
+template<typename FutureT>
 struct FutureAndRequestId
 {
   FutureT future;
   int64_t request_id;
 
-  FutureAndRequestId(FutureT impl, int64_t req_id) : future(std::move(impl)), request_id(req_id) {}
+  FutureAndRequestId(FutureT impl, int64_t req_id)
+  : future(std::move(impl)), request_id(req_id)
+  {}
 
   /// Allow implicit conversions to `std::future` by reference.
-  operator FutureT &() { return this->future; }
+  operator FutureT &() {return this->future;}
+
+  /// Deprecated, use the `future` member variable instead.
+  /**
+   * Allow implicit conversions to `std::future` by value.
+   * \deprecated
+   */
+  [[deprecated("FutureAndRequestId: use .future instead of an implicit conversion")]]
+  operator FutureT() {return this->future;}
 
   // delegate future like methods in the std::future impl_
 
   /// See std::future::get().
-  auto get() { return this->future.get(); }
+  auto get() {return this->future.get();}
   /// See std::future::valid().
-  bool valid() const noexcept { return this->future.valid(); }
+  bool valid() const noexcept {return this->future.valid();}
   /// See std::future::wait().
-  void wait() const { return this->future.wait(); }
+  void wait() const {return this->future.wait();}
   /// See std::future::wait_for().
-  template <class Rep, class Period>
-  std::future_status wait_for(const std::chrono::duration<Rep, Period> & timeout_duration) const
+  template<class Rep, class Period>
+  std::future_status wait_for(
+    const std::chrono::duration<Rep, Period> & timeout_duration) const
   {
     return this->future.wait_for(timeout_duration);
   }
   /// See std::future::wait_until().
-  template <class Clock, class Duration>
-  std::future_status wait_until(const std::chrono::time_point<Clock, Duration> & timeout_time) const
+  template<class Clock, class Duration>
+  std::future_status wait_until(
+    const std::chrono::time_point<Clock, Duration> & timeout_time) const
   {
     return this->future.wait_until(timeout_time);
   }
@@ -106,28 +116,6 @@ struct FutureAndRequestId
   /// Destructor.
   ~FutureAndRequestId() = default;
 };
-
-template <typename PendingRequestsT, typename AllocatorT = std::allocator<int64_t>>
-size_t prune_requests_older_than_impl(
-  PendingRequestsT & pending_requests,
-  std::mutex & pending_requests_mutex,
-  std::chrono::time_point<std::chrono::system_clock> time_point,
-  std::vector<int64_t, AllocatorT> * pruned_requests = nullptr)
-{
-  std::lock_guard guard(pending_requests_mutex);
-  auto old_size = pending_requests.size();
-  for (auto it = pending_requests.begin(), last = pending_requests.end(); it != last;) {
-    if (it->second.first < time_point) {
-      if (pruned_requests) {
-        pruned_requests->push_back(it->first);
-      }
-      it = pending_requests.erase(it);
-    } else {
-      ++it;
-    }
-  }
-  return old_size - pending_requests.size();
-}
 }  // namespace detail
 
 namespace node_interfaces
@@ -146,7 +134,7 @@ public:
     rclcpp::node_interfaces::NodeGraphInterface::SharedPtr node_graph);
 
   RCLCPP_PUBLIC
-  virtual ~ClientBase() = default;
+  virtual ~ClientBase();
 
   /// Take the next response for this client as a type erased pointer.
   /**
@@ -166,12 +154,14 @@ public:
    *   rcl function fail.
    */
   RCLCPP_PUBLIC
-  bool take_type_erased_response(void * response_out, rmw_request_id_t & request_header_out);
+  bool
+  take_type_erased_response(void * response_out, rmw_request_id_t & request_header_out);
 
   /// Return the name of the service.
   /** \return The name of the service. */
   RCLCPP_PUBLIC
-  const char * get_service_name() const;
+  const char *
+  get_service_name() const;
 
   /// Return the rcl_client_t client handle in a std::shared_ptr.
   /**
@@ -179,7 +169,8 @@ public:
    * The actual rcl client is not finalized until it is out of scope everywhere.
    */
   RCLCPP_PUBLIC
-  std::shared_ptr<rcl_client_t> get_client_handle();
+  std::shared_ptr<rcl_client_t>
+  get_client_handle();
 
   /// Return the rcl_client_t client handle in a std::shared_ptr.
   /**
@@ -187,33 +178,36 @@ public:
    * The actual rcl client is not finalized until it is out of scope everywhere.
    */
   RCLCPP_PUBLIC
-  std::shared_ptr<const rcl_client_t> get_client_handle() const;
+  std::shared_ptr<const rcl_client_t>
+  get_client_handle() const;
 
   /// Return if the service is ready.
   /**
    * \return `true` if the service is ready, `false` otherwise
    */
   RCLCPP_PUBLIC
-  bool service_is_ready() const;
+  bool
+  service_is_ready() const;
 
   /// Wait for a service to be ready.
   /**
    * \param timeout maximum time to wait
    * \return `true` if the service is ready and the timeout is not over, `false` otherwise
    */
-  template <typename RepT = int64_t, typename RatioT = std::milli>
-  bool wait_for_service(
+  template<typename RepT = int64_t, typename RatioT = std::milli>
+  bool
+  wait_for_service(
     std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
   {
     return wait_for_service_nanoseconds(
-      std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+      std::chrono::duration_cast<std::chrono::nanoseconds>(timeout)
+    );
   }
 
   virtual std::shared_ptr<void> create_response() = 0;
   virtual std::shared_ptr<rmw_request_id_t> create_request_header() = 0;
   virtual void handle_response(
-    std::shared_ptr<rmw_request_id_t> request_header,
-    std::shared_ptr<void> response) = 0;
+    std::shared_ptr<rmw_request_id_t> request_header, std::shared_ptr<void> response) = 0;
 
   /// Exchange the "in use by wait set" state for this client.
   /**
@@ -226,7 +220,8 @@ public:
    * \returns the previous state.
    */
   RCLCPP_PUBLIC
-  bool exchange_in_use_by_wait_set_state(bool in_use_state);
+  bool
+  exchange_in_use_by_wait_set_state(bool in_use_state);
 
   /// Get the actual request publsher QoS settings, after the defaults have been determined.
   /**
@@ -241,7 +236,8 @@ public:
    * \throws std::runtime_error if failed to get qos settings
    */
   RCLCPP_PUBLIC
-  rclcpp::QoS get_request_publisher_actual_qos() const;
+  rclcpp::QoS
+  get_request_publisher_actual_qos() const;
 
   /// Get the actual response subscription QoS settings, after the defaults have been determined.
   /**
@@ -256,7 +252,8 @@ public:
    * \throws std::runtime_error if failed to get qos settings
    */
   RCLCPP_PUBLIC
-  rclcpp::QoS get_response_subscription_actual_qos() const;
+  rclcpp::QoS
+  get_response_subscription_actual_qos() const;
 
   /// Set a callback to be called when each new response is received.
   /**
@@ -284,31 +281,34 @@ public:
    *
    * \param[in] callback functor to be called when a new response is received
    */
-  void set_on_new_response_callback(std::function<void(size_t)> callback)
+  void
+  set_on_new_response_callback(std::function<void(size_t)> callback)
   {
     if (!callback) {
       throw std::invalid_argument(
-        "The callback passed to set_on_new_response_callback "
-        "is not callable.");
+              "The callback passed to set_on_new_response_callback "
+              "is not callable.");
     }
 
-    auto new_callback = [callback, this](size_t number_of_responses) {
-      try {
-        callback(number_of_responses);
-      } catch (const std::exception & exception) {
-        RCLCPP_ERROR_STREAM(
-          node_logger_,
-          "rclcpp::ClientBase@"
-            << this << " caught " << rmw::impl::cpp::demangle(exception)
-            << " exception in user-provided callback for the 'on new response' callback: "
-            << exception.what());
-      } catch (...) {
-        RCLCPP_ERROR_STREAM(
-          node_logger_,
-          "rclcpp::ClientBase@" << this << " caught unhandled exception in user-provided callback "
-                                << "for the 'on new response' callback");
-      }
-    };
+    auto new_callback =
+      [callback, this](size_t number_of_responses) {
+        try {
+          callback(number_of_responses);
+        } catch (const std::exception & exception) {
+          RCLCPP_ERROR_STREAM(
+            node_logger_,
+            "rclcpp::ClientBase@" << this <<
+              " caught " << rmw::impl::cpp::demangle(exception) <<
+              " exception in user-provided callback for the 'on new response' callback: " <<
+              exception.what());
+        } catch (...) {
+          RCLCPP_ERROR_STREAM(
+            node_logger_,
+            "rclcpp::ClientBase@" << this <<
+              " caught unhandled exception in user-provided callback " <<
+              "for the 'on new response' callback");
+        }
+      };
 
     std::lock_guard<std::recursive_mutex> lock(callback_mutex_);
 
@@ -316,7 +316,7 @@ public:
     // This two-step setting, prevents a gap where the old std::function has
     // been replaced but the middleware hasn't been told about the new one yet.
     set_on_new_response_callback(
-      rclcpp::detail::cpp_callback_trampoline<decltype(new_callback), const void *, size_t>,
+      rclcpp::detail::cpp_callback_trampoline<const void *, size_t>,
       static_cast<const void *>(&new_callback));
 
     // Store the std::function to keep it in scope, also overwrites the existing one.
@@ -324,13 +324,13 @@ public:
 
     // Set it again, now using the permanent storage.
     set_on_new_response_callback(
-      rclcpp::detail::
-        cpp_callback_trampoline<decltype(on_new_response_callback_), const void *, size_t>,
+      rclcpp::detail::cpp_callback_trampoline<const void *, size_t>,
       static_cast<const void *>(&on_new_response_callback_));
   }
 
   /// Unset the callback registered for new responses, if any.
-  void clear_on_new_response_callback()
+  void
+  clear_on_new_response_callback()
   {
     std::lock_guard<std::recursive_mutex> lock(callback_mutex_);
     if (on_new_response_callback_) {
@@ -343,32 +343,32 @@ protected:
   RCLCPP_DISABLE_COPY(ClientBase)
 
   RCLCPP_PUBLIC
-  bool wait_for_service_nanoseconds(std::chrono::nanoseconds timeout);
+  bool
+  wait_for_service_nanoseconds(std::chrono::nanoseconds timeout);
 
   RCLCPP_PUBLIC
-  rcl_node_t * get_rcl_node_handle();
+  rcl_node_t *
+  get_rcl_node_handle();
 
   RCLCPP_PUBLIC
-  const rcl_node_t * get_rcl_node_handle() const;
+  const rcl_node_t *
+  get_rcl_node_handle() const;
 
   RCLCPP_PUBLIC
-  void set_on_new_response_callback(rcl_event_callback_t callback, const void * user_data);
+  void
+  set_on_new_response_callback(rcl_event_callback_t callback, const void * user_data);
 
   rclcpp::node_interfaces::NodeGraphInterface::WeakPtr node_graph_;
   std::shared_ptr<rcl_node_t> node_handle_;
   std::shared_ptr<rclcpp::Context> context_;
   rclcpp::Logger node_logger_;
 
-  std::recursive_mutex callback_mutex_;
-  // It is important to declare on_new_response_callback_ before
-  // client_handle_, so on destruction the client is
-  // destroyed first. Otherwise, the rmw client callback
-  // would point briefly to a destroyed function.
-  std::function<void(size_t)> on_new_response_callback_{nullptr};
-  // Declare client_handle_ after callback
   std::shared_ptr<rcl_client_t> client_handle_;
 
   std::atomic<bool> in_use_by_wait_set_{false};
+
+  std::recursive_mutex callback_mutex_;
+  std::function<void(size_t)> on_new_response_callback_{nullptr};
 };
 
 template <typename ServiceT>
