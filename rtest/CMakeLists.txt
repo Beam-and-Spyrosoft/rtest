@@ -15,7 +15,7 @@ endif()
 message(STATUS "Building Rtest for ROS distribution: ${ROS_DISTRO_TARGET}")
 
 # Validate supported distributions
-set(SUPPORTED_DISTROS "jazzy" "kilted" "rolling")
+set(SUPPORTED_DISTROS "humble" "jazzy" "kilted" "rolling")
 if(NOT ROS_DISTRO_TARGET IN_LIST SUPPORTED_DISTROS)
   message(FATAL_ERROR "Unsupported ROS distribution: ${ROS_DISTRO_TARGET}. Supported: ${SUPPORTED_DISTROS}")
 endif()
@@ -27,7 +27,9 @@ if(ROS_DISTRO_TARGET STREQUAL "rolling")
 endif()
 
 # Define distribution-specific version number
-if(ROS_DISTRO_TARGET STREQUAL "jazzy")
+if(ROS_DISTRO_TARGET STREQUAL "humble")
+  set(ROS_VERSION_NUMBER 22)
+elseif(ROS_DISTRO_TARGET STREQUAL "jazzy")
   set(ROS_VERSION_NUMBER 24)
 elseif(ROS_DISTRO_TARGET STREQUAL "kilted")
   set(ROS_VERSION_NUMBER 25)
