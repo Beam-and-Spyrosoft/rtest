@@ -130,40 +130,40 @@ target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK
   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
 )
 
-# # Service mock library
-# add_library(service_mock INTERFACE)
-# add_library(${PROJECT_NAME}::service_mock ALIAS service_mock)
-# target_include_directories(service_mock
-#   INTERFACE
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
-#     $<INSTALL_INTERFACE:include>
-# )
+# Service mock library
+add_library(service_mock INTERFACE)
+add_library(${PROJECT_NAME}::service_mock ALIAS service_mock)
+target_include_directories(service_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
-# target_link_libraries(service_mock INTERFACE
-#   ${PROJECT_NAME}::rtest_common
-# )
+target_link_libraries(service_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
 
-# target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK
-#   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
-# )
+target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
-# add_library(service_client_mock INTERFACE)
-# add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
-# target_include_directories(service_client_mock
-#   INTERFACE
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
-#     $<INSTALL_INTERFACE:include>
-# )
+add_library(service_client_mock INTERFACE)
+add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
+target_include_directories(service_client_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
-# target_link_libraries(service_client_mock INTERFACE
-#   ${PROJECT_NAME}::rtest_common
-# )
+target_link_libraries(service_client_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
 
-# target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK
-#   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
-# )
+target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # # Action mock library
 # add_library(action_server_mock INTERFACE)
@@ -248,8 +248,8 @@ install(
     rtest_common
     subscription_mock
     publisher_mock
-    # service_mock
-    # service_client_mock
+    service_mock
+    service_client_mock
     timer_mock
     # action_server_mock
     # action_client_mock
