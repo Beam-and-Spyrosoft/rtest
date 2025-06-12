@@ -51,7 +51,8 @@ TEST_F(PubSubTest, PublisherTest)
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
 
   // Fire the timer callback
-  nodeTimers[0]->execute_callback(nullptr);
+  //nodeTimers[0]->execute_callback(nullptr);
+  nodeTimers[0]->execute_callback();
 }
 
 TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
