@@ -80,8 +80,11 @@ public:
   size_t get_number_of_ready_clients() override { return 0; }
   size_t get_number_of_ready_services() override { return 0; }
 
-  void add_to_wait_set(rcl_wait_set_t & wait_set) override { (void)wait_set; }
-  bool is_ready(const rcl_wait_set_t & wait_set) override
+  //void add_to_wait_set(rcl_wait_set_t & wait_set) override { (void)wait_set; }
+  void add_to_wait_set(rcl_wait_set_t * wait_set) override { (void)wait_set; }
+
+  //bool is_ready(const rcl_wait_set_t & wait_set) override
+  bool is_ready(rcl_wait_set_t * wait_set) override
   {
     (void)wait_set;
     return false;
@@ -92,7 +95,8 @@ public:
     (void)id;
     return nullptr;
   }
-  void execute(const std::shared_ptr<void> & data) override { (void)data; }
+  //void execute(const std::shared_ptr<void> & data) override { (void)data; }
+  void execute(std::shared_ptr<void> & data) override { (void)data; }
 
   void set_on_ready_callback(std::function<void(size_t, int)> callback) override { (void)callback; }
   void clear_on_ready_callback() override {}

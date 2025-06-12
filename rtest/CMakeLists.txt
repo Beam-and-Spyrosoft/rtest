@@ -165,52 +165,52 @@ target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK
   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
 )
 
-# # Action mock library
-# add_library(action_server_mock INTERFACE)
-# add_library(${PROJECT_NAME}::action_server_mock ALIAS action_server_mock)
-# target_include_directories(action_server_mock
-#   INTERFACE
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
-#     $<INSTALL_INTERFACE:include>
-# )
+# Action mock library
+add_library(action_server_mock INTERFACE)
+add_library(${PROJECT_NAME}::action_server_mock ALIAS action_server_mock)
+target_include_directories(action_server_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
-# target_link_libraries(action_server_mock INTERFACE
-#   ${PROJECT_NAME}::rtest_common
-# )
+target_link_libraries(action_server_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
 
-# #Add explicit ament dependency for action mock
-# target_link_libraries(action_server_mock INTERFACE
-#   rcl_action::rcl_action
-#   rclcpp_action::rclcpp_action
-# )
+#Add explicit ament dependency for action mock
+target_link_libraries(action_server_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
 
-# target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK
-#   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
-# )
+target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
-# add_library(action_client_mock INTERFACE)
-# add_library(${PROJECT_NAME}::action_client_mock ALIAS action_client_mock)
-# target_include_directories(action_client_mock
-#   INTERFACE
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
-#     $<INSTALL_INTERFACE:include>
-# )
+add_library(action_client_mock INTERFACE)
+add_library(${PROJECT_NAME}::action_client_mock ALIAS action_client_mock)
+target_include_directories(action_client_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
-# target_link_libraries(action_client_mock INTERFACE
-#   ${PROJECT_NAME}::rtest_common
-# )
+target_link_libraries(action_client_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
 
-# #Add explicit ament dependency for action mock
-# target_link_libraries(action_client_mock INTERFACE
-#   rcl_action::rcl_action
-#   rclcpp_action::rclcpp_action
-# )
+#Add explicit ament dependency for action mock
+target_link_libraries(action_client_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
 
-# target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK
-#   RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
-# )
+target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Timer mock library
 add_library(timer_mock INTERFACE)
@@ -251,8 +251,8 @@ install(
     service_mock
     service_client_mock
     timer_mock
-    # action_server_mock
-    # action_client_mock
+    action_server_mock
+    action_client_mock
   EXPORT ${PROJECT_NAME}_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
