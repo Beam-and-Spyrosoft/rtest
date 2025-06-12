@@ -27,7 +27,11 @@ namespace test_composition
 Publisher::Publisher(const rclcpp::NodeOptions & options) : rclcpp::Node("test_publisher", options)
 {
   publisher_ = create_publisher<std_msgs::msg::String>("test_topic", rclcpp::QoS{5UL});
-  timer = create_timer(500ms, [this]() {
+  timer = create_timer(
+    this->get_node_base_interface(),
+    this->get_node_timers_interface(),
+    this->get_clock(),
+    500ms, [this]() {
     auto msg = std::make_unique<std_msgs::msg::String>();
     msg->set__data("timer");
     publisher_->publish(std::move(msg));

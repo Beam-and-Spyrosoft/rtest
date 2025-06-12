@@ -36,14 +36,14 @@ int main(int argc, char ** argv)
   exec.add_node(pub);
   auto sub = std::make_shared<test_composition::Subscriber>(opts);
   exec.add_node(sub);
-  auto service_provider = std::make_shared<test_composition::ServiceProvider>(opts);
-  exec.add_node(service_provider);
-  auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
-  exec.add_node(service_client);
-  auto action_server = std::make_shared<test_composition::ActionServer>(opts);
-  exec.add_node(action_server);
-  auto action_client = std::make_shared<test_composition::ActionClient>(opts);
-  exec.add_node(action_client);
+  // auto service_provider = std::make_shared<test_composition::ServiceProvider>(opts);
+  // exec.add_node(service_provider);
+  // auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
+  // exec.add_node(service_client);
+  // auto action_server = std::make_shared<test_composition::ActionServer>(opts);
+  // exec.add_node(action_server);
+  // auto action_client = std::make_shared<test_composition::ActionClient>(opts);
+  // exec.add_node(action_client);
 
   exec.spin();
 

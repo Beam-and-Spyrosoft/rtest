@@ -78,11 +78,11 @@ function(test_tools_add_doubles target)
     target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE
       rtest::publisher_mock
       rtest::subscription_mock
-      rtest::service_mock
-      rtest::service_client_mock
+      # rtest::service_mock
+      # rtest::service_client_mock
       rtest::timer_mock
-      rtest::action_server_mock
-      rtest::action_client_mock
+      # rtest::action_server_mock
+      # rtest::action_client_mock
       rtest::rtest_common
     )
 
@@ -104,11 +104,11 @@ function(test_tools_add_doubles target)
     target_link_libraries(${LIB_DOUBLES_NAME}
       rtest::publisher_mock
       rtest::subscription_mock
-      rtest::service_mock
-      rtest::service_client_mock
+      # rtest::service_mock
+      # rtest::service_client_mock
       rtest::timer_mock
-      rtest::action_server_mock
-      rtest::action_client_mock
+      # rtest::action_server_mock
+      # rtest::action_client_mock
       rtest::rtest_common
     )
 
