@@ -54,19 +54,18 @@ public:
   bool is_canceling() const { return canceling_; }
   void set_canceling(bool canceling = true) { canceling_ = canceling; }
   bool is_active() const { return !canceling_; }
-  bool is_executing() const { return !executing_; }
+  bool is_executing() const { return executing_; }
   void set_executing(bool executing = true) { executing_ = executing; }
+  const GoalUUID & get_goal_id() const { return uuid_; }
+  const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
+  void set_goal(std::shared_ptr<const Goal> goal) { goal_ = goal; }
+  void set_goal_id(const GoalUUID & uuid) { uuid_ = uuid; }
 
-  virtual void publish_feedback(std::shared_ptr<const Feedback> feedback) { (void)feedback; }
+  virtual void publish_feedback(std::shared_ptr<Feedback> feedback) { (void)feedback; }
   virtual void succeed(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void abort(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void canceled(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
-  void execute() {}
-
-  const GoalUUID & get_goal_id() const { return uuid_; }
-
-  /// Get the user provided message describing the goal.
-  const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
+  virtual void execute() {}
 
 private:
   std::shared_ptr<const Goal> goal_{nullptr};
@@ -75,7 +74,6 @@ private:
   bool executing_ = false;
 };
 
-// Mock GoalHandle that can intercept publish_feedback calls
 template <typename ActionT>
 class GoalHandleMock : public rclcpp_action::ServerGoalHandle<ActionT>
 {
@@ -90,8 +88,11 @@ public:
   {
   }
 
-  // Mock the feedback publishing
-  MOCK_METHOD(void, publish_feedback, (std::shared_ptr<const Feedback>), (override));
+  MOCK_METHOD(void, publish_feedback, (std::shared_ptr<Feedback>), (override));
+  MOCK_METHOD(void, succeed, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, abort, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, canceled, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, execute, (), (override));
 };
 
 template <typename ActionT>
@@ -176,11 +177,6 @@ public:
   MOCK_METHOD(CancelResponse, handle_cancel, (const GoalHandleSharedPtr &), ());
 
   MOCK_METHOD(void, handle_accepted, (const GoalHandleSharedPtr &), ());
-  MOCK_METHOD(
-    void,
-    publish_feedback,
-    (const typename ActionT::Feedback &, const GoalHandleSharedPtr &),
-    ());
 
   void succeed(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
   {

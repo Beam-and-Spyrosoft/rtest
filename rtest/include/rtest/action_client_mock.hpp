@@ -233,13 +233,8 @@ public:
     }
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      if (result_callback) {
         return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
           ->async_get_result(goal_handle, result_callback);
-      } else {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_get_result(goal_handle);
-      }
     }
     std::promise<WrappedResult> promise;
     WrappedResult result;
@@ -247,16 +242,6 @@ public:
     result.result = std::make_shared<Result>();
     promise.set_value(result);
     return promise.get_future().share();
-  }
-
-  std::shared_future<WrappedResult> async_get_result(
-    typename GoalHandle::SharedPtr goal_handle,
-    ResultCallback result_callback = nullptr)
-  {
-    if (result_callback) {
-      goal_handle->set_result_callback(result_callback);
-    }
-    return async_get_result(goal_handle);
   }
 
   std::shared_future<typename GoalHandle::SharedPtr> async_send_goal(
@@ -280,13 +265,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      if (cancel_callback) {
         return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
           ->async_cancel_all_goals(cancel_callback);
-      } else {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_all_goals();
-      }
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     CancelResponse result;
@@ -302,13 +282,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      if (cancel_callback) {
         return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
           ->async_cancel_goal(goal_handle, cancel_callback);
-      } else {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_goal(goal_handle);
-      }
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
@@ -322,13 +297,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      if (cancel_callback) {
         return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
           ->async_cancel_goals_before(stamp, cancel_callback);
-      } else {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_goals_before(stamp);
-      }
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
@@ -384,20 +354,8 @@ public:
     if (mock) {
       auto action_mock =
         std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock);
-      if constexpr (std::is_same_v<std::chrono::duration<RepT, RatioT>, std::chrono::nanoseconds>) {
-        return action_mock->wait_for_action_server(timeout);
-      } else if constexpr (std::is_same_v<
-                             std::chrono::duration<RepT, RatioT>,
-                             std::chrono::microseconds>) {
-        return action_mock->wait_for_action_server(timeout);
-      } else if constexpr (std::is_same_v<
-                             std::chrono::duration<RepT, RatioT>,
-                             std::chrono::milliseconds>) {
-        return action_mock->wait_for_action_server(timeout);
-      } else if constexpr (std::
-                             is_same_v<std::chrono::duration<RepT, RatioT>, std::chrono::seconds>) {
-        return action_mock->wait_for_action_server(timeout);
-      }
+      return action_mock->wait_for_action_server(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
     }
     return true;
   }
@@ -450,6 +408,44 @@ namespace rtest
 {
 namespace experimental
 {
+
+// Custom matchers for duration comparison
+MATCHER_P(
+  DurationEq,
+  expected_duration,
+  "duration equals " + ::testing::PrintToString(expected_duration))
+{
+  return arg == expected_duration;
+}
+MATCHER_P(
+  DurationGt,
+  expected_duration,
+  "duration greater than " + ::testing::PrintToString(expected_duration))
+{
+  return arg > expected_duration;
+}
+MATCHER_P(
+  DurationLt,
+  expected_duration,
+  "duration less than " + ::testing::PrintToString(expected_duration))
+{
+  return arg < expected_duration;
+}
+MATCHER_P(
+  DurationGe,
+  expected_duration,
+  "duration greater than or equal " + ::testing::PrintToString(expected_duration))
+{
+  return arg >= expected_duration;
+}
+MATCHER_P(
+  DurationLe,
+  expected_duration,
+  "duration less than or equal " + ::testing::PrintToString(expected_duration))
+{
+  return arg <= expected_duration;
+}
+
 template <typename ActionT>
 class ActionClientMock : public MockBase
 {
@@ -473,7 +469,6 @@ public:
     async_send_goal,
     (const Goal &, const SendGoalOptions &),
     ());
-  MOCK_METHOD(std::shared_future<WrappedResult>, async_get_result, (GoalHandleSharedPtr), ());
   MOCK_METHOD(
     std::shared_future<WrappedResult>,
     async_get_result,
@@ -482,17 +477,7 @@ public:
   MOCK_METHOD(
     std::shared_future<typename CancelResponse::SharedPtr>,
     async_cancel_goal,
-    (GoalHandleSharedPtr),
-    ());
-  MOCK_METHOD(
-    std::shared_future<typename CancelResponse::SharedPtr>,
-    async_cancel_goal,
     (GoalHandleSharedPtr, CancelCallback),
-    ());
-  MOCK_METHOD(
-    std::shared_future<typename CancelResponse::SharedPtr>,
-    async_cancel_all_goals,
-    (),
     ());
   MOCK_METHOD(
     std::shared_future<typename CancelResponse::SharedPtr>,
@@ -505,19 +490,18 @@ public:
   MOCK_METHOD(
     std::shared_future<typename CancelResponse::SharedPtr>,
     async_cancel_goals_before,
-    (const rclcpp::Time &),
-    ());
-  MOCK_METHOD(
-    std::shared_future<typename CancelResponse::SharedPtr>,
-    async_cancel_goals_before,
     (const rclcpp::Time &, CancelCallback),
     ());
 
-  // Multiple MOCK_METHOD declarations required because template instantiation creates different function signatures for each duration type at compile time.
   MOCK_METHOD(bool, wait_for_action_server, (std::chrono::nanoseconds), ());
-  MOCK_METHOD(bool, wait_for_action_server, (std::chrono::microseconds), ());
-  MOCK_METHOD(bool, wait_for_action_server, (std::chrono::milliseconds), ());
-  MOCK_METHOD(bool, wait_for_action_server, (std::chrono::seconds), ());
+
+  // Template wrapper that converts all duration types to nanoseconds
+  template <typename RepT = int64_t, typename RatioT = std::milli>
+  bool wait_for_action_server(
+    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  {
+    return wait_for_action_server(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+  }
 
   // Convenience method to create ClientGoalHandle
   std::shared_ptr<rclcpp_action::ClientGoalHandle<ActionT>> makeClientGoalHandle()
