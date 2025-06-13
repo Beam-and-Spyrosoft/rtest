@@ -52,12 +52,11 @@ public:
   virtual ~ServerGoalHandle() = default;
 
   bool is_canceling() const { return canceling_; }
-  void set_canceling(bool canceling = true) { canceling_ = canceling; }
   bool is_active() const { return !canceling_; }
   bool is_executing() const { return executing_; }
+
+  void set_canceling(bool canceling = true) { canceling_ = canceling; }
   void set_executing(bool executing = true) { executing_ = executing; }
-  const GoalUUID & get_goal_id() const { return uuid_; }
-  const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
   void set_goal(std::shared_ptr<const Goal> goal) { goal_ = goal; }
   void set_goal_id(const GoalUUID & uuid) { uuid_ = uuid; }
 
@@ -66,6 +65,8 @@ public:
   virtual void abort(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void canceled(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void execute() {}
+  const GoalUUID & get_goal_id() const { return uuid_; }
+  const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
 
 private:
   std::shared_ptr<const Goal> goal_{nullptr};
@@ -93,6 +94,12 @@ public:
   MOCK_METHOD(void, abort, (typename ActionT::Result::SharedPtr), (override));
   MOCK_METHOD(void, canceled, (typename ActionT::Result::SharedPtr), (override));
   MOCK_METHOD(void, execute, (), (override));
+  MOCK_METHOD(GoalUUID, get_goal_id, (), (const));
+  MOCK_METHOD(std::shared_ptr<const typename ActionT::Goal>, get_goal, (), (const));
+
+  MOCK_METHOD(bool, is_canceling, (), (const));
+  MOCK_METHOD(bool, is_active, (), (const));
+  MOCK_METHOD(bool, is_executing, (), (const));
 };
 
 template <typename ActionT>

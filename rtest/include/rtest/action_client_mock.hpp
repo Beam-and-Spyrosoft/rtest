@@ -233,8 +233,8 @@ public:
     }
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_get_result(goal_handle, result_callback);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_get_result(goal_handle, result_callback);
     }
     std::promise<WrappedResult> promise;
     WrappedResult result;
@@ -265,8 +265,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_all_goals(cancel_callback);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_all_goals(cancel_callback);
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     CancelResponse result;
@@ -282,8 +282,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_goal(goal_handle, cancel_callback);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_goal(goal_handle, cancel_callback);
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
@@ -297,8 +297,8 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-        return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-          ->async_cancel_goals_before(stamp, cancel_callback);
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_goals_before(stamp, cancel_callback);
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
