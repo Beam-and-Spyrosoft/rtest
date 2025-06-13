@@ -203,9 +203,11 @@ target_include_directories(${PROJECT_NAME}-test PRIVATE
   ${CMAKE_SOURCE_DIR}/include
 )
 
-ament_target_dependencies(${PROJECT_NAME}-test
-  rclcpp
-  std_msgs
+# When linking against `std_msgs`, note that this package is an exception to the standard CMake target naming convention. Unlike most packages that provide a single target like `package::package`, `std_msgs` does not currently provide a `std_msgs::std_msgs` target.
+target_link_libraries(${PROJECT_NAME}-test
+  rclcpp::rclcpp
+  rclcpp_components::component
+  ${std_msgs_TARGETS}
 )
 ```
 

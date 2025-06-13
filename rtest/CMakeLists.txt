@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(rtest
   LANGUAGES CXX
-  VERSION 0.1.0
+  VERSION 0.2.0
 )
 
 # Detect ROS distribution
@@ -26,6 +26,16 @@ if(ROS_DISTRO_TARGET STREQUAL "rolling")
   set(ROS_DISTRO_TARGET "kilted")
 endif()
 
+# Define distribution-specific version number
+if(ROS_DISTRO_TARGET STREQUAL "jazzy")
+  set(ROS_VERSION_NUMBER 24)
+elseif(ROS_DISTRO_TARGET STREQUAL "kilted")
+  set(ROS_VERSION_NUMBER 25)
+else()
+  message(FATAL_ERROR "No ROS version number defined for distribution: ${ROS_DISTRO_TARGET}")
+endif()
+message(STATUS "Setting RTEST_ROS_VERSION=${ROS_VERSION_NUMBER} for ${ROS_DISTRO_TARGET}")
+
 # Set distribution-specific include path (no src needed - all header-only)
 set(DISTRO_INCLUDE_DIR "include/${ROS_DISTRO_TARGET}")
 
@@ -41,6 +51,10 @@ find_package(ament_cmake REQUIRED)
 find_package(gmock_vendor REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
+find_package(rcl_action REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rcpputils REQUIRED)
+find_package(action_msgs REQUIRED)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -68,15 +82,15 @@ else()
   )
 endif()
 
-
-ament_target_dependencies(rtest_common
-  PUBLIC rclcpp gmock_vendor
+target_link_libraries(rtest_common PUBLIC
+  rcl_action::rcl_action
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
 )
 
 ament_export_dependencies(
-  rclcpp gmock_vendor
+  rclcpp rclcpp_action rcl_action gmock_vendor
 )
-
 
 # Publisher mock library
 add_library(publisher_mock INTERFACE)
@@ -92,8 +106,9 @@ target_link_libraries(publisher_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK)
-
+target_compile_definitions(publisher_mock INTERFACE RTEST_PUBLISHER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Subscriber mock library
 add_library(subscription_mock INTERFACE)
@@ -109,7 +124,9 @@ target_link_libraries(subscription_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK)
+target_compile_definitions(subscription_mock INTERFACE RTEST_SUBSCRIPTION_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Service mock library
 add_library(service_mock INTERFACE)
@@ -125,7 +142,9 @@ target_link_libraries(service_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK)
+target_compile_definitions(service_mock INTERFACE RTEST_SERVICE_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 add_library(service_client_mock INTERFACE)
 add_library(${PROJECT_NAME}::service_client_mock ALIAS service_client_mock)
@@ -140,7 +159,56 @@ target_link_libraries(service_client_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK)
+target_compile_definitions(service_client_mock INTERFACE RTEST_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
+
+# Action mock library
+add_library(action_server_mock INTERFACE)
+add_library(${PROJECT_NAME}::action_server_mock ALIAS action_server_mock)
+target_include_directories(action_server_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(action_server_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
+
+#Add explicit ament dependency for action mock
+target_link_libraries(action_server_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
+
+target_compile_definitions(action_server_mock INTERFACE RTEST_ACTION_SERVER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
+
+add_library(action_client_mock INTERFACE)
+add_library(${PROJECT_NAME}::action_client_mock ALIAS action_client_mock)
+target_include_directories(action_client_mock
+  INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${DISTRO_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(action_client_mock INTERFACE
+  ${PROJECT_NAME}::rtest_common
+)
+
+#Add explicit ament dependency for action mock
+target_link_libraries(action_client_mock INTERFACE
+  rcl_action::rcl_action
+  rclcpp_action::rclcpp_action
+)
+
+target_compile_definitions(action_client_mock INTERFACE RTEST_ACTION_CLIENT_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 # Timer mock library
 add_library(timer_mock INTERFACE)
@@ -156,7 +224,9 @@ target_link_libraries(timer_mock INTERFACE
   ${PROJECT_NAME}::rtest_common
 )
 
-target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK)
+target_compile_definitions(timer_mock INTERFACE RTEST_TIMER_MOCK
+  RTEST_ROS_VERSION=${ROS_VERSION_NUMBER}
+)
 
 install(DIRECTORY include/
   DESTINATION include
@@ -179,6 +249,8 @@ install(
     service_mock
     service_client_mock
     timer_mock
+    action_server_mock
+    action_client_mock
   EXPORT ${PROJECT_NAME}_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -186,7 +258,7 @@ install(
 )
 
 ament_export_targets(${PROJECT_NAME}_targets HAS_LIBRARY_TARGET)
-ament_export_dependencies(rclcpp)
+ament_export_dependencies(rclcpp rclcpp_action rcl_action)
 
 if(BUILD_TESTING)
   # Option to enable clang-tidy tests (default: disabled)

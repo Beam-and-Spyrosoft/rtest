@@ -31,7 +31,7 @@ echo "===== GENERATING COVERAGE REPORT ====="
 
 lcov --no-external --capture --directory . --output-file all_coverage.info --ignore-errors mismatch,source,unused 2>/dev/null || true
 lcov --extract all_coverage.info "*/rtest/*" --ignore-errors source,empty,unused -o framework_tmp.info 2>/dev/null || true
-lcov --remove framework_tmp.info "*/examples/*" "*/test/*" "*/tests/*" "*/test_composition/*" \
+lcov --remove framework_tmp.info "*/examples/*" "*/test/*" "*/tests/*" "*/test_composition/*" "*/rtest_examples_interfaces/*" \
     --ignore-errors source,empty,unused -o framework_filtered.info 2>/dev/null || true
 
 genhtml -o coverage_report_framework framework_filtered.info --ignore-errors source 2>/dev/null || true
