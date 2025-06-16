@@ -145,12 +145,13 @@ public:
       node_base_->get_fully_qualified_name(), action_name_, this->shared_from_this());
   }
 
-private:
-  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;
-  std::string action_name_;
   GoalCallback handle_goal_;
   CancelCallback handle_cancel_;
   AcceptedCallback handle_accepted_;
+
+private:
+  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;
+  std::string action_name_;
 };
 
 }  // namespace rclcpp_action
@@ -174,35 +175,30 @@ public:
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  // Core mocks
-  MOCK_METHOD(
-    GoalResponse,
-    handle_goal,
-    (const rclcpp_action::GoalUUID &, std::shared_ptr<const Goal>),
-    ());
-
-  MOCK_METHOD(CancelResponse, handle_cancel, (const GoalHandleSharedPtr &), ());
-
-  MOCK_METHOD(void, handle_accepted, (const GoalHandleSharedPtr &), ());
-
-  void succeed(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  /// Methods to call the real rclcpp jazzy callbacks for testing business logic
+  GoalResponse call_real_handle_goal(
+    const rclcpp_action::GoalUUID & uuid,
+    std::shared_ptr<const Goal> goal)
   {
-    if (goal_handle) {
-      goal_handle->succeed(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_goal_) {
+      return real_server->handle_goal_(uuid, goal);
     }
+    return GoalResponse::REJECT;
   }
-
-  void abort(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  CancelResponse call_real_handle_cancel(const GoalHandleSharedPtr & goal_handle)
   {
-    if (goal_handle) {
-      goal_handle->abort(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_cancel_) {
+      return real_server->handle_cancel_(goal_handle);
     }
+    return CancelResponse::REJECT;
   }
-
-  void canceled(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  void call_real_handle_accepted(const GoalHandleSharedPtr & goal_handle)
   {
-    if (goal_handle) {
-      goal_handle->canceled(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_accepted_) {
+      real_server->handle_accepted_(goal_handle);
     }
   }
 
