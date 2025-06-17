@@ -224,12 +224,17 @@ public:
     return false;
   }
 
-  std::shared_future<WrappedResult> async_get_result(typename GoalHandle::SharedPtr & goal_handle)
+  std::shared_future<WrappedResult> async_get_result(
+    typename GoalHandle::SharedPtr & goal_handle,
+    ResultCallback result_callback = nullptr)
   {
+    if (result_callback) {
+      goal_handle->set_result_callback(result_callback);
+    }
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-        ->async_get_result(goal_handle);
+        ->async_get_result(goal_handle, result_callback);
     }
     std::promise<WrappedResult> promise;
     WrappedResult result;
@@ -237,16 +242,6 @@ public:
     result.result = std::make_shared<Result>();
     promise.set_value(result);
     return promise.get_future().share();
-  }
-
-  std::shared_future<WrappedResult> async_get_result(
-    typename GoalHandle::SharedPtr goal_handle,
-    ResultCallback result_callback = nullptr)
-  {
-    if (result_callback) {
-      goal_handle->set_result_callback(result_callback);
-    }
-    return async_get_result(goal_handle);
   }
 
   std::shared_future<typename GoalHandle::SharedPtr> async_send_goal(
@@ -265,12 +260,13 @@ public:
     return makeClientGoalHandleFuture<ActionT>(nullptr);  // reject goal by default
   }
 
-  std::shared_future<typename CancelResponse::SharedPtr> async_cancel_all_goals()
+  std::shared_future<typename CancelResponse::SharedPtr> async_cancel_all_goals(
+    CancelCallback cancel_callback = nullptr)
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
-        ->async_cancel_all_goals();
+        ->async_cancel_all_goals(cancel_callback);
     }
     std::promise<typename CancelResponse::SharedPtr> promise;
     CancelResponse result;
@@ -284,8 +280,11 @@ public:
     typename GoalHandle::SharedPtr goal_handle,
     CancelCallback cancel_callback = nullptr)
   {
-    (void)goal_handle;
-    (void)cancel_callback;
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_goal(goal_handle, cancel_callback);
+    }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
     promise.set_value(response);
@@ -296,8 +295,11 @@ public:
     const rclcpp::Time & stamp,
     CancelCallback cancel_callback = nullptr)
   {
-    (void)stamp;
-    (void)cancel_callback;
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->async_cancel_goals_before(stamp, cancel_callback);
+    }
     std::promise<typename CancelResponse::SharedPtr> promise;
     auto response = std::make_shared<CancelResponse>();
     promise.set_value(response);
@@ -306,6 +308,12 @@ public:
 
   void stop_callbacks(typename GoalHandle::SharedPtr goal_handle)
   {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->stop_callbacks(goal_handle);
+      return;
+    }
     if (goal_handle) {
       goal_handle->set_feedback_callback(FeedbackCallback());
       goal_handle->set_result_callback(ResultCallback());
@@ -319,6 +327,12 @@ public:
 
   void stop_callbacks(const GoalUUID & goal_id)
   {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock)
+        ->stop_callbacks(goal_id);
+      return;
+    }
     GoalHandleSharedPtr goal_handle;
     {
       std::lock_guard<std::recursive_mutex> guard(goal_handles_mutex_);
@@ -330,6 +344,20 @@ public:
     if (goal_handle) {
       stop_callbacks(goal_handle);
     }
+  }
+
+  template <typename RepT = int64_t, typename RatioT = std::milli>
+  bool wait_for_action_server(
+    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      auto action_mock =
+        std::static_pointer_cast<rtest::experimental::ActionClientMock<ActionT>>(mock);
+      return action_mock->wait_for_action_server(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+    }
+    return true;
   }
 
 #if RTEST_ROS_VERSION >= RTEST_ROS_KILTED
@@ -380,6 +408,44 @@ namespace rtest
 {
 namespace experimental
 {
+
+// Custom matchers for duration comparison
+MATCHER_P(
+  DurationEq,
+  expected_duration,
+  "duration equals " + ::testing::PrintToString(expected_duration))
+{
+  return arg == expected_duration;
+}
+MATCHER_P(
+  DurationGt,
+  expected_duration,
+  "duration greater than " + ::testing::PrintToString(expected_duration))
+{
+  return arg > expected_duration;
+}
+MATCHER_P(
+  DurationLt,
+  expected_duration,
+  "duration less than " + ::testing::PrintToString(expected_duration))
+{
+  return arg < expected_duration;
+}
+MATCHER_P(
+  DurationGe,
+  expected_duration,
+  "duration greater than or equal " + ::testing::PrintToString(expected_duration))
+{
+  return arg >= expected_duration;
+}
+MATCHER_P(
+  DurationLe,
+  expected_duration,
+  "duration less than or equal " + ::testing::PrintToString(expected_duration))
+{
+  return arg <= expected_duration;
+}
+
 template <typename ActionT>
 class ActionClientMock : public MockBase
 {
@@ -388,7 +454,11 @@ public:
   using GoalHandle = typename rclcpp_action::ClientGoalHandle<ActionT>;
   using GoalHandleSharedPtr = typename GoalHandle::SharedPtr;
   using WrappedResult = typename GoalHandle::WrappedResult;
+  using ResultCallback = typename GoalHandle::ResultCallback;
   using SendGoalOptions = typename rclcpp_action::Client<ActionT>::SendGoalOptions;
+  using CancelRequest = typename ActionT::Impl::CancelGoalService::Request;
+  using CancelResponse = typename ActionT::Impl::CancelGoalService::Response;
+  using CancelCallback = std::function<void(typename CancelResponse::SharedPtr)>;
 
   explicit ActionClientMock(rclcpp_action::ClientBase * client) : client_(client) {}
   ~ActionClientMock() { StaticMocksRegistry::instance().detachMock(client_); }
@@ -402,15 +472,36 @@ public:
   MOCK_METHOD(
     std::shared_future<WrappedResult>,
     async_get_result,
-    (typename GoalHandle::SharedPtr),
+    (GoalHandleSharedPtr, ResultCallback),
     ());
   MOCK_METHOD(
-    std::shared_future<WrappedResult>,
+    std::shared_future<typename CancelResponse::SharedPtr>,
     async_cancel_goal,
-    (const GoalHandleSharedPtr &),
+    (GoalHandleSharedPtr, CancelCallback),
     ());
-  MOCK_METHOD(std::shared_future<WrappedResult>, async_cancel_all_goals, (), ());
+  MOCK_METHOD(
+    std::shared_future<typename CancelResponse::SharedPtr>,
+    async_cancel_all_goals,
+    (CancelCallback),
+    ());
   MOCK_METHOD(bool, action_server_is_ready, (), ());
+  MOCK_METHOD(void, stop_callbacks, (GoalHandleSharedPtr), ());
+  MOCK_METHOD(void, stop_callbacks, (const rclcpp_action::GoalUUID &), ());
+  MOCK_METHOD(
+    std::shared_future<typename CancelResponse::SharedPtr>,
+    async_cancel_goals_before,
+    (const rclcpp::Time &, CancelCallback),
+    ());
+
+  MOCK_METHOD(bool, wait_for_action_server, (std::chrono::nanoseconds), ());
+
+  // Template wrapper that converts all duration types to nanoseconds
+  template <typename RepT = int64_t, typename RatioT = std::milli>
+  bool wait_for_action_server(
+    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  {
+    return wait_for_action_server(std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+  }
 
   // Convenience method to create ClientGoalHandle
   std::shared_ptr<rclcpp_action::ClientGoalHandle<ActionT>> makeClientGoalHandle()

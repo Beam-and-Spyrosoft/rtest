@@ -52,20 +52,20 @@ public:
   virtual ~ServerGoalHandle() = default;
 
   bool is_canceling() const { return canceling_; }
-  void set_canceling(bool canceling = true) { canceling_ = canceling; }
   bool is_active() const { return !canceling_; }
-  bool is_executing() const { return !executing_; }
-  void set_executing(bool executing = true) { executing_ = executing; }
+  bool is_executing() const { return executing_; }
 
-  virtual void publish_feedback(std::shared_ptr<const Feedback> feedback) { (void)feedback; }
+  void set_canceling(bool canceling = true) { canceling_ = canceling; }
+  void set_executing(bool executing = true) { executing_ = executing; }
+  void set_goal(std::shared_ptr<const Goal> goal) { goal_ = goal; }
+  void set_goal_id(const GoalUUID & uuid) { uuid_ = uuid; }
+
+  virtual void publish_feedback(std::shared_ptr<Feedback> feedback) { (void)feedback; }
   virtual void succeed(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void abort(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
   virtual void canceled(typename ActionT::Result::SharedPtr result_msg) { (void)result_msg; }
-  void execute() {}
-
+  virtual void execute() {}
   const GoalUUID & get_goal_id() const { return uuid_; }
-
-  /// Get the user provided message describing the goal.
   const std::shared_ptr<const typename ActionT::Goal> get_goal() const { return goal_; }
 
 private:
@@ -75,7 +75,6 @@ private:
   bool executing_ = false;
 };
 
-// Mock GoalHandle that can intercept publish_feedback calls
 template <typename ActionT>
 class GoalHandleMock : public rclcpp_action::ServerGoalHandle<ActionT>
 {
@@ -90,8 +89,17 @@ public:
   {
   }
 
-  // Mock the feedback publishing
-  MOCK_METHOD(void, publish_feedback, (std::shared_ptr<const Feedback>), (override));
+  MOCK_METHOD(void, publish_feedback, (std::shared_ptr<Feedback>), (override));
+  MOCK_METHOD(void, succeed, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, abort, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, canceled, (typename ActionT::Result::SharedPtr), (override));
+  MOCK_METHOD(void, execute, (), (override));
+  MOCK_METHOD(GoalUUID, get_goal_id, (), (const));
+  MOCK_METHOD(std::shared_ptr<const typename ActionT::Goal>, get_goal, (), (const));
+
+  MOCK_METHOD(bool, is_canceling, (), (const));
+  MOCK_METHOD(bool, is_active, (), (const));
+  MOCK_METHOD(bool, is_executing, (), (const));
 };
 
 template <typename ActionT>
@@ -137,12 +145,13 @@ public:
       node_base_->get_fully_qualified_name(), action_name_, this->shared_from_this());
   }
 
-private:
-  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;
-  std::string action_name_;
   GoalCallback handle_goal_;
   CancelCallback handle_cancel_;
   AcceptedCallback handle_accepted_;
+
+private:
+  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;
+  std::string action_name_;
 };
 
 }  // namespace rclcpp_action
@@ -166,40 +175,30 @@ public:
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  // Core mocks
-  MOCK_METHOD(
-    GoalResponse,
-    handle_goal,
-    (const rclcpp_action::GoalUUID &, std::shared_ptr<const Goal>),
-    ());
-
-  MOCK_METHOD(CancelResponse, handle_cancel, (const GoalHandleSharedPtr &), ());
-
-  MOCK_METHOD(void, handle_accepted, (const GoalHandleSharedPtr &), ());
-  MOCK_METHOD(
-    void,
-    publish_feedback,
-    (const typename ActionT::Feedback &, const GoalHandleSharedPtr &),
-    ());
-
-  void succeed(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  /// Methods to call the real rclcpp jazzy callbacks for testing business logic
+  GoalResponse call_real_handle_goal(
+    const rclcpp_action::GoalUUID & uuid,
+    std::shared_ptr<const Goal> goal)
   {
-    if (goal_handle) {
-      goal_handle->succeed(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_goal_) {
+      return real_server->handle_goal_(uuid, goal);
     }
+    return GoalResponse::REJECT;
   }
-
-  void abort(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  CancelResponse call_real_handle_cancel(const GoalHandleSharedPtr & goal_handle)
   {
-    if (goal_handle) {
-      goal_handle->abort(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_cancel_) {
+      return real_server->handle_cancel_(goal_handle);
     }
+    return CancelResponse::REJECT;
   }
-
-  void canceled(const typename ActionT::Result & result, const GoalHandleSharedPtr & goal_handle)
+  void call_real_handle_accepted(const GoalHandleSharedPtr & goal_handle)
   {
-    if (goal_handle) {
-      goal_handle->canceled(std::make_shared<typename ActionT::Result>(result));
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    if (real_server && real_server->handle_accepted_) {
+      real_server->handle_accepted_(goal_handle);
     }
   }
 
