@@ -98,9 +98,9 @@ target_include_directories(subscriber PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(subscriber PUBLIC
-  rclcpp::rclcpp
-  std_msgs::std_msgs
+ament_target_dependencies(subscriber
+  rclcpp
+  std_msgs
 )
 
 ament_package()
@@ -207,6 +207,10 @@ ament_add_gmock(${PROJECT_NAME}-test
 
 target_include_directories(${PROJECT_NAME}-test PRIVATE
   ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(${PROJECT_NAME}-test
+  rtest::subscription_mock
 )
 
 ament_target_dependencies(${PROJECT_NAME}-test
