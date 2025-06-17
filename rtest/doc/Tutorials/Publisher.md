@@ -79,36 +79,6 @@ Publisher::Publisher(const rclcpp::NodeOptions & options)
     publisher_->publish(std::move(msg));
   });
 }
-
-void Publisher::publishCopy()
-{
-  std_msgs::msg::String msg;
-  msg.set__data("copy");
-  publisher_->publish(msg);
-}
-
-void Publisher::publishUniquePtr()
-{
-  auto msg = std::make_unique<std_msgs::msg::String>();
-  msg->set__data("unique_ptr");
-  publisher_->publish(std::move(msg));
-}
-
-void Publisher::publishLoanedMsg()
-{
-  auto msg = publisher_->borrow_loaned_message();
-  msg.get().set__data("loaned_msg");
-  publisher_->publish(std::move(msg));
-}
-
-void Publisher::publishIfSubscribersListening()
-{
-  if (publisher_->get_subscription_count()) {
-    auto msg = std::make_unique<std_msgs::msg::String>();
-    msg->set__data("if_subscribers_listening");
-    publisher_->publish(std::move(msg));
-  }
-}
 ```
 
 Open the `CMakeLists.txt` and add the Publisher as a library:
@@ -133,15 +103,26 @@ target_include_directories(publisher PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(publisher PUBLIC
-  rclcpp::rclcpp
-  std_msgs::std_msgs
+ament_target_dependencies(publisher
+  rclcpp
+  std_msgs
 )
-
-ament_package()
 ```
 
 ### 3 Examine the code
+```c++
+publisher_ = create_publisher<std_msgs::msg::String>("test_topic", rclcpp::QoS{5UL});
+```
+The Node creates a publisher with the msg type `std_msgs::msg::String` and topic name `test_topic`.
+
+```c++
+timer_ = create_wall_timer(500ms, [this]() {
+  auto msg = std::make_unique<std_msgs::msg::String>();
+  msg->set__data("timer");
+  publisher_->publish(std::move(msg));
+});
+```
+The timer callback is a lambda that publishes a message when triggered
 
 
 ### 4 Add unit tests
@@ -176,18 +157,18 @@ protected:
 
 TEST_F(PubSubTest, PublisherTest)
 {
-  auto node = std::make_shared<test_composition::Publisher>(opts);
+  auto node = std::make_shared<Publisher>(opts);
 
   /// Retrieve the publisher created by the Node
   auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
-  // Check that the Node actually created the Publisher with topic: "/test_topic"
+  /// Check that the Node actually created the Publisher with topic: "/test_topic"
   ASSERT_TRUE(publisher);
 
   /// Retrieve the timers created by the Node
   auto nodeTimers = rtest::findTimers(node);
 
-  // There should be just one timer
+  /// There should be just one timer
   ASSERT_EQ(nodeTimers.size(), 1UL);
 
   /// Set up expectation that the Node will publish a message when the timer callback is fired
@@ -195,7 +176,7 @@ TEST_F(PubSubTest, PublisherTest)
   expectedMsg.set__data("timer");
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
 
-  // Fire the timer callback
+  /// Fire the timer callback
   nodeTimers[0]->execute_callback(nullptr);
 }
 ```
@@ -238,6 +219,11 @@ ament_add_gmock(${PROJECT_NAME}-test
 
 target_include_directories(${PROJECT_NAME}-test PRIVATE
   ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(${PROJECT_NAME}-test
+  rtest::publisher_mock
+  rtest::timer_mock
 )
 
 ament_target_dependencies(${PROJECT_NAME}-test
