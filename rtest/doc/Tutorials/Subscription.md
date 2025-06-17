@@ -11,6 +11,12 @@ local: true
 
 In this tutorial we will write a simple test suite that verifies that a ROS 2 Node implementation that is using a Subscription works as expected.
 
+``rtest`` allows white-box access to subscriptions via ``findSubscription`` API, enabling isolated and deterministic tests without requiring ROS 2 executors or spinning threads. This means all messages are delivered immediately, with no latency, when the test code calls the `rtest` API.
+
+In this example, we shall
+- Desmonstrate a simple subscriber to ``/test_topic`` using the default ``SensorDataQoS`` profile.
+- Use the ``rtest`` subscription framework to inject messages directly into the subscriber without passing through the ROS middleware.
+- Verify that the callback executed as expected by inspecting the member variable ``lastMsg_``.
 
 ## Prerequisites
 
@@ -37,7 +43,7 @@ Navigate to `example_app`.
 Add the `Subscriber` class definition in `include/example_app/subscriber.hpp` with the following code:
 
 ```c++
-#pragma once 
+#pragma once
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
@@ -220,7 +226,7 @@ ament_package() # Must be the last statement
 ```
 
 
-3.4 Build and run the tests
+### 4.4 Build and run the tests
 
 Build the `example_app` package:
 
@@ -233,3 +239,11 @@ Run the tests:
 ```shell
 $ colcon test --packages-select example_app --event-handlers console_cohesion+
 ```
+
+## Key Concepts
+
+- `rtest::findSubscription` locates a Subscription instance for testing.
+- `handle_message` is used to simulate message reception without a running ROS 2 system.
+- Tests use standard GoogleTest (`gtest`) macros but can also work with other frameworks such as Catch2.
+
+Try It Yourself!
