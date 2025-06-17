@@ -83,8 +83,6 @@ typename rclcpp::TimerBase::SharedPtr create_timer(
   rclcpp::Duration period,
   CallbackT && callback,
   rclcpp::CallbackGroup::SharedPtr group = nullptr)
-  // rclcpp::CallbackGroup::SharedPtr group = nullptr,
-  // bool autostart = true)
 {
   return create_timer(
     clock,
@@ -93,8 +91,6 @@ typename rclcpp::TimerBase::SharedPtr create_timer(
     group,
     node_base.get(),
     node_timers.get());
-    // node_timers.get(),
-    // autostart);
 }
 
 /**
@@ -107,8 +103,6 @@ typename rclcpp::TimerBase::SharedPtr create_timer(
   rclcpp::Duration period,
   CallbackT && callback,
   rclcpp::CallbackGroup::SharedPtr group = nullptr)
-  // rclcpp::CallbackGroup::SharedPtr group = nullptr,
-  // bool autostart = true)
 {
   return create_timer(
     clock,
@@ -117,8 +111,6 @@ typename rclcpp::TimerBase::SharedPtr create_timer(
     group,
     rclcpp::node_interfaces::get_node_base_interface(node).get(),
     rclcpp::node_interfaces::get_node_timers_interface(node).get());
-    // rclcpp::node_interfaces::get_node_timers_interface(node).get(),
-    // autostart);
 }
 
 /**
@@ -132,8 +124,6 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
   rclcpp::CallbackGroup::SharedPtr group,
   node_interfaces::NodeBaseInterface * node_base,
   node_interfaces::NodeTimersInterface * node_timers)
-  // node_interfaces::NodeTimersInterface * node_timers,
-  // bool autostart = true)
 {
   if (clock == nullptr) {
     throw std::invalid_argument{"clock cannot be null"};
@@ -149,8 +139,7 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
 
   /// Add a new generic timer.
   auto timer = rclcpp::GenericTimer<CallbackT>::make_shared(
-      std::move(clock), period_ns, std::move(callback), node_base->get_context());
-  //  std::move(clock), period_ns, std::move(callback), node_base->get_context(), autostart);
+    std::move(clock), period_ns, std::move(callback), node_base->get_context());
   node_timers->add_timer(timer, group);
 
   rtest::StaticMocksRegistry::instance().registerTimer(
@@ -169,8 +158,6 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
   rclcpp::CallbackGroup::SharedPtr group,
   node_interfaces::NodeBaseInterface * node_base,
   node_interfaces::NodeTimersInterface * node_timers)
-  // node_interfaces::NodeTimersInterface * node_timers,
-  // bool autostart = true)
 {
   if (node_base == nullptr) {
     throw std::invalid_argument{"input node_base cannot be null"};
@@ -185,7 +172,6 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
   /// Add a new wall timer.
   auto timer = rclcpp::WallTimer<CallbackT>::make_shared(
     period_ns, std::move(callback), node_base->get_context());
-    //period_ns, std::move(callback), node_base->get_context(), autostart);
 
   node_timers->add_timer(timer, group);
 

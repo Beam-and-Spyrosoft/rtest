@@ -40,9 +40,6 @@
 #include "rclcpp/allocator/allocator_common.hpp"
 #include "rclcpp/allocator/allocator_deleter.hpp"
 #include "rclcpp/detail/resolve_use_intra_process.hpp"
-//#include "rclcpp/detail/resolve_intra_process_buffer_type.hpp"
-//#include "rclcpp/experimental/buffers/intra_process_buffer.hpp"
-//#include "rclcpp/experimental/create_intra_process_buffer.hpp"
 #include "rclcpp/experimental/intra_process_manager.hpp"
 #include "rclcpp/get_message_type_support_handle.hpp"
 #include "rclcpp/is_ros_compatible_type.hpp"
@@ -103,7 +100,6 @@ template <typename MessageT, typename AllocatorT = std::allocator<void>>
 class Publisher : public PublisherBase
 {
 public:
-  /// MessageT::custom_type if MessageT is a TypeAdapter, otherwise just MessageT.
   using PublishedType = typename rclcpp::TypeAdapter<MessageT>::custom_type;
   using ROSMessageType = typename rclcpp::TypeAdapter<MessageT>::ros_message_type;
 
@@ -114,9 +110,6 @@ public:
   using ROSMessageTypeAllocatorTraits = allocator::AllocRebind<ROSMessageType, AllocatorT>;
   using ROSMessageTypeAllocator = typename ROSMessageTypeAllocatorTraits::allocator_type;
   using ROSMessageTypeDeleter = allocator::Deleter<ROSMessageTypeAllocator, ROSMessageType>;
-
-  // using BufferSharedPtr = typename rclcpp::experimental::buffers::
-  //   IntraProcessBuffer<ROSMessageType, ROSMessageTypeAllocator, ROSMessageTypeDeleter>::SharedPtr;
 
   RCLCPP_SMART_PTR_DEFINITIONS(Publisher<MessageT, AllocatorT>)
 
@@ -133,9 +126,6 @@ public:
       topic,
       rclcpp::get_message_type_support_handle<MessageT>(),
       options.template to_rcl_publisher_options<MessageT>(qos)),
-      // options.template to_rcl_publisher_options<MessageT>(qos),
-      // options.event_callbacks,
-      // options.use_default_callbacks),
     options_(options),
     published_type_allocator_(*options.get_allocator()),
     ros_message_type_allocator_(*options.get_allocator())
@@ -288,8 +278,6 @@ public:
   PublishedTypeDeleter published_type_deleter_;
   ROSMessageTypeAllocator ros_message_type_allocator_;
   ROSMessageTypeDeleter ros_message_type_deleter_;
-
-  //BufferSharedPtr buffer_{nullptr};
 };
 
 }  // namespace rclcpp

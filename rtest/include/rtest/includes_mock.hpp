@@ -55,10 +55,6 @@
 #endif
 
 #ifdef RTEST_ACTION_CLIENT_MOCK
-// In the latest ROS2 distributions (such as Kilted), action ClientBase has been correctly separated from the action Client class.
-#if RTEST_ROS_VERSION <= RTEST_ROS_JAZZY
 #include <rtest/action_client_base.hpp>
-#endif
-
 #include <rtest/action_client_mock.hpp>
 #endif

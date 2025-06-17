@@ -24,12 +24,7 @@
 #include "rtest/ros_versions.hpp"
 #include "rosidl_typesupport_cpp/action_type_support.hpp"
 
-// In the latest ROS2 distributions (such as Kilted), action ClientBase has been correctly separated from the action Client class.
-#if RTEST_ROS_VERSION <= RTEST_ROS_JAZZY
 #include <rtest/action_client_base.hpp>
-#else
-#include "rclcpp_action/client_base.hpp"
-#endif
 
 #include "rclcpp/node_interfaces/node_base_interface.hpp"
 #include "rclcpp/node_interfaces/node_graph_interface.hpp"
@@ -184,18 +179,7 @@ public:
     rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging,
     const std::string & action_name,
     const rcl_action_client_options_t & options)
-  :
-#if RTEST_ROS_VERSION >= RTEST_ROS_KILTED
-    ClientBase(
-      node_base,
-      node_graph,
-      node_logging,
-      action_name,
-      rosidl_typesupport_cpp::get_action_type_support_handle<ActionT>(),
-      options),
-#endif
-    node_base_(node_base),
-    action_name_(action_name)
+  : node_base_(node_base), action_name_(action_name)
   {
     (void)node_graph;
     (void)node_logging;
@@ -359,42 +343,6 @@ public:
     }
     return true;
   }
-
-#if RTEST_ROS_VERSION >= RTEST_ROS_KILTED
-private:
-  std::shared_ptr<void> create_goal_response() const override
-  {
-    using GoalResponse = typename ActionT::Impl::SendGoalService::Response;
-    return std::shared_ptr<void>(new GoalResponse());
-  }
-
-  std::shared_ptr<void> create_result_response() const override
-  {
-    using GoalResultResponse = typename ActionT::Impl::GetResultService::Response;
-    return std::shared_ptr<void>(new GoalResultResponse());
-  }
-
-  std::shared_ptr<void> create_cancel_response() const override
-  {
-    return std::shared_ptr<void>(new CancelResponse());
-  }
-
-  std::shared_ptr<void> create_feedback_message() const override
-  {
-    using FeedbackMessage = typename ActionT::Impl::FeedbackMessage;
-    return std::shared_ptr<void>(new FeedbackMessage());
-  }
-
-  void handle_feedback_message(std::shared_ptr<void> message) override { (void)message; }
-
-  std::shared_ptr<void> create_status_message() const override
-  {
-    using GoalStatusMessage = typename ActionT::Impl::GoalStatusMessage;
-    return std::shared_ptr<void>(new GoalStatusMessage());
-  }
-
-  void handle_status_message(std::shared_ptr<void> message) override { (void)message; }
-#endif
 
 private:
   rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_;

@@ -120,7 +120,6 @@ public:
 
 private:
   using SubscriptionTopicStatisticsSharedPtr =
-    //std::shared_ptr<rclcpp::topic_statistics::SubscriptionTopicStatistics>;
     std::shared_ptr<rclcpp::topic_statistics::SubscriptionTopicStatistics<ROSMessageType>>;
 
 public:
@@ -144,11 +143,6 @@ public:
       topic_name,
       options.template to_rcl_subscription_options<ROSMessageType>(qos),
       callback.is_serialized_message_callback()),
-      // options.to_rcl_subscription_options(qos),
-      // options.event_callbacks,
-      // options.use_default_callbacks,
-      // callback.is_serialized_message_callback() ? DeliveredMessageKind::SERIALIZED_MESSAGE
-      //                                           : DeliveredMessageKind::ROS_MESSAGE),  // NOLINT
     any_callback_(callback),
     options_(options),
     message_memory_strategy_(message_memory_strategy)
@@ -261,20 +255,7 @@ public:
     const std::shared_ptr<rclcpp::SerializedMessage> & serialized_message,
     const rclcpp::MessageInfo & message_info) override
   {
-    // std::chrono::time_point<std::chrono::system_clock> now;
-    // if (subscription_topic_statistics_) {
-    //   // get current time before executing callback to
-    //   // exclude callback duration from topic statistics result.
-    //   now = std::chrono::system_clock::now();
-    // }
-
     any_callback_.dispatch(serialized_message, message_info);
-
-    // if (subscription_topic_statistics_) {
-    //   const auto nanos = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
-    //   const auto time = rclcpp::Time(nanos.time_since_epoch().count());
-    //   subscription_topic_statistics_->handle_message(message_info.get_rmw_message_info(), time);
-    // }
   }
 
   void handle_loaned_message(void * loaned_message, const rclcpp::MessageInfo & message_info)
@@ -303,7 +284,6 @@ public:
     if (subscription_topic_statistics_) {
       const auto nanos = std::chrono::time_point_cast<std::chrono::nanoseconds>(now);
       const auto time = rclcpp::Time(nanos.time_since_epoch().count());
-      //subscription_topic_statistics_->handle_message(message_info.get_rmw_message_info(), time);
       subscription_topic_statistics_->handle_message(*typed_message, time);
     }
   }
@@ -326,50 +306,6 @@ public:
   }
 
   bool use_take_shared_method() const { return any_callback_.use_take_shared_method(); }
-
-  // rclcpp::dynamic_typesupport::DynamicMessageType::SharedPtr get_shared_dynamic_message_type()
-  //   override
-  // {
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "get_shared_dynamic_message_type is not implemented for Subscription");
-  // }
-
-  // rclcpp::dynamic_typesupport::DynamicMessage::SharedPtr get_shared_dynamic_message() override
-  // {
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "get_shared_dynamic_message is not implemented for Subscription");
-  // }
-
-  // rclcpp::dynamic_typesupport::DynamicSerializationSupport::SharedPtr
-  // get_shared_dynamic_serialization_support() override
-  // {
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "get_shared_dynamic_serialization_support is not implemented for Subscription");
-  // }
-
-  // rclcpp::dynamic_typesupport::DynamicMessage::SharedPtr create_dynamic_message() override
-  // {
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "create_dynamic_message is not implemented for Subscription");
-  // }
-
-  // void return_dynamic_message(
-  //   rclcpp::dynamic_typesupport::DynamicMessage::SharedPtr & message) override
-  // {
-  //   (void)message;
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "return_dynamic_message is not implemented for Subscription");
-  // }
-
-  // void handle_dynamic_message(
-  //   const rclcpp::dynamic_typesupport::DynamicMessage::SharedPtr & message,
-  //   const rclcpp::MessageInfo & message_info) override
-  // {
-  //   (void)message;
-  //   (void)message_info;
-  //   throw rclcpp::exceptions::UnimplementedError(
-  //     "handle_dynamic_message is not implemented for Subscription");
-  // }
 
 private:
   RCLCPP_DISABLE_COPY(Subscription)

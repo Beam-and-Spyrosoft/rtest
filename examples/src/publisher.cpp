@@ -31,11 +31,12 @@ Publisher::Publisher(const rclcpp::NodeOptions & options) : rclcpp::Node("test_p
     this->get_node_base_interface(),
     this->get_node_timers_interface(),
     this->get_clock(),
-    500ms, [this]() {
-    auto msg = std::make_unique<std_msgs::msg::String>();
-    msg->set__data("timer");
-    publisher_->publish(std::move(msg));
-  });
+    500ms,
+    [this]() {
+      auto msg = std::make_unique<std_msgs::msg::String>();
+      msg->set__data("timer");
+      publisher_->publish(std::move(msg));
+    });
 }
 
 void Publisher::publishCopy()

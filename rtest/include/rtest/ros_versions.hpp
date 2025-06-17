@@ -19,7 +19,5 @@
 #pragma once
 
 #define RTEST_ROS_HUMBLE 22
-#define RTEST_ROS_JAZZY 24
-#define RTEST_ROS_KILTED 25
 // Future ROS distributions will be added here
 #define RTEST_ROS_ROLLING 999

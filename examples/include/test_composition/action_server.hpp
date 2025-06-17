@@ -16,7 +16,7 @@
 // @author    Mariusz Szczepanik (mua@spyro-soft.com)
 // @date      2025-05-28
 
-#pragma oncea
+#pragma once
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
