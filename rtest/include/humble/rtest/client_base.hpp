@@ -23,12 +23,12 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
-#include <optional>  // NOLINT, cpplint doesn't think this is a cpp std header
+#include <optional>
 #include <sstream>
 #include <string>
 #include <tuple>
 #include <utility>
-#include <variant>  // NOLINT
+#include <variant>
 #include <vector>
 
 #include "rcl/client.h"
@@ -73,8 +73,7 @@ struct FutureAndRequestId
    * Allow implicit conversions to `std::future` by value.
    * \deprecated
    */
-  [[deprecated(
-    "FutureAndRequestId: use .future instead of an implicit conversion")]] operator FutureT()
+  [[deprecated("FutureAndRequestId: use .future instead of an implicit conversion")]] operator FutureT()
   {
     return this->future;
   }

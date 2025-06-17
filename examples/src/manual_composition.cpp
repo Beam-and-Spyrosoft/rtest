@@ -40,6 +40,10 @@ int main(int argc, char ** argv)
   exec.add_node(service_provider);
   auto service_client = std::make_shared<test_composition::ServiceClient>(opts);
   exec.add_node(service_client);
+  auto action_server = std::make_shared<test_composition::ActionServer>(opts);
+  exec.add_node(action_server);
+  auto action_client = std::make_shared<test_composition::ActionClient>(opts);
+  exec.add_node(action_client);
 
   exec.spin();
 

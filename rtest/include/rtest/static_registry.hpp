@@ -387,8 +387,8 @@ public:
     lazy_init_action_clients_.push_back({raw_ptr, node_name, action_name, std::move(callback)});
 
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerLazyInitClient - " << "Node: '" << node_name
-                << "', Action: '" << action_name << "'" << std::endl;
+      std::cout << "StaticMocksRegistry::registerLazyInitClient - "
+                << "Node: '" << node_name << "', Action: '" << action_name << "'" << std::endl;
     }
   }
 
@@ -413,8 +413,8 @@ public:
     lazy_init_action_servers_.push_back({raw_ptr, node_name, action_name, std::move(callback)});
 
     if (verbose_) {
-      std::cout << "StaticMocksRegistry::registerLazyInitServer - " << "Node: '" << node_name
-                << "', Action: '" << action_name << "'" << std::endl;
+      std::cout << "StaticMocksRegistry::registerLazyInitServer - "
+                << "Node: '" << node_name << "', Action: '" << action_name << "'" << std::endl;
     }
   }
 
