@@ -30,6 +30,8 @@ This repository and tooling was initally developed as a collaboration between [B
 
 Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/latest/)
 
+> **LIMITATION**: The rtest framework has limitations at the integration testing level when source code of dependent components is not available in your ROS workspace (e.g., when they are installed via apt).
+
 ## Requirements
 
 - rclcpp

@@ -58,3 +58,6 @@ The source code is freely available and published on [github.com](https://github
 ### Quality Declaration
 
 This package claims to be in the **Quality Level 3** category, see the Quality Declaration for more details.
+
+
+> **LIMITATION**: The rtest framework has limitations at the integration testing level when source code of dependent components is not available in your ROS workspace (e.g., when they are installed via apt).
