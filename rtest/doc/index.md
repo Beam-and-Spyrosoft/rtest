@@ -60,4 +60,5 @@ The source code is freely available and published on [github.com](https://github
 This package claims to be in the **Quality Level 3** category, see the Quality Declaration for more details.
 
 
-> **LIMITATION**: The rtest framework has limitations at the integration testing level when source code of dependent components is not available in your ROS workspace (e.g., when they are installed via apt).
+> **LIMITATION**: The `rtest` framework has a significant limitation, in order to test the implementation against ROS 2, access to the source code of those components is required. They need to be directly included in the test build process.
+For example: testing interactions with components coming from external dependencies, such as those installed from system repositories, is not possible. In such cases, the source code of those packages must be downloaded and included in the workspace source tree.
