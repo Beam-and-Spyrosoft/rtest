@@ -103,9 +103,9 @@ target_include_directories(publisher PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-ament_target_dependencies(publisher
-  rclcpp
-  std_msgs
+target_link_libraries(publisher
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
 )
 ```
 
