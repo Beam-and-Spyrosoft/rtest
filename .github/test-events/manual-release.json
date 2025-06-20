@@ -1,0 +1,6 @@
+{
+    "inputs": {
+        "version": "0.1.0",
+        "create_github_release": "true"
+    }
+}

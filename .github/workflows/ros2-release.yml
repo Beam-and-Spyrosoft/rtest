@@ -1,37 +1,85 @@
-name: ROS 2 Release Workflow
-
+name: ROS 2 Release
+# To run locally (you need to have your GitHub token with scopes: "repo", "workflow"):
+# act --secret GITHUB_TOKEN=<YOUR_TOKEN:ghp_***> workflow_dispatch \
+#  --eventpath .github/test-events/manual-release.json \
+#  --workflows .github/workflows/ros2-release.yml
+# To run it on GitHub, use: https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-release.yml
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      create_github_release:
+        description: 'Create GitHub Release'
+        type: boolean
+        default: true
 
 jobs:
   release_deb_pkg:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04]
-        arch: [amd64, arm64, arm32]
-        ros_distro: [jazzy, kilted]
+        include:
+          # Humble from humble branch
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: amd64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm32
+
+          # Jazzy from jazzy branch
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: amd64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm32
+
+          # Kilted from kilted branch
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: amd64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm32
     runs-on: ${{ matrix.os }}
     container:
       image: osrf/ros:${{ matrix.ros_distro }}-desktop
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract version from tag
-        id: get_version
-        shell: bash
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
       - name: Install build tools
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
           libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-${{ matrix.ros_distro }}-ament-copyright \
-          python3-bloom python3-rosdep fakeroot debhelper dh-python
+          python3-bloom python3-rosdep fakeroot debhelper dh-python curl
+          curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+          apt-get install -y nodejs
+
+      - name: Checkout specific branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
 
       - name: Update rosdep database
         run: |
@@ -42,7 +90,7 @@ jobs:
         run: |
           rosdep install --from-paths . --ignore-src -r -y || true
 
-      - name: Build and package rtest
+      - name: Build distro ${{ matrix.ros_distro }} for arch ${{ matrix.arch }} release v${{ github.event.inputs.version }}
         shell: bash
         run: |
           source /opt/ros/${{ matrix.ros_distro }}/setup.bash
@@ -72,7 +120,7 @@ jobs:
   create_release:
     needs: release_deb_pkg
     runs-on: ubuntu-24.04
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ github.event.inputs.create_github_release == 'true' }}
     permissions:
       contents: write
     steps:
@@ -86,7 +134,7 @@ jobs:
           echo "Artifact structure:"
           find all-artifacts -type f | sort
           mkdir -p release-files
-          version=${GITHUB_REF_NAME#v}
+          version=${{ github.event.inputs.version }}
           echo "Using version: $version from Git tag"
           for arch_dir in all-artifacts/ros-deb-packages-*; do
             if [ -d "$arch_dir" ]; then
