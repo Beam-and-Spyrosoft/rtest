@@ -11,6 +11,12 @@ local: true
 
 In this tutorial we will write a simple test suite that verifies that a ROS 2 Node implementation that is using a Subscription works as expected.
 
+``rtest`` allows white-box access to subscriptions via ``findSubscription`` API, enabling isolated and deterministic tests without requiring ROS 2 executors or spinning threads. This means all messages are delivered immediately, with no latency, when the test code calls the `rtest` API.
+
+In this example, we shall
+- Desmonstrate a simple subscriber to ``/test_topic`` using the default ``SensorDataQoS`` profile.
+- Use the ``rtest`` subscription framework to inject messages directly into the subscriber without passing through the ROS middleware.
+- Verify that the callback executed as expected by inspecting the member variable ``lastMsg_``.
 
 ## Prerequisites
 
@@ -37,7 +43,7 @@ Navigate to `example_app`.
 Add the `Subscriber` class definition in `include/example_app/subscriber.hpp` with the following code:
 
 ```c++
-#pragma once 
+#pragma once
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
@@ -71,6 +77,7 @@ Subscriber::Subscriber()
 ```
 
 Open the `CMakeLists.txt` and add the Subscriber as a library:
+- **Note:** `ament_target_dependencies` is [depricated](https://docs.ros.org/en/kilted/Releases/Release-Kilted-Kaiju.html#ament-target-dependencies-is-deprecated) so we use plain CMake `target_link_libraries`
 
 ```cmake
 cmake_minimum_required(VERSION 3.8)
@@ -92,9 +99,9 @@ target_include_directories(subscriber PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(subscriber PUBLIC
+target_link_libraries(subscriber
   rclcpp::rclcpp
-  std_msgs::std_msgs
+  ${std_msgs_TARGETS}
 )
 
 ament_package()
@@ -222,7 +229,7 @@ ament_package() # Must be the last statement
 ```
 
 
-3.4 Build and run the tests
+### 4.4 Build and run the tests
 
 Build the `example_app` package:
 
@@ -235,3 +242,12 @@ Run the tests:
 ```shell
 $ colcon test --packages-select example_app --event-handlers console_cohesion+
 ```
+
+## Key Concepts
+
+- `rtest::findSubscription` locates a Subscription instance for testing.
+- `handle_message` is used to simulate message reception without a running ROS 2 system.
+- Tests use standard GoogleTest (gtest) and GoogleMock (gmock) macros.
+- **Note:** Other test frameworks (e.g., Catch2) are not currently supported.
+
+Try It Yourself!
