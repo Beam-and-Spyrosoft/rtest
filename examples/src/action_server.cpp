@@ -201,6 +201,37 @@ bool ActionServer::is_goal_reached(
   return distance < tolerance;
 }
 
+bool ActionServer::check_and_complete_goal(
+  const std::shared_ptr<const MoveRobot::Goal> goal,
+  const std::shared_ptr<GoalHandleMoveRobot> goal_handle)
+{
+  // Check if goal is canceled
+  if (goal_handle->is_canceling()) {
+    auto result = std::make_shared<MoveRobot::Result>();
+    result->success = false;
+    result->final_x = current_x_;
+    result->final_y = current_y_;
+    result->message = "Goal canceled";
+    goal_handle->canceled(result);
+    is_moving_ = false;
+    return true;
+  }
+
+  // Check if reached target
+  if (is_goal_reached(current_x_, current_y_, goal->target_x, goal->target_y)) {
+    auto result = std::make_shared<MoveRobot::Result>();
+    result->success = true;
+    result->final_x = current_x_;
+    result->final_y = current_y_;
+    result->message = "Target reached successfully";
+    goal_handle->succeed(result);
+    is_moving_ = false;
+    return true;
+  }
+
+  return false;
+}
+
 }  // namespace test_composition
 
 RCLCPP_COMPONENTS_REGISTER_NODE(test_composition::ActionServer)

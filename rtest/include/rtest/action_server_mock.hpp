@@ -51,9 +51,9 @@ public:
   ServerGoalHandle() = default;
   virtual ~ServerGoalHandle() = default;
 
-  bool is_canceling() const { return canceling_; }
-  bool is_active() const { return !canceling_; }
-  bool is_executing() const { return executing_; }
+  virtual bool is_canceling() const { return canceling_; }
+  virtual bool is_active() const { return !canceling_; }
+  virtual bool is_executing() const { return executing_; }
 
   void set_canceling(bool canceling = true) { canceling_ = canceling; }
   void set_executing(bool executing = true) { executing_ = executing; }
@@ -97,9 +97,9 @@ public:
   MOCK_METHOD(GoalUUID, get_goal_id, (), (const));
   MOCK_METHOD(std::shared_ptr<const typename ActionT::Goal>, get_goal, (), (const));
 
-  MOCK_METHOD(bool, is_canceling, (), (const));
-  MOCK_METHOD(bool, is_active, (), (const));
-  MOCK_METHOD(bool, is_executing, (), (const));
+  MOCK_METHOD(bool, is_canceling, (), (override, const));
+  MOCK_METHOD(bool, is_active, (), (override, const));
+  MOCK_METHOD(bool, is_executing, (), (override, const));
 };
 
 template <typename ActionT>
@@ -200,6 +200,24 @@ public:
     if (real_server && real_server->handle_accepted_) {
       real_server->handle_accepted_(goal_handle);
     }
+  }
+
+  bool has_goal_callback() const
+  {
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    return real_server && real_server->handle_goal_ != nullptr;
+  }
+
+  bool has_cancel_callback() const
+  {
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    return real_server && real_server->handle_cancel_ != nullptr;
+  }
+
+  bool has_accepted_callback() const
+  {
+    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
+    return real_server && real_server->handle_accepted_ != nullptr;
   }
 
 private:

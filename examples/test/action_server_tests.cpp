@@ -26,6 +26,20 @@ protected:
   rclcpp::NodeOptions opts;
 };
 
+TEST_F(ActionServerTest, CallbacksAreRegistered)
+{
+  auto node = std::make_shared<test_composition::ActionServer>(opts);
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
+  ASSERT_TRUE(server_mock);
+
+  // Verify all required callbacks are registered
+  EXPECT_TRUE(server_mock->has_goal_callback());
+  EXPECT_TRUE(server_mock->has_cancel_callback());
+  EXPECT_TRUE(server_mock->has_accepted_callback());
+}
+
 TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
 {
   auto node = std::make_shared<test_composition::ActionServer>(opts);
@@ -49,6 +63,7 @@ TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
   float expected_distance =
     std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
   EXPECT_LT(expected_distance, 10.0);
+  ASSERT_TRUE(server_mock->has_goal_callback());
 
   auto response = server_mock->call_real_handle_goal(uuid, goal);
 
@@ -73,6 +88,7 @@ TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
   float expected_distance =
     std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
   EXPECT_GT(expected_distance, 10.0);
+  ASSERT_TRUE(server_mock->has_goal_callback());
 
   auto response = server_mock->call_real_handle_goal(uuid, goal);
 
@@ -137,4 +153,71 @@ TEST_F(ActionServerTest, FeedbackPublishingWithValidData)
   for (int i = 0; i < 5; i++) {
     node->execute_single_step(goal, mock_goal_handle);
   }
+}
+
+TEST_F(ActionServerTest, GoalSuccessWhenTargetReached)
+{
+  auto node = std::make_shared<test_composition::ActionServer>(opts);
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
+  ASSERT_TRUE(server_mock);
+
+  // Create a goal very close to origin so it's immediately reachable
+  auto goal = std::make_shared<rtest_examples_interfaces::action::MoveRobot::Goal>();
+  goal->target_x = 0.05;  // Very close to current position (0,0)
+  goal->target_y = 0.05;
+
+  auto mock_goal_handle =
+    rtest::experimental::createMockGoalHandle<rtest_examples_interfaces::action::MoveRobot>(goal);
+
+  // Expect that succeed will be called with correct result
+  EXPECT_CALL(
+    *mock_goal_handle,
+    succeed(::testing::AllOf(
+      ::testing::Pointee(
+        ::testing::Field(&rtest_examples_interfaces::action::MoveRobot::Result::success, true)),
+      ::testing::Pointee(::testing::Field(
+        &rtest_examples_interfaces::action::MoveRobot::Result::message,
+        "Target reached successfully")))))
+    .Times(1);
+
+  // Execute logic that should complete the goal
+  bool completed = node->check_and_complete_goal(goal, mock_goal_handle);
+  EXPECT_TRUE(completed);
+  EXPECT_FALSE(node->is_moving());
+}
+
+TEST_F(ActionServerTest, GoalCanceledWhenCanceling)
+{
+  auto node = std::make_shared<test_composition::ActionServer>(opts);
+  auto server_mock =
+    rtest::experimental::findActionServer<rtest_examples_interfaces::action::MoveRobot>(
+      node, "move_robot");
+  ASSERT_TRUE(server_mock);
+
+  auto goal = std::make_shared<rtest_examples_interfaces::action::MoveRobot::Goal>();
+  goal->target_x = 5.0;
+  goal->target_y = 5.0;
+
+  auto mock_goal_handle =
+    rtest::experimental::createMockGoalHandle<rtest_examples_interfaces::action::MoveRobot>(goal);
+
+  // Set up the mock to return true for is_canceling()
+  EXPECT_CALL(*mock_goal_handle, is_canceling()).WillOnce(::testing::Return(true));
+
+  // Expect that canceled will be called with correct result
+  EXPECT_CALL(
+    *mock_goal_handle,
+    canceled(::testing::AllOf(
+      ::testing::Pointee(
+        ::testing::Field(&rtest_examples_interfaces::action::MoveRobot::Result::success, false)),
+      ::testing::Pointee(::testing::Field(
+        &rtest_examples_interfaces::action::MoveRobot::Result::message, "Goal canceled")))))
+    .Times(1);
+
+  // Execute logic that should cancel the goal
+  bool completed = node->check_and_complete_goal(goal, mock_goal_handle);
+  EXPECT_TRUE(completed);
+  EXPECT_FALSE(node->is_moving());
 }
