@@ -1,36 +1,85 @@
-name: ROS 2 Release Workflow
-
+name: ROS 2 Release
+# To run locally (you need to have your GitHub token with scopes: "repo", "workflow"):
+# act --secret GITHUB_TOKEN=<YOUR_TOKEN:ghp_***> workflow_dispatch \
+#  --eventpath .github/test-events/manual-release.json \
+#  --workflows .github/workflows/ros2-release.yml
+# To run it on GitHub, use: https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-release.yml
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      create_github_release:
+        description: 'Create GitHub Release'
+        type: boolean
+        default: true
 
 jobs:
   release_deb_pkg:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04]
-        arch: [amd64, arm64, arm32]
+        include:
+          # Humble from humble branch
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: amd64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm32
+
+          # Jazzy from jazzy branch
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: amd64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm32
+
+          # Kilted from kilted branch
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: amd64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm32
     runs-on: ${{ matrix.os }}
     container:
-      image: osrf/ros:jazzy-desktop
+      image: osrf/ros:${{ matrix.ros_distro }}-desktop
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract version from tag
-        id: get_version
-        shell: bash
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
       - name: Install build tools
         run: |
           apt-get update
           apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-jazzy-ament-copyright \
-          python3-bloom python3-rosdep fakeroot debhelper dh-python
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-${{ matrix.ros_distro }}-ament-copyright \
+          python3-bloom python3-rosdep fakeroot debhelper dh-python curl
+          curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+          apt-get install -y nodejs
+
+      - name: Checkout specific branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
 
       - name: Update rosdep database
         run: |
@@ -41,10 +90,10 @@ jobs:
         run: |
           rosdep install --from-paths . --ignore-src -r -y || true
 
-      - name: Build and package rtest
+      - name: Build distro ${{ matrix.ros_distro }} for arch ${{ matrix.arch }} release v${{ github.event.inputs.version }}
         shell: bash
         run: |
-          source /opt/ros/jazzy/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
 
           # Create directory for packages
           mkdir -p $GITHUB_WORKSPACE/deb_packages
@@ -64,14 +113,14 @@ jobs:
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: ros-deb-packages-${{ matrix.arch }}
+          name: ros-deb-packages-${{ matrix.ros_distro }}-${{ matrix.arch }}
           path: deb_packages/*.deb
           if-no-files-found: warn
 
   create_release:
     needs: release_deb_pkg
     runs-on: ubuntu-24.04
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ github.event.inputs.create_github_release == 'true' }}
     permissions:
       contents: write
     steps:
@@ -85,16 +134,17 @@ jobs:
           echo "Artifact structure:"
           find all-artifacts -type f | sort
           mkdir -p release-files
-          version=${GITHUB_REF_NAME#v}
+          version=${{ github.event.inputs.version }}
           echo "Using version: $version from Git tag"
-          for arch_dir in all-artifacts/ros-deb-packages-*; do
-            if [ -d "$arch_dir" ]; then
-              arch=$(basename "$arch_dir" | sed 's/ros-deb-packages-//')
-              echo "Processing artifacts for $arch"
+          for package_name in all-artifacts/ros-deb-packages-*; do
+            if [ -d "$package_name" ]; then
+              ros_distro=$(echo "$package_name" | cut -d'-' -f3)  # humble
+              arch=$(echo "$package_name" | cut -d'-' -f4)
+              echo "Processing artifacts for $ros_distro $arch"
 
-              for deb in "$arch_dir"/*.deb; do
+              for deb in "$package_name"/*.deb; do
                 if [ -f "$deb" ]; then
-                  new_filename="ros-jazzy-rtest_${version}_${arch}.deb"
+                  new_filename="ros-${ros_distro}-rtest_${version}_${arch}.deb"
                   cp "$deb" "release-files/$new_filename"
                   echo "Copied $deb to release-files/$new_filename"
                 fi
