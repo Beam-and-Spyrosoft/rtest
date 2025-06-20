@@ -169,22 +169,32 @@ public:
   using GoalHandleSharedPtr = std::shared_ptr<GoalHandle>;
   using GoalResponse = rclcpp_action::GoalResponse;
   using CancelResponse = rclcpp_action::CancelResponse;
+  using GoalCallback = typename rclcpp_action::Server<ActionT>::GoalCallback;
+  using CancelCallback = typename rclcpp_action::Server<ActionT>::CancelCallback;
+  using AcceptedCallback = typename rclcpp_action::Server<ActionT>::AcceptedCallback;
 
   explicit ActionServerMock(rclcpp_action::ServerBase * server)
-  : server_(dynamic_cast<rclcpp_action::Server<ActionT> *>(server))
   {
-    if (!server_) {
-      throw std::runtime_error("Failed to cast ServerBase to Server<ActionT>");
+    if (server == nullptr) {
+      throw std::invalid_argument{"ActionServerMock error: server is null"};
     }
+    server_ = dynamic_cast<rclcpp_action::Server<ActionT> *>(server);
+    if (server_ == nullptr) {
+      throw std::invalid_argument{
+        "ActionServerMock error: server is type with invalid ActionT type"};
+    }
+
+    goal_callback = server_->handle_goal_;
+    cancel_callback = server_->handle_cancel_;
+    accepted_callback = server_->handle_accepted_;
   }
   ~ActionServerMock() { StaticMocksRegistry::instance().detachMock(server_); }
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  // Getters for direct access to callback members
-  auto & get_handle_goal() { return server_->handle_goal_; }
-  auto & get_handle_cancel() { return server_->handle_cancel_; }
-  auto & get_handle_accepted() { return server_->handle_accepted_; }
+  GoalCallback goal_callback;
+  CancelCallback cancel_callback;
+  AcceptedCallback accepted_callback;
 
 private:
   rclcpp_action::Server<ActionT> * server_{nullptr};
