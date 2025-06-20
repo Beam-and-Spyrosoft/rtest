@@ -226,9 +226,9 @@ target_link_libraries(${PROJECT_NAME}-test
   rtest::timer_mock
 )
 
-ament_target_dependencies(${PROJECT_NAME}-test
-  rclcpp
-  std_msgs
+target_link_libraries(${PROJECT_NAME}-test
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
 )
 ```
 
