@@ -154,6 +154,9 @@ TEST_F(ActionServerTest, GoalSuccessWhenTargetReached)
   auto mock_goal_handle =
     rtest::experimental::createMockGoalHandle<rtest_examples_interfaces::action::MoveRobot>(goal);
 
+  // Return that the goal is not cancelled when ActionServer calls `is_canceling()`
+  EXPECT_CALL(*mock_goal_handle, is_canceling()).WillOnce(::testing::Return(false));
+
   // Expect that succeed will be called with correct result
   std::shared_ptr<rtest_examples_interfaces::action::MoveRobot::Result> captured_result;
 
@@ -185,7 +188,7 @@ TEST_F(ActionServerTest, GoalCanceledWhenCanceling)
   auto mock_goal_handle =
     rtest::experimental::createMockGoalHandle<rtest_examples_interfaces::action::MoveRobot>(goal);
 
-  // Set up the mock to return true for is_canceling()
+  // Return that the goal is cancelled when ActionServer calls `is_canceling()`
   EXPECT_CALL(*mock_goal_handle, is_canceling()).WillOnce(::testing::Return(true));
 
   // Expect that canceled will be called with correct result
