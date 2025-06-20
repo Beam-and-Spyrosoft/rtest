@@ -77,6 +77,7 @@ Subscriber::Subscriber()
 ```
 
 Open the `CMakeLists.txt` and add the Subscriber as a library:
+- **Note:** `ament_target_dependencies` is [depricated](https://docs.ros.org/en/kilted/Releases/Release-Kilted-Kaiju.html#ament-target-dependencies-is-deprecated) so we use plain CMake `target_link_libraries`
 
 ```cmake
 cmake_minimum_required(VERSION 3.8)
@@ -211,11 +212,8 @@ target_include_directories(${PROJECT_NAME}-test PRIVATE
 
 target_link_libraries(${PROJECT_NAME}-test
   rtest::subscription_mock
-)
-
-ament_target_dependencies(${PROJECT_NAME}-test
-  rclcpp
-  std_msgs
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
 )
 ```
 
@@ -248,6 +246,7 @@ $ colcon test --packages-select example_app --event-handlers console_cohesion+
 
 - `rtest::findSubscription` locates a Subscription instance for testing.
 - `handle_message` is used to simulate message reception without a running ROS 2 system.
-- Tests use standard GoogleTest (`gtest`) macros but can also work with other frameworks such as Catch2.
+- Tests use standard GoogleTest (gtest) and GoogleMock (gmock) macros.
+- **Note:** Other test frameworks (e.g., Catch2) are not currently supported.
 
 Try It Yourself!

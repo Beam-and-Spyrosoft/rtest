@@ -49,11 +49,6 @@ class Publisher : public rclcpp::Node
 public:
   explicit Publisher(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
 
-  void publishCopy();
-  void publishUniquePtr();
-  void publishLoanedMsg();
-  void publishIfSubscribersListening();
-
 private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
@@ -82,6 +77,7 @@ Publisher::Publisher(const rclcpp::NodeOptions & options)
 ```
 
 Open the `CMakeLists.txt` and add the Publisher as a library:
+- **Note:** `ament_target_dependencies` is [depricated](https://docs.ros.org/en/kilted/Releases/Release-Kilted-Kaiju.html#ament-target-dependencies-is-deprecated) so we use plain CMake `target_link_libraries`
 
 ```cmake
 cmake_minimum_required(VERSION 3.8)
@@ -207,6 +203,7 @@ int main(int argc, char ** argv)
 
 Create the `test/CMakeLists.txt` file:
 
+
 ```cmake
 find_package(rtest REQUIRED)
 find_package(ament_cmake_gmock REQUIRED)
@@ -224,9 +221,6 @@ target_include_directories(${PROJECT_NAME}-test PRIVATE
 target_link_libraries(${PROJECT_NAME}-test
   rtest::publisher_mock
   rtest::timer_mock
-)
-
-target_link_libraries(${PROJECT_NAME}-test
   rclcpp::rclcpp
   ${std_msgs_TARGETS}
 )
@@ -258,7 +252,8 @@ $ colcon test --packages-select example_app --event-handlers console_cohesion+
 
 ## Key Concepts
 - `rtest::findPublisher` locates a Publisher instance for testing.
-- GoogleMock’s `EXPECT_CALL(...).Times(...)` allows verifying publish behavior precisely without a running ROS 2 system
 - `rtest::findTimers` locates timers, and `execute_callback` triggers them deterministically.
+- GoogleMock’s `EXPECT_CALL(...).Times(...)` allows verifying publish behavior precisely without a running ROS 2 system.
+- **Note:** Other test frameworks (e.g., Catch2) are not currently supported.
 
 Try It Yourself!
