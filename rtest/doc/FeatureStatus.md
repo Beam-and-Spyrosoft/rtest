@@ -3,6 +3,7 @@
 The table below lists all features of Rtest, available in the current release, and planned for future
 
  ● - available
+ ◐ - available experimental
  ○ - planned
  ✖ - not available
 
@@ -12,8 +13,8 @@ The table below lists all features of Rtest, available in the current release, a
 | Publisher Mock |            |    ●   |
 | Service Mock |              |    ●   |
 | Client Mock |               |    ●   |
-| Action Service Mock |       |    ○   |
-| Action Client Mock |        |    ○   |
+| Action Server Mock |        |    ◐   |
+| Action Client Mock |        |    ◐   |
 | Timer Mock |                |    ●   |
 | Sim Clock |                 |    ●   |
 | Logger Mock |               |    ●   |

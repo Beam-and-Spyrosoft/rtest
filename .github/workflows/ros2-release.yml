@@ -136,13 +136,13 @@ jobs:
           mkdir -p release-files
           version=${{ github.event.inputs.version }}
           echo "Using version: $version from Git tag"
-          for package_name in all-artifacts/ros-deb-packages-*; do
-            if [ -d "$package_name" ]; then
-              ros_distro=$(echo "$package_name" | cut -d'-' -f3)  # humble
-              arch=$(echo "$package_name" | cut -d'-' -f4)
-              echo "Processing artifacts for $ros_distro $arch"
-
-              for deb in "$package_name"/*.deb; do
+          for arch_dir in all-artifacts/ros-deb-packages-*; do
+            if [ -d "$arch_dir" ]; then
+              dir_name=$(basename "$arch_dir" | sed 's/ros-deb-packages-//')
+              echo "Processing artifacts for $arch"
+              ros_distro=$(echo "$dir_name" | cut -d'-' -f1)
+              arch=$(echo "$dir_name" | cut -d'-' -f2)
+              for deb in "$arch_dir"/*.deb; do
                 if [ -f "$deb" ]; then
                   new_filename="ros-${ros_distro}-rtest_${version}_${arch}.deb"
                   cp "$deb" "release-files/$new_filename"

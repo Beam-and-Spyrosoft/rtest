@@ -20,8 +20,8 @@ This repository and tooling was initally developed as a collaboration between [B
 
 ## Features
 
-- Verifying whether the tested Node has created the necessary entities such as publishers, subscribers, timers, services, or clients.
-- Setting expectations on mocked entities, enabling verification of events such as publishing expected messages on a selected topic, sending a request by a client, or validating a service response.
+- Verifying whether the tested Node has created the necessary entities such as publishers, subscribers, timers, services clients, services providers, action servers or action clients.
+- Setting expectations on mocked entities, enabling verification of events such as publishing expected messages on a selected topic, sending a request by a client or validating a service response, sending action goals or verifying action feedback and results.
 - Direct message passing to subscribers, or direct request injection to services and responding to clients.
 - Direct timer callbacks firing and simulated time control, resulting in immediate and precise time-dependent implementations testing.
 - Single-threaded, controllable test execution.
@@ -87,10 +87,12 @@ target_link_libraries(${PROJECT_NAME}-test
   rtest::timer_mock
   rtest::service_mock
   rtest::service_client_mock
+  rtest::action_server_mock
+  rtest::action_client_mock
 )
 
-ament_target_dependencies(${PROJECT_NAME}-test
-  rclcpp
+target_link_libraries(${PROJECT_NAME}-test
+  rclcpp::rclcpp
 )
 ```
 
@@ -123,6 +125,8 @@ The framework allows mocking of the following ROS 2 components:
 - `rclcpp::Subscription`
 - `rclcpp::Service`
 - `rclcpp::Client`
+- `rclcpp_action::Server` (experimental)
+- `rclcpp_action::Client` (experimental)
 
 ## Testing Process
 
@@ -137,6 +141,8 @@ Use the appropriate find* function to locate the component created by your node:
 - `findSubscription` for subscriptions
 - `findService` for service providers
 - `findClient` for service clients
+- `experimental::findActionClient` for action clients
+- `experimental::findActionServer` for action servers
 
 ### Mocking Phase
 

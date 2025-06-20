@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(rtest_examples 
   LANGUAGES CXX
-  VERSION 0.1.0
+  VERSION 0.2.0
 )
 
 # Build tests by default
@@ -19,9 +19,12 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rtest_examples_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
+find_package(Threads REQUIRED)
 
 # Publisher component
 add_library(publisher_component SHARED src/publisher.cpp)
@@ -31,11 +34,12 @@ target_include_directories(publisher_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(publisher_component
-  rclcpp
-  rclcpp_components
-  std_msgs
+target_link_libraries(publisher_component PUBLIC
+  ${std_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(publisher_component "test_composition::Publisher")
 
 # Subscriber component
@@ -45,11 +49,12 @@ target_include_directories(subscriber_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(subscriber_component
-  rclcpp
-  rclcpp_components
-  std_msgs
+target_link_libraries(subscriber_component PUBLIC
+  ${std_msgs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(subscriber_component "test_composition::Subscriber")
 
 # Service provider component
@@ -59,12 +64,13 @@ target_include_directories(service_provider_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(service_provider_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  std_srvs
+target_link_libraries(service_provider_component PUBLIC
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(service_provider_component "test_composition::ServiceProvider")
 
 # Service client component
@@ -74,13 +80,55 @@ target_include_directories(service_client_component PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-ament_target_dependencies(service_client_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  std_srvs
+target_link_libraries(service_client_component PUBLIC
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_components::component
 )
+
 rclcpp_components_register_nodes(service_client_component "test_composition::ServiceClient")
+
+
+# Action server component
+add_library(action_server_component SHARED src/action_server.cpp)
+target_compile_definitions(action_server_component PRIVATE "COMPOSITION_BUILDING_DLL")
+target_include_directories(action_server_component PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Link with generated action interfaces and threads
+target_link_libraries(action_server_component PUBLIC
+  ${rtest_examples_interfaces_TARGETS}
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
+  rclcpp_components::component
+)
+
+rclcpp_components_register_nodes(action_server_component "test_composition::ActionServer")
+
+# Action client component
+add_library(action_client_component SHARED src/action_client.cpp)
+target_compile_definitions(action_client_component PRIVATE "COMPOSITION_BUILDING_DLL")
+target_include_directories(action_client_component PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Link with generated action interfaces and threads
+target_link_libraries(action_client_component PUBLIC
+  ${rtest_examples_interfaces_TARGETS}
+  ${std_msgs_TARGETS}
+  ${std_srvs_TARGETS}
+  rclcpp::rclcpp
+  rclcpp_action::rclcpp_action
+  rclcpp_components::component
+)
+
+rclcpp_components_register_nodes(action_client_component "test_composition::ActionClient")
 
 # Manual/static Node composition
 add_executable(manual_composition src/manual_composition.cpp)
@@ -89,16 +137,19 @@ target_link_libraries(manual_composition
   subscriber_component
   service_provider_component
   service_client_component
+  action_server_component
+  action_client_component
+  ${cpp_typesupport_target}
 )
-ament_target_dependencies(manual_composition
-  rclcpp
-)
+target_link_libraries(manual_composition rclcpp::rclcpp)
 
 install(TARGETS
   publisher_component
   subscriber_component
   service_provider_component
   service_client_component
+  action_server_component
+  action_client_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -124,29 +175,47 @@ if(BUILD_TESTING)
 
     test_tools_add_doubles(publisher_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(subscriber_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
     )
     test_tools_add_doubles(service_provider_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
-        std_srvs
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
     )
     test_tools_add_doubles(service_client_component
       AMENT_DEPENDENCIES
-        rclcpp
-        rclcpp_components
-        std_msgs
-        std_srvs
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+    )
+    test_tools_add_doubles(action_server_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
+    )
+    test_tools_add_doubles(action_client_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
     )
     add_subdirectory(test)
   endif()
