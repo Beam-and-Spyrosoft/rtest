@@ -125,6 +125,17 @@ TEST_F(ActionServerTest, FeedbackPublishingWithValidData)
     .WillOnce(::testing::SaveArg<0>(&feedback));
 
   node->execute_single_step(goal, mock_goal_handle);
+
+  /// Verify distance_remaining calculation is correct
+  float expected_distance_remaining = std::sqrt(
+    (goal->target_x - feedback->current_x) * (goal->target_x - feedback->current_x) +
+    (goal->target_y - feedback->current_y) * (goal->target_y - feedback->current_y));
+  EXPECT_NEAR(feedback->distance_remaining, expected_distance_remaining, 0.01);
+
+  /// Verify we're moving away from origin (progress check)
+  float distance_from_origin = std::sqrt(
+    feedback->current_x * feedback->current_x + feedback->current_y * feedback->current_y);
+  EXPECT_GT(distance_from_origin, 0.0);
 }
 
 TEST_F(ActionServerTest, GoalSuccessWhenTargetReached)
