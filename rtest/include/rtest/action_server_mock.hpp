@@ -170,58 +170,24 @@ public:
   using GoalResponse = rclcpp_action::GoalResponse;
   using CancelResponse = rclcpp_action::CancelResponse;
 
-  explicit ActionServerMock(rclcpp_action::ServerBase * server) : server_(server) {}
+  explicit ActionServerMock(rclcpp_action::ServerBase * server)
+  : server_(dynamic_cast<rclcpp_action::Server<ActionT> *>(server))
+  {
+    if (!server_) {
+      throw std::runtime_error("Failed to cast ServerBase to Server<ActionT>");
+    }
+  }
   ~ActionServerMock() { StaticMocksRegistry::instance().detachMock(server_); }
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  /// Methods to call the real rclcpp callbacks for testing business logic
-  GoalResponse call_real_handle_goal(
-    const rclcpp_action::GoalUUID & uuid,
-    std::shared_ptr<const Goal> goal)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_goal_) {
-      return real_server->handle_goal_(uuid, goal);
-    }
-    return GoalResponse::REJECT;
-  }
-  CancelResponse call_real_handle_cancel(const GoalHandleSharedPtr & goal_handle)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_cancel_) {
-      return real_server->handle_cancel_(goal_handle);
-    }
-    return CancelResponse::REJECT;
-  }
-  void call_real_handle_accepted(const GoalHandleSharedPtr & goal_handle)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_accepted_) {
-      real_server->handle_accepted_(goal_handle);
-    }
-  }
-
-  bool has_goal_callback() const
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    return real_server && real_server->handle_goal_ != nullptr;
-  }
-
-  bool has_cancel_callback() const
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    return real_server && real_server->handle_cancel_ != nullptr;
-  }
-
-  bool has_accepted_callback() const
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    return real_server && real_server->handle_accepted_ != nullptr;
-  }
+  // Getters for direct access to callback members
+  auto & get_handle_goal() { return server_->handle_goal_; }
+  auto & get_handle_cancel() { return server_->handle_cancel_; }
+  auto & get_handle_accepted() { return server_->handle_accepted_; }
 
 private:
-  rclcpp_action::ServerBase * server_{nullptr};
+  rclcpp_action::Server<ActionT> * server_{nullptr};
 };
 
 template <typename ActionT>

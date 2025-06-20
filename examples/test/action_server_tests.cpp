@@ -35,9 +35,9 @@ TEST_F(ActionServerTest, CallbacksAreRegistered)
   ASSERT_TRUE(server_mock);
 
   // Verify all required callbacks are registered
-  EXPECT_TRUE(server_mock->has_goal_callback());
-  EXPECT_TRUE(server_mock->has_cancel_callback());
-  EXPECT_TRUE(server_mock->has_accepted_callback());
+  EXPECT_TRUE(server_mock->get_handle_goal());
+  EXPECT_TRUE(server_mock->get_handle_cancel());
+  EXPECT_TRUE(server_mock->get_handle_accepted());
 }
 
 TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
@@ -63,9 +63,10 @@ TEST_F(ActionServerTest, GoalAcceptanceWithinRange)
   float expected_distance =
     std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
   EXPECT_LT(expected_distance, 10.0);
-  ASSERT_TRUE(server_mock->has_goal_callback());
+  auto handle_goal = server_mock->get_handle_goal();
+  ASSERT_TRUE(handle_goal);
 
-  auto response = server_mock->call_real_handle_goal(uuid, goal);
+  auto response = handle_goal(uuid, goal);
 
   /// Verify the goal was accepted (distance = sqrt(4+9) ≈ 3.6 < 10.0 and not moving)
   EXPECT_EQ(response, rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE);
@@ -88,9 +89,10 @@ TEST_F(ActionServerTest, GoalRejectionWhenTooFar)
   float expected_distance =
     std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y);
   EXPECT_GT(expected_distance, 10.0);
-  ASSERT_TRUE(server_mock->has_goal_callback());
+  auto handle_goal = server_mock->get_handle_goal();
+  ASSERT_TRUE(handle_goal);
 
-  auto response = server_mock->call_real_handle_goal(uuid, goal);
+  auto response = handle_goal(uuid, goal);
 
   /// Verify the goal was rejected due to distance
   EXPECT_EQ(response, rclcpp_action::GoalResponse::REJECT);
