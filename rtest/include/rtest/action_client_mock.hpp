@@ -409,43 +409,6 @@ namespace rtest
 namespace experimental
 {
 
-// Custom matchers for duration comparison
-MATCHER_P(
-  DurationEq,
-  expected_duration,
-  "duration equals " + ::testing::PrintToString(expected_duration))
-{
-  return arg == expected_duration;
-}
-MATCHER_P(
-  DurationGt,
-  expected_duration,
-  "duration greater than " + ::testing::PrintToString(expected_duration))
-{
-  return arg > expected_duration;
-}
-MATCHER_P(
-  DurationLt,
-  expected_duration,
-  "duration less than " + ::testing::PrintToString(expected_duration))
-{
-  return arg < expected_duration;
-}
-MATCHER_P(
-  DurationGe,
-  expected_duration,
-  "duration greater than or equal " + ::testing::PrintToString(expected_duration))
-{
-  return arg >= expected_duration;
-}
-MATCHER_P(
-  DurationLe,
-  expected_duration,
-  "duration less than or equal " + ::testing::PrintToString(expected_duration))
-{
-  return arg <= expected_duration;
-}
-
 template <typename ActionT>
 class ActionClientMock : public MockBase
 {

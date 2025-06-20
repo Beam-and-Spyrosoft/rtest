@@ -175,7 +175,7 @@ public:
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  /// Methods to call the real rclcpp jazzy callbacks for testing business logic
+  /// Methods to call the real rclcpp callbacks for testing business logic
   GoalResponse call_real_handle_goal(
     const rclcpp_action::GoalUUID & uuid,
     std::shared_ptr<const Goal> goal)
