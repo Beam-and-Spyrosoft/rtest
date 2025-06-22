@@ -42,12 +42,13 @@ Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/la
 ## Quick-Start
 
 1. Clone the repository:
-    ```
-    git clone https://github.com/yourusername/rtest.git
+    ```sh
+    $ git clone https://github.com/yourusername/rtest.git
     ```
 2. Build and run the test examples:
-    ```
-    colcon build && colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+    ```sh
+    $ colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
+    $ colcon test --packages-select rtest_examples --event-handlers console_cohesion+
     ```
 
 ## Adding Testing Support to Your Package

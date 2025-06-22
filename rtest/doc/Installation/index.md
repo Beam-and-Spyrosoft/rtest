@@ -31,5 +31,6 @@ $ git clone https://github.com/yourusername/rtest.git
 2. **Build and run the test examples**:
 
 ```shell
-$ colcon build && colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+$ colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
+$ colcon test --packages-select rtest_examples --event-handlers console_cohesion+
 ```

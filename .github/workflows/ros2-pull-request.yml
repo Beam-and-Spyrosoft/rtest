@@ -81,7 +81,7 @@ jobs:
         shell: bash
         run: |
           . /opt/ros/${{ matrix.ros_distro }}/setup.bash
-          colcon build --cmake-args -DBUILD_TESTING=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
+          colcon build --cmake-args -DRTEST_BUILD_EXAMPLES=On -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" -DCMAKE_EXE_LINKER_FLAGS="-lgcov --coverage"
 
       - name: Run tests
         shell: bash

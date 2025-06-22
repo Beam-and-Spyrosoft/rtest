@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           . /opt/ros/jazzy/setup.bash
-          colcon build --event-handlers console_cohesion+ --cmake-args -DBUILD_TESTING=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On
+          colcon build --event-handlers console_cohesion+ --cmake-args -DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On
 
       - name: Run clang-tidy
         shell: bash
