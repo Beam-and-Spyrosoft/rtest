@@ -160,64 +160,64 @@ if(RTEST_BUILD_EXAMPLES)
     DESTINATION lib/${PROJECT_NAME}
   )
 
-    find_package(rtest REQUIRED)
-    # Option to enable clang-tidy tests (default: disabled)
-    option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
-    if(ENABLE_CLANG_TIDY)
-      find_package(ament_lint_auto REQUIRED)
-      find_package(ament_cmake_clang_tidy REQUIRED)
-      set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
-      ament_lint_auto_find_test_dependencies()
-    else()
-      find_package(ament_cmake_copyright REQUIRED)
-      ament_copyright()
+  find_package(rtest REQUIRED)
+  # Option to enable clang-tidy tests (default: disabled)
+  option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
+  if(ENABLE_CLANG_TIDY)
+    find_package(ament_lint_auto REQUIRED)
+    find_package(ament_cmake_clang_tidy REQUIRED)
+    set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
+    ament_lint_auto_find_test_dependencies()
+  else()
+    find_package(ament_cmake_copyright REQUIRED)
+    ament_copyright()
 
-      test_tools_add_doubles(publisher_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          ${std_msgs_TARGETS}
-      )
-      test_tools_add_doubles(subscriber_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          ${std_msgs_TARGETS}
-      )
-      test_tools_add_doubles(service_provider_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          ${std_msgs_TARGETS}
-          ${std_srvs_TARGETS}
-      )
-      test_tools_add_doubles(service_client_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          ${std_msgs_TARGETS}
-          ${std_srvs_TARGETS}
-      )
-      test_tools_add_doubles(action_server_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          rclcpp_action::rclcpp_action
-          ${std_msgs_TARGETS}
-          ${std_srvs_TARGETS}
-          ${rtest_examples_interfaces_TARGETS}
-      )
-      test_tools_add_doubles(action_client_component
-        AMENT_DEPENDENCIES
-          rclcpp::rclcpp
-          rclcpp_components::component
-          rclcpp_action::rclcpp_action
-          ${std_msgs_TARGETS}
-          ${std_srvs_TARGETS}
-          ${rtest_examples_interfaces_TARGETS}
-      )
-      add_subdirectory(test)
-    endif()
+    test_tools_add_doubles(publisher_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+    )
+    test_tools_add_doubles(subscriber_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+    )
+    test_tools_add_doubles(service_provider_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+    )
+    test_tools_add_doubles(service_client_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+    )
+    test_tools_add_doubles(action_server_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
+    )
+    test_tools_add_doubles(action_client_component
+      AMENT_DEPENDENCIES
+        rclcpp::rclcpp
+        rclcpp_components::component
+        rclcpp_action::rclcpp_action
+        ${std_msgs_TARGETS}
+        ${std_srvs_TARGETS}
+        ${rtest_examples_interfaces_TARGETS}
+    )
+    add_subdirectory(test)
+  endif()
 
   ament_package()
 endif()

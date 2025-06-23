@@ -79,6 +79,7 @@ jobs:
           export LDFLAGS="--coverage -lgcov"
           colcon build \
             --cmake-args \
+              -DRTEST_BUILD_EXAMPLES=On \
               -DBUILD_TESTING=On \
               -DCMAKE_BUILD_TYPE=Debug \
               -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage -g -O0" \
