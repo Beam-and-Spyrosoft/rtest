@@ -124,6 +124,13 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout main branch for tagging
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create and push tag
         run: |
           git config --local user.email "action@github.com"
