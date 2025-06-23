@@ -124,6 +124,28 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Create and push tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          TAG_NAME="v${{ github.event.inputs.version }}"
+          echo "Creating tag: $TAG_NAME"
+
+          # Check if tag already exists
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "❌ Error: Tag $TAG_NAME already exists!"
+            echo "Please choose a different version or delete the existing tag first:"
+            echo "  git tag -d $TAG_NAME"
+            echo "  git push origin --delete $TAG_NAME"
+            exit 1
+          fi
+
+          # Create new tag
+          git tag -a "$TAG_NAME" -m "Release version ${{ github.event.inputs.version }}"
+          git push origin "$TAG_NAME"
+          echo "✅ Successfully created and pushed tag: $TAG_NAME"
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -157,7 +179,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ github.ref_name }}
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release v${{ github.event.inputs.version }}
           draft: false
           prerelease: false
           files: release-files/*.deb
