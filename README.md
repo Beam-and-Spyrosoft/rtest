@@ -26,6 +26,9 @@ This repository and tooling was initally developed as a collaboration between [B
 - Direct timer callbacks firing and simulated time control, resulting in immediate and precise time-dependent implementations testing.
 - Single-threaded, controllable test execution.
 
+> **LIMITATION**: The `rtest` framework has a significant limitation, in order to test the implementation against ROS 2, access to the source code of those components is required. They need to be directly included in the test build process.
+For example: testing interactions with components coming from external dependencies, such as those installed from system repositories, is not possible. In such cases, the source code of those packages must be downloaded and included in the workspace source tree.
+
 ## Documentation
 
 Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/latest/)
@@ -39,12 +42,13 @@ Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/la
 ## Quick-Start
 
 1. Clone the repository:
-    ```
-    git clone https://github.com/yourusername/rtest.git
+    ```sh
+    $ git clone https://github.com/yourusername/rtest.git
     ```
 2. Build and run the test examples:
-    ```
-    colcon build && colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+    ```sh
+    $ colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
+    $ colcon test --packages-select rtest_examples --event-handlers console_cohesion+
     ```
 
 ## Adding Testing Support to Your Package

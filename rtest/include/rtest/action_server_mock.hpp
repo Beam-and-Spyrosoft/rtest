@@ -51,9 +51,9 @@ public:
   ServerGoalHandle() = default;
   virtual ~ServerGoalHandle() = default;
 
-  bool is_canceling() const { return canceling_; }
-  bool is_active() const { return !canceling_; }
-  bool is_executing() const { return executing_; }
+  virtual bool is_canceling() const { return canceling_; }
+  virtual bool is_active() const { return !canceling_; }
+  virtual bool is_executing() const { return executing_; }
 
   void set_canceling(bool canceling = true) { canceling_ = canceling; }
   void set_executing(bool executing = true) { executing_ = executing; }
@@ -97,9 +97,9 @@ public:
   MOCK_METHOD(GoalUUID, get_goal_id, (), (const));
   MOCK_METHOD(std::shared_ptr<const typename ActionT::Goal>, get_goal, (), (const));
 
-  MOCK_METHOD(bool, is_canceling, (), (const));
-  MOCK_METHOD(bool, is_active, (), (const));
-  MOCK_METHOD(bool, is_executing, (), (const));
+  MOCK_METHOD(bool, is_canceling, (), (override, const));
+  MOCK_METHOD(bool, is_active, (), (override, const));
+  MOCK_METHOD(bool, is_executing, (), (override, const));
 };
 
 template <typename ActionT>
@@ -169,41 +169,35 @@ public:
   using GoalHandleSharedPtr = std::shared_ptr<GoalHandle>;
   using GoalResponse = rclcpp_action::GoalResponse;
   using CancelResponse = rclcpp_action::CancelResponse;
+  using GoalCallback = typename rclcpp_action::Server<ActionT>::GoalCallback;
+  using CancelCallback = typename rclcpp_action::Server<ActionT>::CancelCallback;
+  using AcceptedCallback = typename rclcpp_action::Server<ActionT>::AcceptedCallback;
 
-  explicit ActionServerMock(rclcpp_action::ServerBase * server) : server_(server) {}
+  explicit ActionServerMock(rclcpp_action::ServerBase * server)
+  {
+    if (server == nullptr) {
+      throw std::invalid_argument{"ActionServerMock error: server is null"};
+    }
+    server_ = dynamic_cast<rclcpp_action::Server<ActionT> *>(server);
+    if (server_ == nullptr) {
+      throw std::invalid_argument{
+        "ActionServerMock error: server is type with invalid ActionT type"};
+    }
+
+    goal_callback = server_->handle_goal_;
+    cancel_callback = server_->handle_cancel_;
+    accepted_callback = server_->handle_accepted_;
+  }
   ~ActionServerMock() { StaticMocksRegistry::instance().detachMock(server_); }
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ActionServerMock<ActionT>)
 
-  /// Methods to call the real rclcpp jazzy callbacks for testing business logic
-  GoalResponse call_real_handle_goal(
-    const rclcpp_action::GoalUUID & uuid,
-    std::shared_ptr<const Goal> goal)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_goal_) {
-      return real_server->handle_goal_(uuid, goal);
-    }
-    return GoalResponse::REJECT;
-  }
-  CancelResponse call_real_handle_cancel(const GoalHandleSharedPtr & goal_handle)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_cancel_) {
-      return real_server->handle_cancel_(goal_handle);
-    }
-    return CancelResponse::REJECT;
-  }
-  void call_real_handle_accepted(const GoalHandleSharedPtr & goal_handle)
-  {
-    auto real_server = dynamic_cast<rclcpp_action::Server<ActionT> *>(server_);
-    if (real_server && real_server->handle_accepted_) {
-      real_server->handle_accepted_(goal_handle);
-    }
-  }
+  GoalCallback goal_callback;
+  CancelCallback cancel_callback;
+  AcceptedCallback accepted_callback;
 
 private:
-  rclcpp_action::ServerBase * server_{nullptr};
+  rclcpp_action::Server<ActionT> * server_{nullptr};
 };
 
 template <typename ActionT>

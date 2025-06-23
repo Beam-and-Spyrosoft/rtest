@@ -67,6 +67,10 @@ public:
     const std::shared_ptr<const MoveRobot::Goal> goal,
     const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
 
+  bool check_and_complete_goal(
+    const std::shared_ptr<const MoveRobot::Goal> goal,
+    const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
+
 private:
   void handle_accepted(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
   void execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_handle);
