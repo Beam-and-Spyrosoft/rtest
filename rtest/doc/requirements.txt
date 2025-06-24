@@ -1,0 +1,9 @@
+sphinx==8.2.*
+sphinx-rtd-theme==3.0.*
+sphinx-notfound-page
+sphinx-hoverxref
+sphinx-tabs
+breathe==4.36.*
+myst-parser==4.0.*
+exhale==0.3.*
+linkify-it-py==2.0.*

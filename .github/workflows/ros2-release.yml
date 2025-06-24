@@ -1,0 +1,164 @@
+name: ROS 2 Release
+# To run locally (you need to have your GitHub token with scopes: "repo", "workflow"):
+# act --secret GITHUB_TOKEN=<YOUR_TOKEN:ghp_***> workflow_dispatch \
+#  --eventpath .github/test-events/manual-release.json \
+#  --workflows .github/workflows/ros2-release.yml
+# To run it on GitHub, use: https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-release.yml
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+      create_github_release:
+        description: 'Create GitHub Release'
+        type: boolean
+        default: true
+
+jobs:
+  release_deb_pkg:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Humble from humble branch
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: amd64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm64
+          - ros_distro: humble
+            os: ubuntu-22.04
+            branch: humble
+            arch: arm32
+
+          # Jazzy from jazzy branch
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: amd64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm64
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: arm32
+
+          # Kilted from kilted branch
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: amd64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: arm32
+    runs-on: ${{ matrix.os }}
+    container:
+      image: osrf/ros:${{ matrix.ros_distro }}-desktop
+    steps:
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
+          libboost-all-dev libgmock-dev python3-pip lcov gcovr ros-${{ matrix.ros_distro }}-ament-copyright \
+          python3-bloom python3-rosdep fakeroot debhelper dh-python curl
+          curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+          apt-get install -y nodejs
+
+      - name: Checkout specific branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Update rosdep database
+        run: |
+          rosdep init || true
+          rosdep update || true
+
+      - name: Install dependencies
+        run: |
+          rosdep install --from-paths . --ignore-src -r -y || true
+
+      - name: Build distro ${{ matrix.ros_distro }} for arch ${{ matrix.arch }} release v${{ github.event.inputs.version }}
+        shell: bash
+        run: |
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
+
+          # Create directory for packages
+          mkdir -p $GITHUB_WORKSPACE/deb_packages
+
+          # Build rtest package
+          echo "Building and packaging rtest for ${{ matrix.arch }}"
+          cd rtest
+          bloom-generate rosdebian
+          fakeroot debian/rules binary
+          cd ..
+          find . -maxdepth 1 -name "*.deb" -exec cp {} $GITHUB_WORKSPACE/deb_packages/ \; || true
+
+          echo "Built packages:"
+          ls -la $GITHUB_WORKSPACE/deb_packages/
+
+      - name: Upload .deb packages as artifacts
+        if: ${{ !env.ACT && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ros-deb-packages-${{ matrix.ros_distro }}-${{ matrix.arch }}
+          path: deb_packages/*.deb
+          if-no-files-found: warn
+
+  create_release:
+    needs: release_deb_pkg
+    runs-on: ubuntu-24.04
+    if: ${{ github.event.inputs.create_github_release == 'true' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+
+      - name: Prepare files for release
+        run: |
+          echo "Artifact structure:"
+          find all-artifacts -type f | sort
+          mkdir -p release-files
+          version=${{ github.event.inputs.version }}
+          echo "Using version: $version from Git tag"
+          for arch_dir in all-artifacts/ros-deb-packages-*; do
+            if [ -d "$arch_dir" ]; then
+              dir_name=$(basename "$arch_dir" | sed 's/ros-deb-packages-//')
+              echo "Processing artifacts for $arch"
+              ros_distro=$(echo "$dir_name" | cut -d'-' -f1)
+              arch=$(echo "$dir_name" | cut -d'-' -f2)
+              for deb in "$arch_dir"/*.deb; do
+                if [ -f "$deb" ]; then
+                  new_filename="ros-${ros_distro}-rtest_${version}_${arch}.deb"
+                  cp "$deb" "release-files/$new_filename"
+                  echo "Copied $deb to release-files/$new_filename"
+                fi
+              done
+            fi
+          done
+          echo "Files for release:"
+          ls -la release-files/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          files: release-files/*.deb
+          generate_release_notes: true

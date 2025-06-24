@@ -1,32 +1,45 @@
-# Prerequisites
-*.d
+# ROS build and install directories
+build/
+install/
+log/
+.colcon/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Pixi build artifacts
+pixi.lock
+.pixicache/
 
-# Precompiled Headers
-*.gch
-*.pch
+# General IDE and editor files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+.DS_Store
+.vscode/
+.idea/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Python artifacts
+*.pyc
+*.pyo
+__pycache__/
 
-# Fortran module files
-*.mod
-*.smod
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Other
+*.orig
+*.rej
+*.conda
 
-# Executables
-*.exe
-*.out
-*.app
+# Documentation artifacts
+rtest/doc/_build
+rtest/doc/html
+rtest/doc/api
+rtest/doc/xml
+
+# draw.io
+*.drawio.bkp

@@ -1,0 +1,47 @@
+[project]
+authors = ["Guy Burroughes <gb24@beam.global>"]
+channels = ["conda-forge", 
+            "robostack-jazzy",
+            "s3://conda-packages/beam-production"
+            ]
+name = "rtest_examples"
+platforms = ["linux-64", "win-64"]
+version = "0.1.0"
+
+[project.s3-options.conda-packages]
+endpoint-url = "https://s3.op.beam.global:9000"
+region = "eu-west-1"
+force-path-style = true
+
+[tasks]
+
+[feature.build.tasks.prepare]
+# Use the external shell script to create and set up the temporary workspace.
+cmd = [
+        "mkdir",
+         "-p", 
+         "build",
+]
+
+[feature.build.tasks.build]
+# Run colcon build on the temporary workspace.
+cmd = [
+        "cmake","..", "&&", "cmake", "--build", "."
+]
+cwd = "build"
+depends-on = ["prepare"]
+
+[feature.build.tasks.test]
+cmd = [
+    "python", "-c",
+    "import os, subprocess, sys; exe = 'Debug/publisher_component.exe' if os.name=='nt' else './publisher_component'; sys.exit(subprocess.call([exe]))"
+]
+depends-on = ["build"]
+cwd = "build"
+
+[environments]
+build = ["build"]
+
+[dependencies]
+rtest = ">=0.1.0,<0.2"
+

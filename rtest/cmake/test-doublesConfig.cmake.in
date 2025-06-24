@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include("@CMAKE_INSTALL_PREFIX@/share/@LIB_DOUBLES_NAME@/cmake/@LIB_DOUBLES_NAME@_targetsExport.cmake")
+check_required_components(@LIB_DOUBLES_NAME@)

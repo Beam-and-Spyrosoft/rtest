@@ -1,0 +1,65 @@
+[project]
+name = "rtest"
+version = "0.1.1"
+description = "rtest"
+authors = ["Guy Burroughes"]
+license = "BSD-3-Clause"
+repository = "https://github.com/rovco/rtest"
+channels = ["https://repo.prefix.dev/conda-forge", 
+            "conda-forge",
+            "robostack-jazzy",  
+            "https://prefix.dev/pixi-build-backends",
+]
+platforms = ["linux-64", "win-64"]
+preview = ["pixi-build"] 
+
+[dependencies]
+ros-jazzy-ament-cmake = "*"
+ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
+ros-jazzy-ros-base = "*"
+ros-jazzy-rclcpp = "*"
+
+colcon-core = ">=0.16.0,<0.17"
+colcon-common-extensions = ">=0.3.0,<0.4"
+python = "3.*"
+numpy = "*"
+ninja = ">=1.11.1,<2.0"
+boost = "*"
+gtest = "*"
+gmock = "*"
+
+
+
+[package] 
+name = "rtest"
+version = "0.1.1"
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" } 
+
+[package.host-dependencies]
+ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
+ros-jazzy-ament-cmake = "*"
+ros-jazzy-ros-base = "*"
+ros-jazzy-rclcpp = "*"
+python = "3.*"
+numpy = "*"
+boost = "*"
+gtest = "*"
+gmock = "*"
+
+
+
+[package.run-dependencies]
+ros-jazzy-std-msgs = "*"
+ros-jazzy-std-srvs = "*"
+ros-jazzy-ament-cmake = "*"
+ros-jazzy-ros-base = "*"
+ros-jazzy-rclcpp = "*"
+python = "3.*"
+numpy = "*"
+boost = "*"
+gtest = "*"
+gmock = "*"
