@@ -19,6 +19,7 @@
   <depend>rcl</depend>
   <depend>rcl_action</depend>
 
+  <build_depend>ros_environment</build_depend>
   <build_depend>libboost-dev</build_depend>
   <build_depend>libgmock-dev</build_depend>
 
