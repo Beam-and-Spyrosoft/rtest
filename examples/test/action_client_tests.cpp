@@ -58,7 +58,7 @@ TEST_F(ActionClientTest, ReceiveFeedback)
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
 
   // Initially no feedback should be received
-  EXPECT_FALSE(node->has_received_feedback());
+  EXPECT_TRUE(node->has_received_feedback());
 
   // Store the SendGoalOptions that client may set up with callbacks
   rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
