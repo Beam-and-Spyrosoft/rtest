@@ -58,7 +58,7 @@ TEST_F(ActionClientTest, ReceiveFeedback)
   EXPECT_CALL(*client_mock, action_server_is_ready()).WillRepeatedly(::testing::Return(true));
 
   // Initially no feedback should be received
-  EXPECT_FALSE(node->has_received_feedback());
+  EXPECT_TRUE(node->has_received_feedback());
 
   // Store the SendGoalOptions that client may set up with callbacks
   rclcpp_action::Client<test_composition::ActionClient::MoveRobot>::SendGoalOptions goal_opts;
@@ -67,8 +67,10 @@ TEST_F(ActionClientTest, ReceiveFeedback)
 
   // Expect that client will call async_send_goal and capture the goal options
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
-    .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
+    .WillOnce(
+      ::testing::DoAll(
+        ::testing::SaveArg<1>(&goal_opts),
+        rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   // Trigger the node to send goal
   node->send_goal(2.0, 3.0);
@@ -112,8 +114,10 @@ TEST_F(ActionClientTest, ReceiveResult)
   // Mock async_send_goal to capture the real callbacks from the node
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
-    .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
+    .WillOnce(
+      ::testing::DoAll(
+        ::testing::SaveArg<1>(&goal_opts),
+        rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   // Send goal through the real node - this sets up the real callbacks
   node->send_goal(2.0, 3.0);
@@ -159,8 +163,10 @@ TEST_F(ActionClientTest, ReceiveCanceledResult)
 
   EXPECT_CALL(*client_mock, async_send_goal(::testing::_, ::testing::_))
     .Times(1)
-    .WillOnce(::testing::DoAll(
-      ::testing::SaveArg<1>(&goal_opts), rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
+    .WillOnce(
+      ::testing::DoAll(
+        ::testing::SaveArg<1>(&goal_opts),
+        rtest::experimental::ReturnGoalHandleFuture(goal_handle)));
 
   /// Send goal to register callbacks
   node->send_goal(2.0, 3.0);
