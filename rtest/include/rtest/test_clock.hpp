@@ -42,15 +42,28 @@ public:
       throw std::invalid_argument{"TestClock - The node must be set with use_sim_time = true"};
     }
 
+    timers_ = findTimers(node);
     clock_ = node->get_clock()->get_clock_handle();
     resetClock();
   }
 
-  void advance(std::chrono::milliseconds milliseconds)
+  void advance(std::chrono::milliseconds milliseconds, bool with_timers_callbacks=true)
   {
-    now_ += (milliseconds.count() * 1000000L);
-    if (rcl_set_ros_time_override(clock_, now_) != RCL_RET_OK) {
-      throw std::runtime_error{"TestClock::advanceMs() error"};
+    const auto target_time = now_ + std::chrono::nanoseconds(milliseconds).count();
+    const auto step_size_ns = with_timers_callbacks ? std::chrono::nanoseconds(std::chrono::milliseconds(1)).count() : target_time;
+
+    while (now_ < target_time) {
+      const auto remaining = target_time - now_;
+      const auto step = std::min(step_size_ns, remaining);
+      now_ += step;
+
+      if (rcl_set_ros_time_override(clock_, now_) != RCL_RET_OK) {
+        throw std::runtime_error{"TestClock::advance() error"};
+      }
+
+      if (with_timers_callbacks) {
+        fire_all_timer_callbacks();
+      }
     }
   }
 
@@ -64,7 +77,20 @@ public:
   }
 
 private:
+  void fire_all_timer_callbacks() {
+    for (auto& timer : timers_) {
+      if (timer->is_ready()) {
+        auto data = timer->call();
+        if (!data) {
+          continue;
+        }
+        timer->execute_callback(data);
+      }
+    }
+  }
+
   rcl_clock_t * clock_{nullptr};
   rcl_time_point_value_t now_{0L};
+  std::vector<std::shared_ptr<rclcpp::TimerBase>> timers_{};
 };
 }  // namespace rtest
