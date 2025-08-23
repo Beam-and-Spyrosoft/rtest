@@ -177,6 +177,32 @@ TEST_F(PubSubTest, PublisherTest)
 }
 ```
 
+Or with triggering callback by time advancing:
+```c++
+TEST_F(PubSubTest, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
+{
+  // set use sim timer for mocked timers
+  opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
+  auto node = std::make_shared<test_composition::Publisher>(opts);
+  auto test_clock = rtest::TestClock{node};
+
+  /// Retrieve the publisher created by the Node
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+
+  // Check that the Node actually created the Publisher with topic: "/test_topic"
+  ASSERT_TRUE(publisher);
+
+  /// Set up expectation that the Node will publish a message when the timer callback is fired
+  auto expectedMsg = std_msgs::msg::String{};
+  expectedMsg.set__data("timer");
+  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+
+  // We expect that timer triggers each 500ms
+  const bool move_timer_with_callbacks_execution = true;
+  test_clock.advance(std::chrono::milliseconds(500ms), move_timer_with_callbacks_execution);
+}
+```
+
 Create the main test runner in `test/main.cpp`:
 
 
@@ -252,7 +278,7 @@ $ colcon test --packages-select example_app --event-handlers console_cohesion+
 
 ## Key Concepts
 - `rtest::findPublisher` locates a Publisher instance for testing.
-- `rtest::findTimers` locates timers, and `execute_callback` triggers them deterministically.
+- `rtest::findTimers` locates timers, and `execute_callback` triggers them deterministically. The callbacks can be triggered by the advancing the time as well.
 - GoogleMock’s `EXPECT_CALL(...).Times(...)` allows verifying publish behavior precisely without a running ROS 2 system.
 - **Note:** Other test frameworks (e.g., Catch2) are not currently supported.
 

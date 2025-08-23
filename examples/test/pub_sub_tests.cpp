@@ -22,6 +22,7 @@
 
 #include <test_composition/publisher.hpp>
 #include <test_composition/subscriber.hpp>
+#include <rtest/test_clock.hpp>
 
 class PubSubTest : public ::testing::Test
 {
@@ -52,6 +53,28 @@ TEST_F(PubSubTest, PublisherTest)
 
   // Fire the timer callback
   nodeTimers[0]->execute_callback(nullptr);
+}
+
+TEST_F(PubSubTest, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
+{
+  // set use sim timer for mocked timers
+  opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
+  auto node = std::make_shared<test_composition::Publisher>(opts);
+  auto test_clock = rtest::TestClock{node};
+
+  /// Retrieve the publisher created by the Node
+  auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
+
+  // Check that the Node actually created the Publisher with topic: "/test_topic"
+  ASSERT_TRUE(publisher);
+  /// Set up expectation that the Node will publish a message when the timer callback is fired
+  auto expectedMsg = std_msgs::msg::String{};
+  expectedMsg.set__data("timer");
+  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+
+  // We expect that timer triggers each 500ms
+  const bool move_timer_with_callbacks_execution = true;
+  test_clock.advance(std::chrono::milliseconds(500), move_timer_with_callbacks_execution);
 }
 
 TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
