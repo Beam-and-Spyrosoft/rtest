@@ -47,10 +47,12 @@ public:
     resetClock();
   }
 
-  void advance(std::chrono::milliseconds milliseconds, bool with_timers_callbacks=true)
+  void advance(std::chrono::milliseconds milliseconds, bool with_timers_callbacks = true)
   {
     const auto target_time = now_ + std::chrono::nanoseconds(milliseconds).count();
-    const auto step_size_ns = with_timers_callbacks ? std::chrono::nanoseconds(std::chrono::milliseconds(1)).count() : target_time;
+    const auto step_size_ns = with_timers_callbacks
+                                ? std::chrono::nanoseconds(std::chrono::milliseconds(1)).count()
+                                : target_time;
 
     while (now_ < target_time) {
       const auto remaining = target_time - now_;
@@ -77,8 +79,9 @@ public:
   }
 
 private:
-  void fire_all_timer_callbacks() {
-    for (auto& timer : timers_) {
+  void fire_all_timer_callbacks()
+  {
+    for (auto & timer : timers_) {
       if (timer->is_ready()) {
         auto data = timer->call();
         if (!data) {
