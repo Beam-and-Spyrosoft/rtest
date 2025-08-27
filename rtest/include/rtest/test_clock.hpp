@@ -67,4 +67,55 @@ private:
   rcl_clock_t * clock_{nullptr};
   rcl_time_point_value_t now_{0L};
 };
+
+/**
+ * @brief Test utility for manual time control. Takes over control over the given Node's clock.
+ *        The Node must be constructed with parameter "use_sim_time" set to true.
+ *        This implementation triggers timers' callbacks as well.
+ */
+class TriggeringTestClock
+{
+public:
+  TriggeringTestClock(rclcpp::Node::SharedPtr node)
+  : clock_{TestClock(node)}, timers_{findTimers(node)}
+  {
+  }
+
+  void advance(std::chrono::milliseconds milliseconds)
+  {
+    const auto target_time = milliseconds.count();
+    const auto step_size_ns = std::chrono::milliseconds(1).count();
+    rcl_time_point_value_t start_point = 0;
+
+    while (start_point < target_time) {
+      const auto remaining = target_time - start_point;
+      const auto step = std::min(step_size_ns, remaining);
+      start_point += step;
+      clock_.advance(std::chrono::milliseconds(step));
+      fire_all_timer_callbacks();
+    }
+  }
+
+  void advanceMs(int64_t milliseconds) { advance(std::chrono::milliseconds(milliseconds)); }
+
+  void resetClock(const rcl_time_point_value_t tv = 0L) { clock_.resetClock(tv); }
+
+private:
+  void fire_all_timer_callbacks()
+  {
+    for (auto & timer : timers_) {
+      if (timer->is_ready()) {
+        auto data = timer->call();
+        if (!data) {
+          continue;
+        }
+        timer->execute_callback(data);
+      }
+    }
+  }
+
+  TestClock clock_;
+  std::vector<std::shared_ptr<rclcpp::TimerBase>> timers_{};
+};
+
 }  // namespace rtest
