@@ -84,12 +84,12 @@ public:
   void advance(std::chrono::milliseconds milliseconds, std::chrono::milliseconds step_period)
   {
     const auto target_time = milliseconds.count();
-    const auto step_size_ns = step_period.count();
+    const auto step_size = step_period.count();
     rcl_time_point_value_t start_point = 0;
 
     while (start_point < target_time) {
       const auto remaining = target_time - start_point;
-      const auto step = std::min(step_size_ns, remaining);
+      const auto step = std::min(step_size, remaining);
       start_point += step;
       clock_.advance(std::chrono::milliseconds(step));
       fire_all_timer_callbacks();
