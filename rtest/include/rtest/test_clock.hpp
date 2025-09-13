@@ -81,10 +81,10 @@ public:
   {
   }
 
-  void advance(std::chrono::milliseconds milliseconds)
+  void advance(std::chrono::milliseconds milliseconds, std::chrono::milliseconds step_period)
   {
     const auto target_time = milliseconds.count();
-    const auto step_size_ns = std::chrono::milliseconds(1).count();
+    const auto step_size_ns = step_period.count();
     rcl_time_point_value_t start_point = 0;
 
     while (start_point < target_time) {
@@ -96,7 +96,10 @@ public:
     }
   }
 
-  void advanceMs(int64_t milliseconds) { advance(std::chrono::milliseconds(milliseconds)); }
+  void advanceMs(int64_t milliseconds, int64_t step_period)
+  {
+    advance(std::chrono::milliseconds(milliseconds), std::chrono::milliseconds(step_period));
+  }
 
   void resetClock(const rcl_time_point_value_t tv = 0L) { clock_.resetClock(tv); }
 

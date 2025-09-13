@@ -186,6 +186,9 @@ TEST_F(PubSubTest, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
   auto node = std::make_shared<test_composition::Publisher>(opts);
   auto triggering_test_clock = rtest::TriggeringTestClock{node};
 
+  // Step size defines the period for checking available callbacks
+  const auto advance_time_step_size = std::chrono::milliseconds(1);
+
   /// Retrieve the publisher created by the Node
   auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
@@ -197,19 +200,19 @@ TEST_F(PubSubTest, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
 
   // We do not expect the timer to trigger shortly before it reaches 500ms
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(0);
-  triggering_test_clock.advance(std::chrono::milliseconds(499));
+  triggering_test_clock.advance(std::chrono::milliseconds(499), advance_time_step_size);
 
   // We expect the timer to trigger every 500ms
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
-  triggering_test_clock.advance(std::chrono::milliseconds(1));
+  triggering_test_clock.advance(std::chrono::milliseconds(1), advance_time_step_size);
 
   // We do not expect the timer to trigger after one period expires but before the next begins
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(0);
-  triggering_test_clock.advance(std::chrono::milliseconds(499));
+  triggering_test_clock.advance(std::chrono::milliseconds(499), advance_time_step_size);
 
   // We expect the timer to trigger every 500ms, so when the expiry time passes, the callback should fire
   EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
-  triggering_test_clock.advance(std::chrono::milliseconds(50));
+  triggering_test_clock.advance(std::chrono::milliseconds(50), advance_time_step_size);
 }
 ```
 
