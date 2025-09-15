@@ -8,6 +8,7 @@ ament_add_gmock(${PROJECT_NAME}-test
   action_client_tests.cpp
   action_server_tests.cpp
   debounce_tests.cpp
+  clock_tests.cpp
 )
 
 target_include_directories(${PROJECT_NAME}-test PRIVATE
