@@ -97,7 +97,7 @@ TEST(ClockTests, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
   EXPECT_EQ(call_counter_50us, 1);
 
   // Trigger 500ms timer once and 9019 times the 50us timer
-  triggering_test_clock.advance(4ms); // 4000us/50 us = 80
+  triggering_test_clock.advance(4ms);                  // 4000us/50 us = 80
   ASSERT_EQ(triggering_test_clock.now(), 15050000UL);  // clock -> 0.015050s
   EXPECT_EQ(call_counter_5ms, 3);
   EXPECT_EQ(call_counter_50us, 81);
