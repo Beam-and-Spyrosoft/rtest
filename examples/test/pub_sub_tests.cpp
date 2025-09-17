@@ -22,7 +22,6 @@
 
 #include <test_composition/publisher.hpp>
 #include <test_composition/subscriber.hpp>
-#include <rtest/test_clock.hpp>
 
 class PubSubTest : public ::testing::Test
 {
