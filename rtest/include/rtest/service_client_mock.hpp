@@ -195,9 +195,10 @@ public:
   {
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
-      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->wait_for_service(timeout);
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->wait_for_service(
+        timeout);
     }
-    return true;
+    return false;
   }
 
   void post_init_setup()
