@@ -83,6 +83,7 @@ public:
     (typename Types::SharedRequest, typename Types::CallbackWithRequestType),
     ());
   MOCK_METHOD(bool, service_is_ready, (), ());
+  MOCK_METHOD(bool, wait_for_service, ((std::chrono::duration<int64_t, std::milli>)), ());
 
 private:
   rclcpp::ClientBase * client_{nullptr};
@@ -186,6 +187,16 @@ public:
     auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
     if (mock) {
       return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->service_is_ready();
+    }
+    return false;
+  }
+
+  bool wait_for_service(std::chrono::duration<int64_t, std::milli> timeout)
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->wait_for_service(
+        timeout);
     }
     return false;
   }
