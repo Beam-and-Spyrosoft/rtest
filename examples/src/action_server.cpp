@@ -109,9 +109,9 @@ void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_
   auto feedback = std::make_shared<MoveRobot::Feedback>();
   auto result = std::make_shared<MoveRobot::Result>();
 
-  const float speed = 1.0;
+  const float speed = 1.0F;
   const auto update_rate = 10ms;
-  const float step_size = speed * 0.01;
+  const float step_size = speed * 0.01F;
 
   while (rclcpp::ok() && is_moving_) {
     // Check if goal is canceled
@@ -150,12 +150,14 @@ void ActionServer::execute_move(const std::shared_ptr<GoalHandleMoveRobot> goal_
   }
 }
 
+// NOLINTBEGIN  (adjacent parameters of the same type [bugprone-easily-swappable-parameters])
 std::pair<float, float> ActionServer::calculate_next_position(
   float current_x,
   float current_y,
   float target_x,
   float target_y,
   float step_size) const
+// NOLINTEND
 {
   float dx = target_x - current_x;
   float dy = target_y - current_y;
@@ -171,11 +173,13 @@ std::pair<float, float> ActionServer::calculate_next_position(
   return {current_x + step_x, current_y + step_y};
 }
 
+// NOLINTBEGIN  (adjacent parameters of the same type [bugprone-easily-swappable-parameters])
 ActionServer::MoveRobot::Feedback ActionServer::calculate_feedback(
   float current_x,
   float current_y,
   float target_x,
   float target_y) const
+// NOLINTEND
 {
   MoveRobot::Feedback feedback;
   feedback.current_x = current_x;
@@ -188,12 +192,14 @@ ActionServer::MoveRobot::Feedback ActionServer::calculate_feedback(
   return feedback;
 }
 
+// NOLINTBEGIN  (adjacent parameters of the same type [bugprone-easily-swappable-parameters])
 bool ActionServer::is_goal_reached(
   float current_x,
   float current_y,
   float target_x,
   float target_y,
   float tolerance) const
+// NOLINTEND
 {
   float dx = target_x - current_x;
   float dy = target_y - current_y;
