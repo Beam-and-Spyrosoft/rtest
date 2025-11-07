@@ -64,7 +64,7 @@ jobs:
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: clang-tidy-report
+          name: clang-tidy-report-${{ matrix.ros_distro }}
           path: build/clang-tidy-report.xml
           if-no-files-found: warn
 
