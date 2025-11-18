@@ -13,7 +13,7 @@ This document outlines what is covered by this policy and how to report security
 
 The Vulnerability Disclosure Program described here applies to all code contained in the `rtest` package, including its usage examples.
 
-The maintainers of `rtest` may also be able to assist you with reporting vulnerabilities related to ROS 2 in general. If you discover vulnerabilities in the broader ROS 2 ecosystem, please refer to [REP-2006](https://www.ros.org/reps/rep-2006.html) for the official ROS 2 vulnerability disclosure policy.
+The maintainers of `rtest` may also be able to assist you with reporting vulnerabilities related to ROS 2 in general. If you discover vulnerabilities in the broader ROS 2 ecosystem, please refer to [REP-2006](https://reps.openrobotics.org/rep-2006/) for the official ROS 2 vulnerability disclosure policy.
 
 ## How to submit a vulnerability
 
@@ -55,7 +55,7 @@ If at any time you have concerns about whether your activities are consistent wi
 
 ## Copyright
 
-This security policy is based on [REP-2006](https://www.ros.org/reps/rep-2006.html) and is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive.
+This security policy is based on [REP-2006](https://reps.openrobotics.org/rep-2006/) and is placed in the public domain or under the CC0-1.0-Universal license, whichever is more permissive.
 
 ---
 
