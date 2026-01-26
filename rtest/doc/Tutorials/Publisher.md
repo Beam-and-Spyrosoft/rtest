@@ -170,7 +170,7 @@ TEST_F(PubSubTest, PublisherTest)
   /// Set up expectation that the Node will publish a message when the timer callback is fired
   auto expectedMsg = std_msgs::msg::String{};
   expectedMsg.set__data("timer");
-  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  EXPECT_CALL(*publisher, publish_msg(expectedMsg)).Times(1);
 
   /// Fire the timer callback
   nodeTimers[0]->execute_callback(nullptr);

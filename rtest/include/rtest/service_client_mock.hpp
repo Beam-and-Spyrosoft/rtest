@@ -71,18 +71,35 @@ public:
 
   TEST_TOOLS_SMART_PTR_DEFINITIONS(ServiceClientMock<ServiceT>)
 
-  MOCK_METHOD(FutureAndRequestId, async_send_request, (typename Types::SharedRequest), ());
+  MOCK_METHOD(FutureAndRequestId, async_send_request_mocked, (typename Types::SharedRequest), ());
   MOCK_METHOD(
     SharedFutureAndRequestId,
-    async_send_request_with_callback,
+    async_send_request_with_callback_mocked,
     (typename Types::SharedRequest, typename Types::CallbackType),
     ());
   MOCK_METHOD(
     SharedFutureWithRequestAndRequestId,
-    async_send_request_with_callback_and_request,
+    async_send_request_with_callback_and_request_mocked,
     (typename Types::SharedRequest, typename Types::CallbackWithRequestType),
     ());
-  MOCK_METHOD(bool, service_is_ready, (), ());
+  MOCK_METHOD(bool, service_is_ready_mocked, (), ());
+  virtual bool service_is_ready() { return service_is_ready_mocked(); }
+  virtual FutureAndRequestId async_send_request(typename Types::SharedRequest request)
+  {
+    async_send_request_mocked(request);
+  }
+  virtual SharedFutureWithRequestAndRequestId async_send_request_with_callback_and_request(
+    typename Types::SharedRequest request,
+    typename Types::CallbackWithRequestType callback)
+  {
+    async_send_request_with_callback_and_request_mocked(request, callback);
+  }
+  virtual SharedFutureAndRequestId async_send_request_with_callback(
+    typename Types::SharedRequest request,
+    typename Types::CallbackType callback)
+  {
+    async_send_request_with_callback_mocked(request, callback);
+  }
 
 private:
   rclcpp::ClientBase * client_{nullptr};
@@ -189,6 +206,16 @@ public:
     }
     return false;
   }
+
+  template <typename RepT = int64_t, typename RatioT = std::milli>
+  bool wait_for_service(
+    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  {
+    return wait_for_service_nanoseconds(
+      std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+  }
+
+  bool wait_for_service_nanoseconds(std::chrono::nanoseconds) { return service_is_ready(); }
 
   void post_init_setup()
   {

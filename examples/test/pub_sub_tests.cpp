@@ -48,7 +48,7 @@ TEST_F(PubSubTest, PublisherTest)
   /// Set up expectation that the Node will publish a message when the timer callback is fired
   auto expectedMsg = std_msgs::msg::String{};
   expectedMsg.set__data("timer");
-  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  EXPECT_CALL(*publisher, publish_msg(expectedMsg)).Times(1);
 
   // Fire the timer callback
   nodeTimers[0]->execute_callback(nullptr);
@@ -60,7 +60,7 @@ TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
   auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
 
   /// Set up expectation that the Node will not publish a message when the subscription count is 0
-  EXPECT_CALL(*publisher, publish(::testing::_)).Times(0);
+  EXPECT_CALL(*publisher, publish_msg(::testing::_)).Times(0);
   node->publishIfSubscribersListening();
 
   /// Set subscription count to 1
@@ -70,7 +70,7 @@ TEST_F(PubSubTest, PublishIfSubscriuptionCountNonZeroTest)
   expectedMsg.set__data("if_subscribers_listening");
 
   /// Set up expectation that the Node will publish a message when the subscription count is 1
-  EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+  EXPECT_CALL(*publisher, publish_msg(expectedMsg)).Times(1);
   node->publishIfSubscribersListening();
 }
 
@@ -111,9 +111,9 @@ TEST_F(PubSubTest, PubSequenceTest)
 
   {
     ::testing::Sequence seq{};
-    EXPECT_CALL(*publisher, publish(expectedMsg1)).InSequence(seq);
-    EXPECT_CALL(*publisher, publish(expectedMsg2)).InSequence(seq);
-    EXPECT_CALL(*publisher, publish(expectedMsg3)).InSequence(seq);
+    EXPECT_CALL(*publisher, publish_msg(expectedMsg1)).InSequence(seq);
+    EXPECT_CALL(*publisher, publish_msg(expectedMsg2)).InSequence(seq);
+    EXPECT_CALL(*publisher, publish_msg(expectedMsg3)).InSequence(seq);
 
     // Any other sequence of publishing will fail
     node->publishCopy();
@@ -151,7 +151,7 @@ TEST_F(PubSubTest, IntraProcessCommTest)
     auto expectedMsg = std_msgs::msg::String{};
     expectedMsg.set__data("copy");
 
-    EXPECT_CALL(*publisher, publish(expectedMsg)).Times(1);
+    EXPECT_CALL(*publisher, publish_msg(expectedMsg)).Times(1);
     pubNode->publishCopy();
   }
 }

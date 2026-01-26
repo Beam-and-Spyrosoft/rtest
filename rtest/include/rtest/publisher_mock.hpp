@@ -77,7 +77,9 @@ public:
   /**
    * @brief This is the mock method that gets called eventually from all other overloads.
    */
-  MOCK_METHOD(void, publish, (const MessageT & msg));
+  MOCK_METHOD(void, publish_msg, (const MessageT & msg));
+
+  virtual void publish(const MessageT & msg) { publish(msg); }
 
   /**
    * @brief Set the fake subscriptions count.
@@ -153,7 +155,6 @@ public:
     (void)topic;
     (void)qos;
     (void)options;
-
     rtest::StaticMocksRegistry::instance().registerPublisher<MessageT>(
       node_base->get_fully_qualified_name(), get_topic_name(), weak_from_this());
   }

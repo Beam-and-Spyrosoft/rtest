@@ -36,9 +36,9 @@ TEST_F(ServiceClientTest, WhenServiceNotAvailable_ThenSetStateFails)
   ASSERT_TRUE(client);
 
   // Set up expectation that service is not available
-  EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(false));
+  EXPECT_CALL(*client, service_is_ready_mocked()).WillOnce(::testing::Return(false));
 
-  EXPECT_CALL(*client, async_send_request(::testing::_)).Times(0);
+  EXPECT_CALL(*client, async_send_request_mocked(::testing::_)).Times(0);
 
   // Attempt to set state should fail
   EXPECT_FALSE(node->setState(true));
@@ -63,9 +63,9 @@ TEST_F(ServiceClientTest, WhenServiceCallSucceeds_ThenSetStateSucceeds)
   response->message = "State updated successfully";
 
   // Set up expectations
-  EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
+  EXPECT_CALL(*client, service_is_ready_mocked()).WillOnce(::testing::Return(true));
 
-  EXPECT_CALL(*client, async_send_request(::testing::_))
+  EXPECT_CALL(*client, async_send_request_mocked(::testing::_))
     .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
       // Create a new promise and future for each call
       std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
@@ -100,9 +100,9 @@ TEST_F(ServiceClientTest, WhenServiceCallFails_ThenSetStateFails)
   response->message = "Failed to update state";
 
   // Set up expectations
-  EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
+  EXPECT_CALL(*client, service_is_ready_mocked()).WillOnce(::testing::Return(true));
 
-  EXPECT_CALL(*client, async_send_request(::testing::_))
+  EXPECT_CALL(*client, async_send_request_mocked(::testing::_))
     .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
       // Create a new promise and future for each call
       std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
@@ -130,9 +130,9 @@ TEST_F(ServiceClientTest, WhenServiceCallWithCallback_ThenSetStateSucceeds)
   response->success = true;
   response->message = "State updated with callback successfully";
 
-  EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
+  EXPECT_CALL(*client, service_is_ready_mocked()).WillOnce(::testing::Return(true));
 
-  EXPECT_CALL(*client, async_send_request_with_callback(::testing::_, ::testing::_))
+  EXPECT_CALL(*client, async_send_request_with_callback_mocked(::testing::_, ::testing::_))
     .WillOnce([response](auto request, auto callback) {
       (void)request;
       std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
@@ -166,9 +166,10 @@ TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceed
   response->success = true;
   response->message = "State updated with request callback successfully";
 
-  EXPECT_CALL(*client, service_is_ready()).WillOnce(::testing::Return(true));
+  EXPECT_CALL(*client, service_is_ready_mocked()).WillOnce(::testing::Return(true));
 
-  EXPECT_CALL(*client, async_send_request_with_callback_and_request(::testing::_, ::testing::_))
+  EXPECT_CALL(
+    *client, async_send_request_with_callback_and_request_mocked(::testing::_, ::testing::_))
     .WillOnce([response](auto request, auto callback) {
       auto pair = std::make_pair(request, response);
       std::promise<decltype(pair)> promise;
