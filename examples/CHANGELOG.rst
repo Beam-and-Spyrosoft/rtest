@@ -2,8 +2,8 @@
 Changelog for package rtest_examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2026-03-07)
+------------------
 * Fix clang-tidy issues (`#104 <https://github.com/Beam-and-Spyrosoft/rtest/issues/104>`_)
 * Trigger timer callbacks when time is moved (`#98 <https://github.com/Beam-and-Spyrosoft/rtest/issues/98>`_)
   Co-authored-by: Sławek Cielepak <slawomir.cielepak@gmail.com>

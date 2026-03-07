@@ -2,8 +2,8 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2026-03-07)
+------------------
 * Fix missing includes (`#110 <https://github.com/Beam-and-Spyrosoft/rtest/issues/110>`_)
 * Fix REP url locations (`#106 <https://github.com/Beam-and-Spyrosoft/rtest/issues/106>`_)
 * Add wait_for_service to ServiceClientMock (`#101 <https://github.com/Beam-and-Spyrosoft/rtest/issues/101>`_)
