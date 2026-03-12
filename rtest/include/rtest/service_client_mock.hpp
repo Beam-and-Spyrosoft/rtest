@@ -247,9 +247,6 @@ std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
   const std::string & serviceName)
 {
   const char * namePtr = serviceName.c_str();
-  if (!serviceName.empty() && serviceName[0] == '/') {
-    namePtr++;
-  }
   return findServiceClient<ServiceT>(nodePtr->get_fully_qualified_name(), namePtr);
 }
 
