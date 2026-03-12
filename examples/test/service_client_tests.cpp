@@ -192,3 +192,30 @@ TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceed
   EXPECT_TRUE(node->getLastCallSuccess());
   EXPECT_EQ(node->getLastResponseMessage(), "State updated with request callback successfully");
 }
+
+TEST_F(ServiceClientTest, FindServiceClientLeadingSlash)
+{
+  auto node = std::make_shared<rclcpp::Node>("test_slash_normalization", opts);
+  auto with_slash = node->create_client<std_srvs::srv::SetBool>("/service_with_slash");
+  auto without_slash = node->create_client<std_srvs::srv::SetBool>("service_without_slash");
+
+  auto client_with_slash = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/service_with_slash");
+  auto client_without_slash = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/service_without_slash");
+
+  EXPECT_TRUE(client_with_slash);
+  EXPECT_TRUE(client_without_slash);
+}
+
+
+TEST_F(ServiceClientTest, FindServiceClientNoLeadingSlash)
+{
+  auto node = std::make_shared<rclcpp::Node>("test_slash_normalization", opts);
+  auto with_slash = node->create_client<std_srvs::srv::SetBool>("/service_with_slash");
+  auto without_slash = node->create_client<std_srvs::srv::SetBool>("service_without_slash");
+
+  auto client_with_slash = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "service_with_slash");
+  auto client_without_slash = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "service_without_slash");
+
+  EXPECT_TRUE(client_with_slash);
+  EXPECT_TRUE(client_without_slash);
+}

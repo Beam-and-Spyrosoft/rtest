@@ -214,6 +214,9 @@ std::shared_ptr<ServiceMock<ServiceT>> findService(
   const std::string & serviceName)
 {
   const char * namePtr = serviceName.c_str();
+  if (!serviceName.empty() && serviceName[0] == '/') {
+    namePtr++;
+  }
   return findService<ServiceT>(nodePtr->get_fully_qualified_name(), namePtr);
 }
 

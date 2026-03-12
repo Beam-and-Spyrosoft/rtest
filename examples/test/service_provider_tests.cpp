@@ -111,3 +111,49 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
   // The state should be updated to true
   EXPECT_TRUE(node->getState());
 }
+
+TEST_F(ServiceProviderTest, FindServicesWithLeadingSlash)
+{
+  // Create a node with two services: one with "/" and one without
+  auto node = std::make_shared<rclcpp::Node>("test_slash_normalization", opts);
+
+  auto with_slash = node->create_service<std_srvs::srv::SetBool>(
+    "/service_with_slash",
+    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+
+  auto without_slash = node->create_service<std_srvs::srv::SetBool>(
+    "service_without_slash",
+    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+
+  // Call findService for both, passing in a leading "/" 
+  auto service_with_slash = rtest::findService<std_srvs::srv::SetBool>(node, "/service_with_slash");
+  auto service_without_slash = rtest::findService<std_srvs::srv::SetBool>(node, "/service_without_slash");
+
+  EXPECT_TRUE(service_with_slash);
+  EXPECT_TRUE(service_without_slash);
+}
+
+TEST_F(ServiceProviderTest, FindServicesWithoutLeadingSlash)
+{
+  // Create a node with two services: one with "/" and one without
+  auto node = std::make_shared<rclcpp::Node>("test_slash_normalization", opts);
+
+  auto with_slash = node->create_service<std_srvs::srv::SetBool>(
+    "/service_with_slash",
+    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+
+  auto without_slash = node->create_service<std_srvs::srv::SetBool>(
+    "service_without_slash",
+    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+
+  // Call findService for both, without passing in a leading "/" 
+  auto service_with_slash = rtest::findService<std_srvs::srv::SetBool>(node, "service_with_slash");
+  auto service_without_slash = rtest::findService<std_srvs::srv::SetBool>(node, "service_without_slash");
+
+  EXPECT_TRUE(service_with_slash);
+  EXPECT_TRUE(service_without_slash);
+}
