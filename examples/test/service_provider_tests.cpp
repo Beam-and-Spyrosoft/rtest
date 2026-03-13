@@ -119,17 +119,20 @@ TEST_F(ServiceProviderTest, FindServicesWithLeadingSlash)
 
   auto with_slash = node->create_service<std_srvs::srv::SetBool>(
     "/service_with_slash",
-    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
-       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+    [](
+      const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+      std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
 
   auto without_slash = node->create_service<std_srvs::srv::SetBool>(
     "service_without_slash",
-    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
-       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+    [](
+      const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+      std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
 
-  // Call findService for both, passing in a leading "/" 
+  // Call findService for both, passing in a leading "/"
   auto service_with_slash = rtest::findService<std_srvs::srv::SetBool>(node, "/service_with_slash");
-  auto service_without_slash = rtest::findService<std_srvs::srv::SetBool>(node, "/service_without_slash");
+  auto service_without_slash =
+    rtest::findService<std_srvs::srv::SetBool>(node, "/service_without_slash");
 
   EXPECT_TRUE(service_with_slash);
   EXPECT_TRUE(service_without_slash);
@@ -142,17 +145,20 @@ TEST_F(ServiceProviderTest, FindServicesWithoutLeadingSlash)
 
   auto with_slash = node->create_service<std_srvs::srv::SetBool>(
     "/service_with_slash",
-    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
-       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+    [](
+      const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+      std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
 
   auto without_slash = node->create_service<std_srvs::srv::SetBool>(
     "service_without_slash",
-    [](const std::shared_ptr<std_srvs::srv::SetBool::Request>,
-       std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
+    [](
+      const std::shared_ptr<std_srvs::srv::SetBool::Request>,
+      std::shared_ptr<std_srvs::srv::SetBool::Response>) {});
 
-  // Call findService for both, without passing in a leading "/" 
+  // Call findService for both, without passing in a leading "/"
   auto service_with_slash = rtest::findService<std_srvs::srv::SetBool>(node, "service_with_slash");
-  auto service_without_slash = rtest::findService<std_srvs::srv::SetBool>(node, "service_without_slash");
+  auto service_without_slash =
+    rtest::findService<std_srvs::srv::SetBool>(node, "service_without_slash");
 
   EXPECT_TRUE(service_with_slash);
   EXPECT_TRUE(service_without_slash);

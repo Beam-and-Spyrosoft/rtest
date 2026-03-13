@@ -304,7 +304,7 @@ public:
     if (!serviceName.empty() && serviceName[0] == '/') {
       namePtr++;
     }
-    
+
     if (verbose_) {
       std::cout << "StaticMocksRegistry::registerServiceClient<"
                 << boost::typeindex::type_id<ServiceT>().pretty_name() << ">(\"" << nodeName
