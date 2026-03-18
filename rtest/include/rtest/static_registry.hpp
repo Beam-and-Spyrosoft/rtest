@@ -258,12 +258,17 @@ public:
     const ServiceNameT & serviceName,
     std::weak_ptr<rclcpp::ServiceBase> service)
   {
+    const char * namePtr = serviceName.c_str();
+    if (!serviceName.empty() && serviceName[0] == '/') {
+      namePtr++;
+    }
+
     if (verbose_) {
       std::cout << "StaticMocksRegistry::registerService<"
                 << boost::typeindex::type_id<ServiceT>().pretty_name() << ">(\"" << nodeName
                 << "\", \"" << serviceName << "\")\n";
     }
-    registerEntity(servicesRegistry_[nodeName], serviceName, service);
+    registerEntity(servicesRegistry_[nodeName], namePtr, service);
   }
 
   /**
@@ -295,12 +300,17 @@ public:
     const ServiceNameT & serviceName,
     std::weak_ptr<rclcpp::ClientBase> client)
   {
+    const char * namePtr = serviceName.c_str();
+    if (!serviceName.empty() && serviceName[0] == '/') {
+      namePtr++;
+    }
+
     if (verbose_) {
       std::cout << "StaticMocksRegistry::registerServiceClient<"
                 << boost::typeindex::type_id<ServiceT>().pretty_name() << ">(\"" << nodeName
                 << "\", \"" << serviceName << "\")\n";
     }
-    registerEntity(serviceClientsRegistry_[nodeName], serviceName, client);
+    registerEntity(serviceClientsRegistry_[nodeName], namePtr, client);
   }
 
   std::vector<std::weak_ptr<rclcpp::ClientBase>> getNodeServiceClients(
