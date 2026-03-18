@@ -51,7 +51,7 @@ private:
 TEST(ClockTests, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
 {
   auto node = std::make_shared<TimerNode>();
-  auto triggering_test_clock = rtest::TriggeringTestClock{node};
+  auto triggering_test_clock = rtest::TriggeringTestClock{*node};
 
   // Add 5ms timer
   int call_counter_5ms{0};
