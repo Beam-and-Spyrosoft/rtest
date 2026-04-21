@@ -2,8 +2,8 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2026-04-21)
+------------------
 * Bug Fix: Normalize Service Client/Provider Names by removing leading … (`#115 <https://github.com/Beam-and-Spyrosoft/rtest/issues/115>`_)
   Co-authored-by: Thomas Parker <32755663+tparker48@users.noreply.github.com>
   Co-authored-by: MariuszSzczepanikSpyrosoft <118888269+MariuszSzczepanikSpyrosoft@users.noreply.github.com>
