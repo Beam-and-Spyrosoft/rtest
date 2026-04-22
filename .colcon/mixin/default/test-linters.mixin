@@ -1,0 +1,12 @@
+{
+    "test": {
+        "linters-only": {
+            "ctest-args": ["-L", "linter"],
+            "pytest-args": ["-m", "linter"]
+        },
+        "linters-skip": {
+            "ctest-args": ["-LE", "linter"],
+            "pytest-args": ["-m", "not linter"]
+        }
+    }
+}

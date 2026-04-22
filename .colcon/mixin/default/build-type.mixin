@@ -1,0 +1,16 @@
+{
+    "build": {
+        "debug": {
+            "cmake-args": ["-DCMAKE_BUILD_TYPE=Debug"]
+        },
+        "min-size-rel": {
+            "cmake-args": ["-DCMAKE_BUILD_TYPE=MinSizeRel"]
+        },
+        "rel-with-deb-info": {
+            "cmake-args": ["-DCMAKE_BUILD_TYPE=RelWithDebInfo"]
+        },
+        "release": {
+            "cmake-args": ["-DCMAKE_BUILD_TYPE=Release"]
+        }
+    }
+}

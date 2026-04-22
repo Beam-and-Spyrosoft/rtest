@@ -1,0 +1,16 @@
+{
+    "build": {
+        "memcheck": {
+            "cmake-args": [
+                "-DMEMORYCHECK_COMMAND_OPTIONS=-q --tool=memcheck --leak-check=yes --num-callers=50 --error-exitcode=1"
+            ]
+        }
+    },
+    "test": {
+        "memcheck": {
+            "ctest-args": [
+                "-D", "ExperimentalMemCheck"
+            ]
+        }
+    }
+}

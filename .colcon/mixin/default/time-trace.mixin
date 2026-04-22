@@ -1,0 +1,5 @@
+build:
+  time-trace:
+    cmake-args:
+      - "-DCMAKE_CXX_FLAGS='-ftime-trace'"
+      - "-DCMAKE_C_FLAGS='-ftime-trace'"
