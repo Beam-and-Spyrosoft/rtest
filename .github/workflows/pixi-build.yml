@@ -1,6 +1,7 @@
 name: Pixi Build
 
 on:
+  workflow_dispatch: # On-demand trigger
   pull_request:
     branches:
       - main
