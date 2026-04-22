@@ -88,7 +88,6 @@ function(test_tools_add_doubles target)
 
     target_link_libraries(${LIB_DOUBLES_NAME} INTERFACE
       ${arg_AMENT_DEPENDENCIES}
-      GTest::gmock
     )
   else()
     get_target_property(TARGET_SOURCES ${target} SOURCES)
@@ -102,7 +101,7 @@ function(test_tools_add_doubles target)
       $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
     )
 
-    target_link_libraries(${LIB_DOUBLES_NAME}
+    target_link_libraries(${LIB_DOUBLES_NAME} PUBLIC
       rtest::publisher_mock
       rtest::subscription_mock
       rtest::service_mock
@@ -113,9 +112,8 @@ function(test_tools_add_doubles target)
       rtest::rtest_common
     )
 
-    target_link_libraries(${LIB_DOUBLES_NAME}
+    target_link_libraries(${LIB_DOUBLES_NAME} PUBLIC
       ${arg_AMENT_DEPENDENCIES}
-      GTest::gmock
     )
   endif()
   

@@ -19,13 +19,24 @@
 #include <gmock/gmock.h>
 #include <rclcpp/rclcpp.hpp>
 
+#include <cstdlib>
+#include <exception>
+#include <iostream>
+
 int main(int argc, char ** argv)
 {
-  testing::InitGoogleMock(&argc, argv);
-  rclcpp::init(argc, argv);
+  try {
+    testing::InitGoogleMock(&argc, argv);
+    rclcpp::init(argc, argv);
 
-  /// Run all tests
-  int result = RUN_ALL_TESTS();
-  rclcpp::shutdown();
-  return result;
+    /// Run all tests
+    int result = RUN_ALL_TESTS();
+    rclcpp::shutdown();
+    return result;
+  } catch (const std::exception & e) {
+    std::cerr << "Exception: " << e.what() << "\n";
+  } catch (...) {
+    std::cerr << "Uknown exception\n";
+  }
+  return EXIT_FAILURE;
 }

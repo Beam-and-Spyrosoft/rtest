@@ -48,7 +48,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(gmock_vendor REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 find_package(rcl_action REQUIRED)
@@ -89,10 +88,11 @@ target_link_libraries(rtest_common PUBLIC
   rcl_action::rcl_action
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
+  GTest::gmock
 )
 
 ament_export_dependencies(
-  rclcpp rclcpp_action rcl_action gmock_vendor
+  rclcpp rclcpp_action rcl_action
 )
 
 # Publisher mock library
