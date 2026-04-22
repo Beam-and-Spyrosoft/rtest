@@ -15,7 +15,7 @@ on:
 
 jobs:
   pixi-build:
-    name: "Pixi (${{ matrix.environment }})"
+    name: "Pixi - ROS 2 ${{ matrix.environment }}; compiler: ${{ matrix.compiler }}"
     strategy:
       fail-fast: false
       matrix:
@@ -51,4 +51,4 @@ jobs:
           cache: true
 
       - name: Build and Test
-        run: pixi run -e ${{ matrix.environment }} test
+        run: pixi run -e ${{ matrix.environment }} test ${{ matrix.compiler }}
