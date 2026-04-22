@@ -63,6 +63,7 @@ ros-kilted-rclcpp = ">=29.5,<30"
 [feature.kilted.dev]
 ros-kilted-rtest = { path = "rtest" }
 ros-kilted-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
+ros-jazzy-rtest-examples = { path = "examples" }
 
 
 [tasks.build]
