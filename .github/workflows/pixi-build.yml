@@ -1,0 +1,53 @@
+name: Pixi Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - jazzy
+      - kilted
+  push:
+    branches:
+      - main
+      - jazzy
+      - kilted
+
+jobs:
+  pixi-build:
+    name: "Pixi (${{ matrix.environment }})"
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [jazzy, kilted]
+        compiler: [gnu, clang]
+    runs-on: ubuntu-latest
+    continue-on-error: true # Pixi builds are experimental
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }} 
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Cache ccache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ runner.os }}-${{ matrix.environment }}-${{ github.head_ref }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.environment }}-main
+
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.9.4
+        with:
+          pixi-version: v0.67.1
+          environments: ${{ matrix.environment }}
+          cache: true
+
+      - name: Build and Test
+        run: pixi run -e ${{ matrix.environment }} test
