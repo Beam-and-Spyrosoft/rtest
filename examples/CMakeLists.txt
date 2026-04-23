@@ -23,7 +23,6 @@ if(RTEST_BUILD_EXAMPLES)
   find_package(rtest_examples_interfaces REQUIRED)
   find_package(std_msgs REQUIRED)
   find_package(std_srvs REQUIRED)
-  find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
   find_package(Threads REQUIRED)
   find_package(Python3 REQUIRED COMPONENTS Development)
 

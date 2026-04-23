@@ -92,7 +92,7 @@ target_link_libraries(rtest_common PUBLIC
 )
 
 ament_export_dependencies(
-  rclcpp rclcpp_action rcl_action
+  rclcpp rclcpp_action rcl_action GTest
 )
 
 # Publisher mock library

@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
   } catch (const std::exception & e) {
     std::cerr << "Exception: " << e.what() << "\n";
   } catch (...) {
-    std::cerr << "Uknown exception\n";
+    std::cerr << "Unknown exception\n";
   }
 
   if (rclcpp::ok()) {
