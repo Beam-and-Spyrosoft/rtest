@@ -66,6 +66,9 @@ ros-kilted-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
 ros-kilted-rtest-examples = { path = "examples" }
 
 
+[tasks.clean]
+cmd = "rm -rf build install log"
+
 [tasks.build]
 inputs = ["rtest", "rtest_examples_interfaces", "examples", "build", "install"]
 cmd = """
@@ -75,9 +78,27 @@ args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]
 
+[tasks.clean-build]
+depends-on = [
+    { task = "clean" },
+    { task = "build", args = ["{{compiler}}"] },
+]
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
 [tasks.test]
 depends-on = [{ task = "build", args = ["{{compiler}}"] }]
 cmd = "bash -c 'source install/setup.bash && colcon test && colcon test-result'"
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
+[tasks.clean-test]
+depends-on = [
+    { task = "clean-build", args = ["{{compiler}}"] },
+    { task = "test", args = ["{{compiler}}"] },
+]
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]

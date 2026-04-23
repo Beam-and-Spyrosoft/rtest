@@ -25,6 +25,7 @@ if(RTEST_BUILD_EXAMPLES)
   find_package(std_srvs REQUIRED)
   find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
   find_package(Threads REQUIRED)
+  find_package(Python3 REQUIRED COMPONENTS Development)
 
   # Publisher component
   add_library(publisher_component SHARED src/publisher.cpp)
@@ -133,6 +134,8 @@ if(RTEST_BUILD_EXAMPLES)
   # Manual/static Node composition
   add_executable(manual_composition src/manual_composition.cpp)
   target_link_libraries(manual_composition
+    rclcpp::rclcpp
+    Python3::Python
     publisher_component
     subscriber_component
     service_provider_component
@@ -141,7 +144,6 @@ if(RTEST_BUILD_EXAMPLES)
     action_client_component
     ${cpp_typesupport_target}
   )
-  target_link_libraries(manual_composition rclcpp::rclcpp)
 
   install(TARGETS
     publisher_component
