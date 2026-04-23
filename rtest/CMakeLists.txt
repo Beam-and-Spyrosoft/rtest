@@ -268,7 +268,7 @@ if(BUILD_TESTING)
   option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
   if(ENABLE_CLANG_TIDY)
     find_package(ament_lint_auto REQUIRED)
-    find_package(ament_cmake_clang_tidy REQUIRED)
+    find_package(ament_clang_tidy REQUIRED)
     set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
     ament_lint_auto_find_test_dependencies()
     # Exclude other distribution folders from linting/coverage

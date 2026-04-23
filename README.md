@@ -43,41 +43,43 @@ Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/la
 
 ### Install Rtest from repositories
 
-    ```sh
-    sudo apt install ros-${ROS_DISTRO}-rtest
-    ```
+```sh
+sudo apt install ros-${ROS_DISTRO}-rtest
+```
 
 ### Build from sources
 
 1. Clone the repository:
 
-    ```sh
-    git clone https://github.com/yourusername/rtest.git
-    ```
+```sh
+git clone https://github.com/yourusername/rtest.git
+```
 
 1. (Option A) Install and setup Pixi environment:
 
-    - Install Pixi and setup workspace:
-    ```sh
-    curl -fsSL https://pixi.sh/install.sh | sh
-    pixi install --all
-    ```
+- Install Pixi and setup workspace:
 
-    - Build and run the test examples:
+```sh
+curl -fsSL https://pixi.sh/install.sh | sh
+pixi install --all
+```
 
-    ```sh
-    pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test
-    ```
+- Build and run the test examples:
+
+```sh
+pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test
+```
 
 1. (Option B) Install and setup ROS 2 workspace manually:
-    - Follow instructions in [ROS 2 Installation](https://docs.ros.org/en/rolling/Installation.html)
 
-    - Build and run the test examples:
+- Follow instructions in [ROS 2 Installation](https://docs.ros.org/en/rolling/Installation.html)
 
-    ```sh
-    colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
-    colcon test --packages-select rtest_examples --event-handlers console_cohesion+
-    ```
+- Build and run the test examples:
+
+```sh
+colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
+colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+```
 
 ## Adding Testing Support to Your Package
 

@@ -3,7 +3,7 @@ build:
     - compile-commands
     - ninja
     - ccache
-    - debug
+    - release
     - build-testing-on
   event-handlers:
     - console_direct+

@@ -25,18 +25,21 @@
 
 int main(int argc, char ** argv)
 {
+  int result = EXIT_FAILURE;
   try {
     testing::InitGoogleMock(&argc, argv);
     rclcpp::init(argc, argv);
 
     /// Run all tests
-    int result = RUN_ALL_TESTS();
-    rclcpp::shutdown();
-    return result;
+    result = RUN_ALL_TESTS();
   } catch (const std::exception & e) {
     std::cerr << "Exception: " << e.what() << "\n";
   } catch (...) {
     std::cerr << "Uknown exception\n";
   }
-  return EXIT_FAILURE;
+
+  if (rclcpp::ok()) {
+    rclcpp::shutdown();
+  }
+  return result;
 }
