@@ -5,8 +5,7 @@ log/
 .colcon/
 
 # Pixi build artifacts
-pixi.lock
-.pixicache/
+.pixi
 
 # General IDE and editor files
 *.swp

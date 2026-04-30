@@ -1,0 +1,14 @@
+build:
+  mixin:
+    - compile-commands
+    - ninja
+    - ccache
+    - release
+    - build-testing-on
+  event-handlers:
+    - console_direct+
+  symlink-install: true
+test:
+  event-handlers:
+    - console_direct+
+

@@ -1,0 +1,9 @@
+{
+    "build": {
+        "shared": {
+            "cmake-args": [
+                "-DBUILD_SHARED_LIBS=ON"
+            ]
+        }
+    }
+}

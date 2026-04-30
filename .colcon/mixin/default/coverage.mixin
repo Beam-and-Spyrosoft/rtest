@@ -1,0 +1,19 @@
+{
+    "build": {
+        "coverage-gcc": {
+            "cmake-args": [
+                "-DCMAKE_C_FLAGS='--coverage'",
+                "-DCMAKE_CXX_FLAGS='--coverage'"
+            ]
+        },
+        "coverage-pytest": {
+            "ament-cmake-args": ["-DAMENT_CMAKE_PYTEST_WITH_COVERAGE=ON"]
+        }
+    },
+    "test": {
+        "coverage-pytest": {
+            "pytest-args": ["--cov-report=term"],
+            "pytest-with-coverage": true
+        }
+    }
+}

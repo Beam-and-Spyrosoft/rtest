@@ -48,7 +48,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(gmock_vendor REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 find_package(rcl_action REQUIRED)
@@ -89,10 +88,11 @@ target_link_libraries(rtest_common PUBLIC
   rcl_action::rcl_action
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
+  GTest::gmock
 )
 
 ament_export_dependencies(
-  rclcpp rclcpp_action rcl_action gmock_vendor
+  rclcpp rclcpp_action rcl_action GTest
 )
 
 # Publisher mock library
@@ -268,7 +268,7 @@ if(BUILD_TESTING)
   option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
   if(ENABLE_CLANG_TIDY)
     find_package(ament_lint_auto REQUIRED)
-    find_package(ament_cmake_clang_tidy REQUIRED)
+    find_package(ament_clang_tidy REQUIRED)
     set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
     ament_lint_auto_find_test_dependencies()
     # Exclude other distribution folders from linting/coverage

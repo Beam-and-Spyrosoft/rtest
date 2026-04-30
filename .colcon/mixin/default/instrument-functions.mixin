@@ -1,0 +1,10 @@
+{
+    "build": {
+        "instrument-functions": {
+            "cmake-args": [
+                "-DCMAKE_C_FLAGS='-finstrument-functions'",
+                "-DCMAKE_CXX_FLAGS='-finstrument-functions'"
+            ]
+        }
+    }
+}

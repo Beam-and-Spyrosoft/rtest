@@ -200,7 +200,8 @@ Create the `test/CMakeLists.txt` file:
 find_package(rtest REQUIRED)
 find_package(ament_cmake_gmock REQUIRED)
 
-ament_add_gmock(${PROJECT_NAME}-test
+# Use add_executable + `ament_add_gmock_test` instead of `ament_add_gmock`.
+add_executable(${PROJECT_NAME}-test
     main.cpp
     ${CMAKE_SOURCE_DIR}/src/subscriber.cpp
     subscriber_test.cpp
@@ -216,6 +217,8 @@ target_link_libraries(${PROJECT_NAME}-test
   rclcpp_components::component
   ${std_msgs_TARGETS}
 )
+
+ament_add_gmock_test(${PROJECT_NAME}-test)
 ```
 
 Update the root `CMakeLists.txt` with:
