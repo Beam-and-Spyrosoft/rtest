@@ -11,6 +11,7 @@ platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
 [environments]
 jazzy = ["jazzy"]
 kilted = ["kilted"]
+lyrical = ["lyrical"]
 # rolling = ["rolling"] # robostack-rolling channel not ready for production development
 
 [dependencies]
@@ -64,6 +65,20 @@ ros-kilted-rclcpp = ">=29.5,<30"
 ros-kilted-rtest = { path = "rtest" }
 ros-kilted-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
 ros-kilted-rtest-examples = { path = "examples" }
+
+
+[feature.lyrical]
+channels = [
+    "https://prefix.dev/robostack-lyrical"
+]
+
+[feature.lyrical.dependencies]
+ros-lyrical-rclcpp = ">=30.0,<31"
+
+[feature.lyrical.dev]
+ros-lyrical-rtest = { path = "rtest" }
+ros-lyrical-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
+ros-lyrical-rtest-examples = { path = "examples" }
 
 
 [tasks.clean]

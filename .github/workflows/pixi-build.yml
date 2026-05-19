@@ -7,11 +7,13 @@ on:
       - main
       - jazzy
       - kilted
+      - lyrical
   push:
     branches:
       - main
       - jazzy
       - kilted
+      - lyrical
 
 jobs:
   pixi-build:
@@ -19,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        environment: [jazzy, kilted]
+        environment: [jazzy, kilted, lyrical]
         arch: [amd64, arm64]
         compiler: [gnu, clang]
     runs-on: ubuntu-latest

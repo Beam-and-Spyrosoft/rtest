@@ -142,8 +142,13 @@ public:
   }
 
   void handle_response(
+#if RTEST_ROS_VERSION >= RTEST_ROS_LYRICAL
+    const std::shared_ptr<rmw_request_id_t> & request_header,
+    const std::shared_ptr<void> & response) override
+#else
     std::shared_ptr<rmw_request_id_t> request_header,
     std::shared_ptr<void> response) override
+#endif
   {
     (void)request_header;
     (void)response;

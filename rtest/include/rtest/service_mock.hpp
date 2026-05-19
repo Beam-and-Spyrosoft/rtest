@@ -151,8 +151,13 @@ public:
   }
 
   void handle_request(
+#if RTEST_ROS_VERSION >= RTEST_ROS_LYRICAL
+    const std::shared_ptr<rmw_request_id_t> & request_header,
+    const std::shared_ptr<void> & request) override
+#else
     std::shared_ptr<rmw_request_id_t> request_header,
     std::shared_ptr<void> request) override
+#endif
   {
     auto typed_request = std::static_pointer_cast<typename ServiceT::Request>(request);
     auto response = handle_request(request_header, typed_request);
