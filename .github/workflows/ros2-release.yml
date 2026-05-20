@@ -66,15 +66,15 @@ jobs:
 
           # Lyrical from lyrical branch
           - ros_distro: lyrical
-            os: ubuntu-26.04
+            os: ubuntu-24.04
             branch: lyrical
             arch: amd64
           - ros_distro: lyrical
-            os: ubuntu-26.04
+            os: ubuntu-24.04
             branch: lyrical
             arch: arm64
           - ros_distro: lyrical
-            os: ubuntu-26.04
+            os: ubuntu-24.04
             branch: lyrical
             arch: arm32
     runs-on: ${{ matrix.os }}

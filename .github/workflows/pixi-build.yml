@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        environment: [jazzy, kilted, lyrical]
+        environment: [jazzy, kilted]
         arch: [amd64, arm64]
         compiler: [gnu, clang]
     runs-on: ubuntu-latest

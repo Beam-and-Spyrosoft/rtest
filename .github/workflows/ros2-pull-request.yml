@@ -59,7 +59,7 @@ jobs:
             ubuntu_codename: noble
           - ros_distro: lyrical
             container_image: osrf/ros:lyrical-desktop
-            ubuntu_version: ubuntu-26.04
+            ubuntu_version: ubuntu-24.04
             ubuntu_codename: resolute
     runs-on: ${{ matrix.ubuntu_version }}
     container:

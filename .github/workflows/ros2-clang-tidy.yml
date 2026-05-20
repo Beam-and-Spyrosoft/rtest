@@ -22,7 +22,7 @@ jobs:
             branch: kilted
             arch: amd64
           - ros_distro: lyrical
-            os: ubuntu-26.04
+            os: ubuntu-24.04
             branch: lyrical
             arch: amd64
     runs-on: ${{ matrix.os }}
