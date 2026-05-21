@@ -29,10 +29,10 @@ check_dependencies
 # Generate coverage report for framework library
 echo "===== GENERATING COVERAGE REPORT ====="
 
-lcov --no-external --capture --directory . --output-file all_coverage.info --ignore-errors mismatch,source,unused 2>/dev/null || true
-lcov --extract all_coverage.info "*/rtest/*" --ignore-errors source,empty,unused -o framework_tmp.info 2>/dev/null || true
+lcov --no-external --capture --directory . --output-file all_coverage.info --ignore-errors mismatch,source,unused,inconsistent 2>/dev/null || true
+lcov --extract all_coverage.info "*/rtest/*" --ignore-errors source,empty,unused,inconsistent -o framework_tmp.info 2>/dev/null || true
 lcov --remove framework_tmp.info "*/examples/*" "*/test/*" "*/tests/*" "*/test_composition/*" "*/rtest_examples_interfaces/*" \
-    --ignore-errors source,empty,unused -o framework_filtered.info 2>/dev/null || true
+    --ignore-errors source,empty,unused,inconsistent -o framework_filtered.info 2>/dev/null || true
 
 genhtml -o coverage_report_framework framework_filtered.info --ignore-errors source 2>/dev/null || true
 
