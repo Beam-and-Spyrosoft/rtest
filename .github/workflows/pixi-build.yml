@@ -24,7 +24,7 @@ jobs:
         environment: [jazzy, kilted]
         arch: [amd64, arm64]
         compiler: [gnu, clang]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     continue-on-error: true # Pixi builds are experimental
     timeout-minutes: 10
     defaults:

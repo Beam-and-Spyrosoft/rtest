@@ -28,13 +28,9 @@ jobs:
             branch: humble
             arch: amd64
           - ros_distro: humble
-            os: ubuntu-22.04
+            os: ubuntu-22.04-arm
             branch: humble
             arch: arm64
-          - ros_distro: humble
-            os: ubuntu-22.04
-            branch: humble
-            arch: arm32
 
           # Jazzy from jazzy branch
           - ros_distro: jazzy
@@ -42,13 +38,9 @@ jobs:
             branch: jazzy
             arch: amd64
           - ros_distro: jazzy
-            os: ubuntu-24.04
+            os: ubuntu-24.04-arm
             branch: jazzy
             arch: arm64
-          - ros_distro: jazzy
-            os: ubuntu-24.04
-            branch: jazzy
-            arch: arm32
 
           # Kilted from kilted branch
           - ros_distro: kilted
@@ -56,13 +48,9 @@ jobs:
             branch: kilted
             arch: amd64
           - ros_distro: kilted
-            os: ubuntu-24.04
+            os: ubuntu-24.04-arm
             branch: kilted
             arch: arm64
-          - ros_distro: kilted
-            os: ubuntu-24.04
-            branch: kilted
-            arch: arm32
 
           # Lyrical from lyrical branch
           - ros_distro: lyrical
@@ -70,13 +58,9 @@ jobs:
             branch: lyrical
             arch: amd64
           - ros_distro: lyrical
-            os: ubuntu-24.04
+            os: ubuntu-24.04-arm
             branch: lyrical
             arch: arm64
-          - ros_distro: lyrical
-            os: ubuntu-24.04
-            branch: lyrical
-            arch: arm32
     runs-on: ${{ matrix.os }}
     container:
       image: osrf/ros:${{ matrix.ros_distro }}-desktop

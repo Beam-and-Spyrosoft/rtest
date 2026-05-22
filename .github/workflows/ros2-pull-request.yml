@@ -1,6 +1,7 @@
 name: ROS 2 Multi-Distribution CI
 
 on:
+  workflow_dispatch: # On-demand trigger
   push:
     branches:
       - main
@@ -47,21 +48,15 @@ jobs:
       fail-fast: false
       matrix:
         ros_distro: [jazzy, kilted, lyrical]
-        arch: [amd64, arm64, arm32]
+        arch: [amd64, arm64]
         include:
           - ros_distro: jazzy
             container_image: osrf/ros:jazzy-desktop
-            ubuntu_version: ubuntu-24.04
-            ubuntu_codename: noble
           - ros_distro: kilted
             container_image: osrf/ros:kilted-desktop
-            ubuntu_version: ubuntu-24.04
-            ubuntu_codename: noble
           - ros_distro: lyrical
             container_image: osrf/ros:lyrical-desktop
-            ubuntu_version: ubuntu-24.04
-            ubuntu_codename: resolute
-    runs-on: ${{ matrix.ubuntu_version }}
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     container:
       image: ${{ matrix.container_image }}
     env:
