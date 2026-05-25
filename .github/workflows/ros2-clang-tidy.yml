@@ -21,6 +21,10 @@ jobs:
             os: ubuntu-24.04
             branch: kilted
             arch: amd64
+          - ros_distro: lyrical
+            os: ubuntu-24.04
+            branch: lyrical
+            arch: amd64
     runs-on: ${{ matrix.os }}
     container:
       image: osrf/ros:${{ matrix.ros_distro }}-desktop

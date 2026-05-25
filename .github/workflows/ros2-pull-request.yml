@@ -6,11 +6,13 @@ on:
       - main
       - jazzy
       - kilted
+      - lyrical
   pull_request:
     branches:
       - main
       - jazzy
       - kilted
+      - lyrical
 
 # Global variables
 env:
@@ -44,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ros_distro: [jazzy, kilted]
+        ros_distro: [jazzy, kilted, lyrical]
         arch: [amd64, arm64, arm32]
         include:
           - ros_distro: jazzy
@@ -55,6 +57,10 @@ jobs:
             container_image: osrf/ros:kilted-desktop
             ubuntu_version: ubuntu-24.04
             ubuntu_codename: noble
+          - ros_distro: lyrical
+            container_image: osrf/ros:lyrical-desktop
+            ubuntu_version: ubuntu-24.04
+            ubuntu_codename: resolute
     runs-on: ${{ matrix.ubuntu_version }}
     container:
       image: ${{ matrix.container_image }}

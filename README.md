@@ -2,7 +2,7 @@
 
 [![Licence](https://img.shields.io/github/license/Beam-and-Spyrosoft/rtest?style=for-the-badge)](./LICENSE)
 
-[![ROS 2 Jazzy CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
+[![ROS 2 CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
 
 [![Static Code Analysis with clang-tidy](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml/badge.svg)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml)
 
@@ -32,6 +32,10 @@ For example: testing interactions with components coming from external dependenc
 ## Documentation
 
 Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/latest/)
+
+## Requirements
+
+**Supported ROS 2 distributions:** Humble, Jazzy, Kilted, Lyrical Luth
 
 ## Requirements
 
@@ -67,7 +71,7 @@ pixi install --all
 - Build and run the test examples:
 
 ```sh
-pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test
+pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test, pixi run -e lyrical test
 ```
 
 1. (Option B) Install and setup ROS 2 workspace manually:

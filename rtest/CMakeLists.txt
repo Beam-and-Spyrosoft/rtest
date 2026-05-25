@@ -15,15 +15,15 @@ endif()
 message(STATUS "Building Rtest for ROS distribution: ${ROS_DISTRO_TARGET}")
 
 # Validate supported distributions
-set(SUPPORTED_DISTROS "jazzy" "kilted" "rolling")
+set(SUPPORTED_DISTROS "jazzy" "kilted" "lyrical" "rolling")
 if(NOT ROS_DISTRO_TARGET IN_LIST SUPPORTED_DISTROS)
   message(FATAL_ERROR "Unsupported ROS distribution: ${ROS_DISTRO_TARGET}. Supported: ${SUPPORTED_DISTROS}")
 endif()
 
 if(ROS_DISTRO_TARGET STREQUAL "rolling")
   message(WARNING "ROS 2 Rolling distribution detected. This is experimental support, we don't guarantee that rolling will work correctly.")
-  # Falling back to kilted distro
-  set(ROS_DISTRO_TARGET "kilted")
+  # Falling back to lyrical distro
+  set(ROS_DISTRO_TARGET "lyrical")
 endif()
 
 # Define distribution-specific version number
@@ -31,6 +31,8 @@ if(ROS_DISTRO_TARGET STREQUAL "jazzy")
   set(ROS_VERSION_NUMBER 24)
 elseif(ROS_DISTRO_TARGET STREQUAL "kilted")
   set(ROS_VERSION_NUMBER 25)
+elseif(ROS_DISTRO_TARGET STREQUAL "lyrical")
+  set(ROS_VERSION_NUMBER 26)
 else()
   message(FATAL_ERROR "No ROS version number defined for distribution: ${ROS_DISTRO_TARGET}")
 endif()

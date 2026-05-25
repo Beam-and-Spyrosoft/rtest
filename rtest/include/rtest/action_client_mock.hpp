@@ -183,9 +183,23 @@ public:
     rclcpp::node_interfaces::NodeGraphInterface::SharedPtr node_graph,
     rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr node_logging,
     const std::string & action_name,
-    const rcl_action_client_options_t & options)
+    const rcl_action_client_options_t & options
+#if RTEST_ROS_VERSION >= RTEST_ROS_LYRICAL
+    ,
+    bool enable_feedback_msg_optimization = false
+#endif
+    )
   :
-#if RTEST_ROS_VERSION >= RTEST_ROS_KILTED
+#if RTEST_ROS_VERSION >= RTEST_ROS_LYRICAL
+    ClientBase(
+      node_base,
+      node_graph,
+      node_logging,
+      action_name,
+      rosidl_typesupport_cpp::get_action_type_support_handle<ActionT>(),
+      options,
+      enable_feedback_msg_optimization),
+#elif RTEST_ROS_VERSION >= RTEST_ROS_KILTED
     ClientBase(
       node_base,
       node_graph,
