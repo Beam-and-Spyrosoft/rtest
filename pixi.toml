@@ -11,7 +11,7 @@ platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
 [environments]
 jazzy = ["jazzy"]
 kilted = ["kilted"]
-# lyrical = ["lyrical"] # robostack-lyrical channel not yet available in prefix.dev
+lyrical = ["lyrical"]
 # rolling = ["rolling"] # robostack-rolling channel not ready for production development
 
 [dependencies]
@@ -73,7 +73,7 @@ channels = [
 ]
 
 [feature.lyrical.dependencies]
-ros-lyrical-rclcpp = ">=30.0,<31"
+ros-lyrical-rclcpp = ">=32.0,<33"
 
 [feature.lyrical.dev]
 ros-lyrical-rtest = { path = "rtest" }
