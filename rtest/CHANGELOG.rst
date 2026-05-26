@@ -2,6 +2,13 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.3 (2026-05-23)
+-----------
+* Support ROS Lyrical distribution (`#120 <https://github.com/Beam-and-Spyrosoft/rtest/issues/120>`_)
+* fix: add missing include guard to test_clock.hpp (`#119 <https://github.com/Beam-and-Spyrosoft/rtest/issues/119>`_)
+* Feature/pixi (`#118 <https://github.com/Beam-and-Spyrosoft/rtest/issues/118>`_)
+* Contributors: MariuszSzczepanikSpyrosoft, Sławomir Cielepak
+
 0.2.2 (2026-04-21)
 ------------------
 * Bug Fix: Normalize Service Client/Provider Names by removing leading … (`#115 <https://github.com/Beam-and-Spyrosoft/rtest/issues/115>`_)

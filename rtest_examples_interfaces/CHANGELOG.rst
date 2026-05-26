@@ -2,6 +2,11 @@
 Changelog for package rtest_examples_interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.3 (2026-05-23)
+-----------
+* Feature/pixi (`#118 <https://github.com/Beam-and-Spyrosoft/rtest/issues/118>`_)
+* Contributors: Sławomir Cielepak
+
 0.2.2 (2026-04-21)
 ------------------
 
