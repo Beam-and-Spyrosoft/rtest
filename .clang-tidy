@@ -7,4 +7,6 @@ cppcoreguidelines-*
 -cppcoreguidelines-avoid-magic-numbers
 '
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*'
+# Only analyze our own project code. This prevents noise and parse failures
+# from system, ROS, or generated headers (e.g. inside /opt/ros, /usr, build/, install/).
+HeaderFilterRegex: '(/rtest/|/examples/).*'

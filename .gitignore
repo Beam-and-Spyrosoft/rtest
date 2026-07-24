@@ -33,6 +33,7 @@ compile_commands.json
 *.orig
 *.rej
 *.conda
+.cache
 
 # Documentation artifacts
 rtest/doc/_build
