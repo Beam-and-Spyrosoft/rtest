@@ -11,7 +11,7 @@ platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
 [environments]
 jazzy = ["jazzy"]
 kilted = ["kilted"]
-# lyrical = ["lyrical"] # robostack-lyrical channel available, but ros-lyrical-ament-clang-tidy not yet published
+lyrical = ["lyrical"]
 # rolling = ["rolling"] # robostack-rolling channel not ready for production development
 
 [dependencies]
@@ -25,6 +25,7 @@ clangxx = ">=21.1,<22"
 clang-tools = ">=21.1,<22"
 colcon-common-extensions = ">=0.3.0,<0.4"
 colcon-mixin = ">=0.2.3,<0.3"
+pre-commit = ">=3.7,<4"
 
 [target.linux-64.dependencies]
 lttng-ust = ">=2.13,<2.14"
@@ -87,7 +88,15 @@ cmd = "rm -rf build install log"
 [tasks.build]
 inputs = ["rtest", "rtest_examples_interfaces", "examples", "build", "install"]
 cmd = """
-    bash -c 'colcon build $([ "{{compiler}}" = "clang" ] && echo "--mixin clang lld") --cmake-args="-DRTEST_BUILD_EXAMPLES=On"'
+    bash -c '
+        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-{{compiler}}"
+        colcon --log-base "log/${BUILD_DIR}" build \
+          --build-base "build/${BUILD_DIR}" \
+          --install-base "install/${BUILD_DIR}" \
+          $([ "{{compiler}}" = "clang" ] && echo "--mixin clang lld") \
+          --cmake-args="-DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On" && \
+          ln -sf "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+    '
 """
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
@@ -104,7 +113,14 @@ args = [
 
 [tasks.test]
 depends-on = [{ task = "build", args = ["{{compiler}}"] }]
-cmd = "bash -c 'source install/setup.bash && colcon test && colcon test-result'"
+cmd = """
+    bash -c '
+        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-{{compiler}}"
+        source install/${BUILD_DIR}/setup.bash && \
+          colcon test --build-base "build/${BUILD_DIR}" && \
+          colcon test-result --test-result-base "build/${BUILD_DIR}"
+    '
+"""
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]
@@ -117,3 +133,16 @@ depends-on = [
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]
+
+# Static analysis with clang-tidy. Uses the clang compiler variant for
+# consistent compile_commands.json that clang-tidy can parse reliably.
+[tasks.clang-tidy]
+description = "Run clang-tidy static analysis across project code"
+depends-on = [{ task = "build", args = ["clang"] }]
+cmd = """
+    bash -c '
+        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-clang"
+        ln -sf "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+        pre-commit run clang-tidy --all-files
+    '
+"""
