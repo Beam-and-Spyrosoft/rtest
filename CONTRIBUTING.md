@@ -50,6 +50,11 @@ Contributors must sign-off each commit using GPG, SSH, or S/MIME to certify that
 the code they are contributing to the project according to the [Developer Certificate of Origin (DCO)](https://developercertificate.org/).  
 Please follow the instructions on how to sign the commits here: [Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
 
+## Releasing
+
+Maintainers: see [RELEASING.md](RELEASING.md) for how to cut a new version and bloom-release it to
+the ROS build farm.
+
 ## Finding contributions to work on
 Looking at the existing issues is a great way to find something to contribute on.
 As this project, by default, uses the default GitHub issue labels
