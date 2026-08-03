@@ -35,10 +35,15 @@ repos:
       # diagnostics are still surfaced via --header-filter below, but only
       # when reached through a properly-configured .cpp TU.
       - id: clang-tidy
+        verbose: true
         args:
+          # Compilation database at workspace root (symlink created by
+          # `pixi run build` / `pixi run clang-tidy` via merge_compile_commands.py).
+          - -p=.
           - --header-filter=(/rtest/|/examples/).*
           - --quiet
+          - --warnings-as-errors=*
         files: ^(rtest|examples)/.*\.cpp$
-        # In CI we want full scan after build (the task passes -p build/${env})
+        # Full scan after build in CI (and when run via pre-commit --all-files).
         always_run: true
         pass_filenames: true

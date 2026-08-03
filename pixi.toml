@@ -95,7 +95,8 @@ cmd = """
           --install-base "install/${BUILD_DIR}" \
           $([ "{{compiler}}" = "clang" ] && echo "--mixin clang lld") \
           --cmake-args="-DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On" && \
-          ln -sf "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+          python3 scripts/merge_compile_commands.py "build/${BUILD_DIR}" && \
+          ln -sfn "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
     '
 """
 args = [
@@ -136,13 +137,19 @@ args = [
 
 # Static analysis with clang-tidy. Uses the clang compiler variant for
 # consistent compile_commands.json that clang-tidy can parse reliably.
+# Depends on build, which merges per-package DBs into build/${env}-clang/
+# compile_commands.json and symlinks it at the workspace root for -p=.
 [tasks.clang-tidy]
 description = "Run clang-tidy static analysis across project code"
 depends-on = [{ task = "build", args = ["clang"] }]
 cmd = """
     bash -c '
         BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-clang"
-        ln -sf "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+        # Rebuild the merge/symlink in case compile_commands was pointed at
+        # another environment (or removed) after the dependent build task.
+        python3 scripts/merge_compile_commands.py "build/${BUILD_DIR}"
+        ln -sfn "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+        test -e compile_commands.json
         pre-commit run clang-tidy --all-files
     '
 """
