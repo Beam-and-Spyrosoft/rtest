@@ -18,6 +18,12 @@
 
 #pragma once
 
+// TEST_TOOLS_SMART_PTR_DEFINITIONS below has a different body than the one in
+// service_client_mock.hpp (missing TEST_TOOLS_MAKE_SHARED_DEFINITION), so a translation unit
+// that pulls in both mocks (e.g. via includes_mock.hpp) sees a genuine macro redefinition.
+// Treat this header as a system header so that redefinition isn't reported as an error.
+#pragma GCC system_header
+
 #include <gmock/gmock.h>
 #include <rtest/static_registry.hpp>
 #include <rtest/action_server_base.hpp>

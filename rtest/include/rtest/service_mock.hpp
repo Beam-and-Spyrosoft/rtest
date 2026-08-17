@@ -18,6 +18,11 @@
 
 #pragma once
 
+// The free operator== below is only referenced by service-mock users; a translation unit
+// that force-includes this header without using ServiceMock sees it as an unused function.
+// Treat this header as a system header so that goes unreported instead of erroring.
+#pragma GCC system_header
+
 #include <gmock/gmock.h>
 #include <rtest/static_registry.hpp>
 #include <rtest/service_base.hpp>
