@@ -82,24 +82,8 @@ public:
     async_send_request_with_callback_and_request_mocked,
     (typename Types::SharedRequest, typename Types::CallbackWithRequestType),
     ());
-  MOCK_METHOD(bool, service_is_ready_mocked, (), ());
-  virtual bool service_is_ready() { return service_is_ready_mocked(); }
-  virtual FutureAndRequestId async_send_request(typename Types::SharedRequest request)
-  {
-    async_send_request_mocked(request);
-  }
-  virtual SharedFutureWithRequestAndRequestId async_send_request_with_callback_and_request(
-    typename Types::SharedRequest request,
-    typename Types::CallbackWithRequestType callback)
-  {
-    async_send_request_with_callback_and_request_mocked(request, callback);
-  }
-  virtual SharedFutureAndRequestId async_send_request_with_callback(
-    typename Types::SharedRequest request,
-    typename Types::CallbackType callback)
-  {
-    async_send_request_with_callback_mocked(request, callback);
-  }
+  MOCK_METHOD(bool, service_is_ready, (), ());
+  MOCK_METHOD(bool, wait_for_service, ((std::chrono::duration<int64_t, std::milli>)), ());
 
 private:
   rclcpp::ClientBase * client_{nullptr};
@@ -158,8 +142,13 @@ public:
   }
 
   void handle_response(
+#if RTEST_ROS_VERSION >= RTEST_ROS_LYRICAL
+    const std::shared_ptr<rmw_request_id_t> & request_header,
+    const std::shared_ptr<void> & response) override
+#else
     std::shared_ptr<rmw_request_id_t> request_header,
     std::shared_ptr<void> response) override
+#endif
   {
     (void)request_header;
     (void)response;
@@ -207,15 +196,15 @@ public:
     return false;
   }
 
-  template <typename RepT = int64_t, typename RatioT = std::milli>
-  bool wait_for_service(
-    std::chrono::duration<RepT, RatioT> timeout = std::chrono::duration<RepT, RatioT>(-1))
+  bool wait_for_service(std::chrono::duration<int64_t, std::milli> timeout)
   {
-    return wait_for_service_nanoseconds(
-      std::chrono::duration_cast<std::chrono::nanoseconds>(timeout));
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      return std::static_pointer_cast<rtest::ServiceClientMock<ServiceT>>(mock)->wait_for_service(
+        timeout);
+    }
+    return false;
   }
-
-  bool wait_for_service_nanoseconds(std::chrono::nanoseconds) { return service_is_ready(); }
 
   void post_init_setup()
   {

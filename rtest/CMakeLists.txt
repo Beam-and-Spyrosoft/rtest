@@ -15,15 +15,15 @@ endif()
 message(STATUS "Building Rtest for ROS distribution: ${ROS_DISTRO_TARGET}")
 
 # Validate supported distributions
-set(SUPPORTED_DISTROS "jazzy" "kilted" "rolling")
+set(SUPPORTED_DISTROS "jazzy" "kilted" "lyrical" "rolling")
 if(NOT ROS_DISTRO_TARGET IN_LIST SUPPORTED_DISTROS)
   message(FATAL_ERROR "Unsupported ROS distribution: ${ROS_DISTRO_TARGET}. Supported: ${SUPPORTED_DISTROS}")
 endif()
 
 if(ROS_DISTRO_TARGET STREQUAL "rolling")
   message(WARNING "ROS 2 Rolling distribution detected. This is experimental support, we don't guarantee that rolling will work correctly.")
-  # Falling back to kilted distro
-  set(ROS_DISTRO_TARGET "kilted")
+  # Falling back to lyrical distro
+  set(ROS_DISTRO_TARGET "lyrical")
 endif()
 
 # Define distribution-specific version number
@@ -31,6 +31,8 @@ if(ROS_DISTRO_TARGET STREQUAL "jazzy")
   set(ROS_VERSION_NUMBER 24)
 elseif(ROS_DISTRO_TARGET STREQUAL "kilted")
   set(ROS_VERSION_NUMBER 25)
+elseif(ROS_DISTRO_TARGET STREQUAL "lyrical")
+  set(ROS_VERSION_NUMBER 26)
 else()
   message(FATAL_ERROR "No ROS version number defined for distribution: ${ROS_DISTRO_TARGET}")
 endif()
@@ -48,7 +50,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(gmock_vendor REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(GTest CONFIG REQUIRED COMPONENTS GTest GMock)
 find_package(rcl_action REQUIRED)
@@ -89,10 +90,11 @@ target_link_libraries(rtest_common PUBLIC
   rcl_action::rcl_action
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
+  GTest::gmock
 )
 
 ament_export_dependencies(
-  rclcpp rclcpp_action rcl_action gmock_vendor
+  rclcpp rclcpp_action rcl_action GTest
 )
 
 # Publisher mock library
@@ -268,7 +270,7 @@ if(BUILD_TESTING)
   option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
   if(ENABLE_CLANG_TIDY)
     find_package(ament_lint_auto REQUIRED)
-    find_package(ament_cmake_clang_tidy REQUIRED)
+    find_package(ament_clang_tidy REQUIRED)
     set(ament_cmake_clang_tidy_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../.clang-tidy)
     ament_lint_auto_find_test_dependencies()
     # Exclude other distribution folders from linting/coverage

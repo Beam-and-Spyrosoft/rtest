@@ -8,7 +8,7 @@ The installation process is designed to be simple and quick, allowing you to sta
 
 ## Binary packages
 
-Binaries are only created for the Tier 1 operating systems listed in [REP-2000](https://www.ros.org/reps/rep-2000.html#support-tiers).
+Binaries are only created for the Tier 1 operating systems listed in [REP-2000](https://reps.openrobotics.org/rep-2000/#support-tiers).
 
 We provide ROS 2 binary packages for the following platforms:
 

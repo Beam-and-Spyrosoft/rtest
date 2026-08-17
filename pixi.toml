@@ -1,0 +1,119 @@
+[workspace]
+preview = ["pixi-build"]
+name = "rtest"
+description = "This framework enables writing reliable, fully repeatable tests for C++ ROS 2 implementations."
+channels = [
+    "https://prefix.dev/pixi-build-backends",
+    "https://prefix.dev/conda-forge"
+]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
+
+[environments]
+jazzy = ["jazzy"]
+kilted = ["kilted"]
+# lyrical = ["lyrical"] # robostack-lyrical channel available, but ros-lyrical-ament-clang-tidy not yet published
+# rolling = ["rolling"] # robostack-rolling channel not ready for production development
+
+[dependencies]
+cmake = ">=3.28,<4"
+ninja = ">=1.13.0,<1.14"
+make = ">=4.4.0,<4.5"
+ccache = ">=4.13,<5"
+lld = ">=21.1,<22"
+clang = ">=21.1,<22"
+clangxx = ">=21.1,<22"
+clang-tools = ">=21.1,<22"
+colcon-common-extensions = ">=0.3.0,<0.4"
+colcon-mixin = ">=0.2.3,<0.3"
+
+[target.linux-64.dependencies]
+lttng-ust = ">=2.13,<2.14"
+
+[target.linux-aarch64.dependencies]
+lttng-ust = ">=2.13,<2.14"
+
+
+[activation.env]
+LANG = "C.UTF-8"
+LC_ALL = "C.UTF-8"
+COLCON_HOME="${PIXI_PROJECT_ROOT}/.colcon"
+
+
+[feature.jazzy]
+channels = [
+    "https://prefix.dev/robostack-jazzy"
+]
+
+[feature.jazzy.dependencies]
+ros-jazzy-rclcpp = ">=28.1,<29"
+
+[feature.jazzy.dev]
+ros-jazzy-rtest = { path = "rtest" }
+ros-jazzy-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
+ros-jazzy-rtest-examples = { path = "examples" }
+
+
+[feature.kilted]
+channels = [
+    "https://prefix.dev/robostack-kilted"
+]
+
+[feature.kilted.dependencies]
+ros-kilted-rclcpp = ">=29.5,<30"
+
+[feature.kilted.dev]
+ros-kilted-rtest = { path = "rtest" }
+ros-kilted-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
+ros-kilted-rtest-examples = { path = "examples" }
+
+
+[feature.lyrical]
+channels = [
+    "https://prefix.dev/robostack-lyrical"
+]
+
+[feature.lyrical.dependencies]
+ros-lyrical-rclcpp = ">=32.0,<33"
+
+[feature.lyrical.dev]
+ros-lyrical-rtest = { path = "rtest" }
+ros-lyrical-rtest-examples-interfaces = { path = "rtest_examples_interfaces" }
+ros-lyrical-rtest-examples = { path = "examples" }
+
+
+[tasks.clean]
+cmd = "rm -rf build install log"
+
+[tasks.build]
+inputs = ["rtest", "rtest_examples_interfaces", "examples", "build", "install"]
+cmd = """
+    bash -c 'colcon build $([ "{{compiler}}" = "clang" ] && echo "--mixin clang lld") --cmake-args="-DRTEST_BUILD_EXAMPLES=On"'
+"""
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
+[tasks.clean-build]
+depends-on = [
+    { task = "clean" },
+    { task = "build", args = ["{{compiler}}"] },
+]
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
+[tasks.test]
+depends-on = [{ task = "build", args = ["{{compiler}}"] }]
+cmd = "bash -c 'source install/setup.bash && colcon test && colcon test-result'"
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
+[tasks.clean-test]
+depends-on = [
+    { task = "clean-build", args = ["{{compiler}}"] },
+    { task = "test", args = ["{{compiler}}"] },
+]
+args = [
+    { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]

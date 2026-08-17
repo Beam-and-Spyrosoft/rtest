@@ -18,6 +18,8 @@
 //
 // @brief     ROS2 test clock utility.
 
+#pragma once
+
 #include <rclcpp/rclcpp.hpp>
 #include <chrono>
 #include <type_traits>

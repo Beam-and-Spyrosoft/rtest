@@ -1,0 +1,10 @@
+{
+    "build": {
+        "build-testing-off": {
+            "cmake-args": ["-DBUILD_TESTING=OFF"]
+        },
+        "build-testing-on": {
+            "cmake-args": ["-DBUILD_TESTING=ON"]
+        }
+    }
+}

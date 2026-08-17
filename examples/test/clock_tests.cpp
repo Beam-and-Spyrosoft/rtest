@@ -25,7 +25,6 @@
 #include <rtest/test_clock.hpp>
 
 using namespace std::chrono_literals;
-using ::testing::_;
 
 class TimerNode : public rclcpp::Node
 {

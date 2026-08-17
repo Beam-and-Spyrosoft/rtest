@@ -12,11 +12,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04]
-        arch: [amd64]
+        include:
+          - ros_distro: jazzy
+            os: ubuntu-24.04
+            branch: jazzy
+            arch: amd64
+          - ros_distro: kilted
+            os: ubuntu-24.04
+            branch: kilted
+            arch: amd64
+          - ros_distro: lyrical
+            os: ubuntu-24.04
+            branch: lyrical
+            arch: amd64
     runs-on: ${{ matrix.os }}
     container:
-      image: osrf/ros:jazzy-desktop
+      image: osrf/ros:${{ matrix.ros_distro }}-desktop
 
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +37,8 @@ jobs:
       - name: Install build tools
         run: |
           apt-get update
-          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git \
-          libboost-all-dev libgmock-dev ros-jazzy-ament-clang-tidy
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git jq \
+          libboost-all-dev libgmock-dev ros-${{ matrix.ros_distro }}-ament-clang-tidy
 
       - name: Update rosdep database
         run: rosdep update || true
@@ -39,20 +50,25 @@ jobs:
       - name: Build project and generate compile_commands.json
         shell: bash
         run: |
-          . /opt/ros/jazzy/setup.bash
+          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
           colcon build --event-handlers console_cohesion+ --cmake-args -DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On
+
+      - name: Filter compile_commands.json
+        shell: bash
+        run: |
+          jq 'map(select(.directory | contains("rtest_examples_interfaces") | not))' build/compile_commands.json > build/compile_commands_filtered.json
 
       - name: Run clang-tidy
         shell: bash
         run: |
-          . /opt/ros/jazzy/setup.bash
-          ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands.json --jobs $(nproc)
+          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
+          ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands_filtered.json --jobs $(nproc)
 
       - name: Upload clang-tidy report
         if: ${{ !env.ACT && always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: clang-tidy-report
+          name: clang-tidy-report-${{ matrix.ros_distro }}
           path: build/clang-tidy-report.xml
           if-no-files-found: warn
 

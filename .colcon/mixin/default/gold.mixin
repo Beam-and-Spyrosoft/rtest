@@ -1,0 +1,11 @@
+{
+    "build": {
+        "gold": {
+            "cmake-args": [
+                "-DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold",
+                "-DCMAKE_MODULE_LINKER_FLAGS=-fuse-ld=gold",
+                "-DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=gold"
+            ]
+        }
+    }
+}

@@ -2,20 +2,20 @@
 
 [![Licence](https://img.shields.io/github/license/Beam-and-Spyrosoft/rtest?style=for-the-badge)](./LICENSE)
 
-[![ROS 2 Jazzy CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
+[![ROS 2 CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
 
 [![Static Code Analysis with clang-tidy](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml/badge.svg)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml)
 
-
 # Rtest
 
-This repository provides a suite of tools and utilities tailored for testing and debugging ROS 2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS 2-based projects, particularly in scenarios involving unit and integration testing. 
+This repository provides a suite of tools and utilities tailored for testing and debugging ROS 2 (Robot Operating System) applications. It aims to simplify the development and testing workflows for ROS 2-based projects, particularly in scenarios involving unit and integration testing.
 
 The tools in this repository address challenges posed by ROS 2's inter-process communication, which can lead to inconsistent test results. By focusing on integration testing without revalidating the underlying RMW (ROS Middleware) implementations, this repository ensures a more streamlined and reliable testing process.
 
 This framework enables writing reliable, fully repeatable unit tests (and more) for C++ ROS 2 implementations, eliminating the issue of so-called "flaky tests".
 
 ## Contributors
+
 This repository and tooling was initally developed as a collaboration between [BEAM](https://beam.global/) and [Spyrosoft](https://spyro-soft.com/); and is maintained as a collaboration.
 
 ## Features
@@ -35,21 +35,55 @@ Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/la
 
 ## Requirements
 
+**Supported ROS 2 distributions:** Humble, Jazzy, Kilted, Lyrical Luth
+
+## Requirements
+
 - rclcpp
 - GoogleTest
 - ament_cmake_ros
 
 ## Quick-Start
 
+### Install Rtest from repositories
+
+```sh
+sudo apt install ros-${ROS_DISTRO}-rtest
+```
+
+### Build from sources
+
 1. Clone the repository:
-    ```sh
-    $ git clone https://github.com/yourusername/rtest.git
-    ```
-2. Build and run the test examples:
-    ```sh
-    $ colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
-    $ colcon test --packages-select rtest_examples --event-handlers console_cohesion+
-    ```
+
+```sh
+git clone https://github.com/yourusername/rtest.git
+```
+
+1. (Option A) Install and setup Pixi environment:
+
+- Install Pixi and setup workspace:
+
+```sh
+curl -fsSL https://pixi.sh/install.sh | sh
+pixi install --all
+```
+
+- Build and run the test examples:
+
+```sh
+pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test, pixi run -e lyrical test
+```
+
+1. (Option B) Install and setup ROS 2 workspace manually:
+
+- Follow instructions in [ROS 2 Installation](https://docs.ros.org/en/rolling/Installation.html)
+
+- Build and run the test examples:
+
+```sh
+colcon build --cmake-args="-DRTEST_BUILD_EXAMPLES=On"
+colcon test --packages-select rtest_examples --event-handlers console_cohesion+
+```
 
 ## Adding Testing Support to Your Package
 
@@ -149,11 +183,9 @@ Use the appropriate find* function to locate the component created by your node:
 
 Once the interesting mocked entities are found, user can set up call expectaions or interact with them directly.
 
-
 ### Examples
 
 Examples are located in the `examples` folder.
-
 
 ## License
 
