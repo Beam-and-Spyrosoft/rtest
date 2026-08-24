@@ -40,7 +40,11 @@ repos:
           # Compilation database at workspace root (symlink created by
           # `pixi run build` / `pixi run clang-tidy` via merge_compile_commands.py).
           - -p=.
-          - --header-filter=(/rtest/|/examples/).*
+          # rtest/include/ (not /rtest/): workspace path is .../rtest/ and would
+          # otherwise match .pixi ROS headers. --system-headers is required
+          # because ament marks imported rtest includes as -isystem.
+          - --header-filter=(rtest/include/|examples/)
+          - --system-headers
           - --quiet
           - --warnings-as-errors=*
         files: ^(rtest|examples)/.*\.cpp$

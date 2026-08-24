@@ -48,12 +48,6 @@
     return ptr;                                                            \
   }
 
-#define TEST_TOOLS_SMART_PTR_DEFINITIONS(...) \
-  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__)      \
-  __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)        \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
-  TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
-
 namespace rtest
 {
 
@@ -69,7 +63,7 @@ public:
   ServiceClientMock(rclcpp::ClientBase * client) : client_(client) {}
   ~ServiceClientMock() { StaticMocksRegistry::instance().detachMock(client_); }
 
-  TEST_TOOLS_SMART_PTR_DEFINITIONS(ServiceClientMock<ServiceT>)
+  RCLCPP_SMART_PTR_ALIASES_ONLY(ServiceClientMock<ServiceT>)
 
   MOCK_METHOD(FutureAndRequestId, async_send_request, (typename Types::SharedRequest), ());
   MOCK_METHOD(
@@ -117,19 +111,19 @@ public:
   using CallbackType = typename Types::CallbackType;
   using CallbackWithRequestType = typename Types::CallbackWithRequestType;
 
-  TEST_TOOLS_SMART_PTR_DEFINITIONS(Client<ServiceT>)
+  RCLCPP_SMART_PTR_ALIASES_ONLY(Client<ServiceT>)
 
   Client(
     rclcpp::node_interfaces::NodeBaseInterface * node_base,
     std::shared_ptr<rclcpp::node_interfaces::NodeGraphInterface> & node_graph,
     const std::string & service_name,
-    rcl_client_options_t & options)
+    rcl_client_options_t &)
   : ClientBase(node_base, node_graph), service_name_(service_name)
   {
     fully_qualified_name_ = node_base->get_fully_qualified_name();
   }
 
-  virtual ~Client() = default;
+  ~Client() override = default;
 
   std::shared_ptr<void> create_response() override
   {

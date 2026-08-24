@@ -158,7 +158,7 @@ public:
       node_base->get_fully_qualified_name(), get_topic_name(), weak_from_this());
   }
 
-  virtual ~Publisher() {}
+  ~Publisher() override {}
 
   /**
    * @brief Internal sink publish with activation control

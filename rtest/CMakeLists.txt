@@ -4,6 +4,8 @@ project(rtest
   VERSION 0.2.0
 )
 
+option(ENABLE_CLANG_TIDY "Enable clang-tidy tests" OFF)
+
 # Detect ROS distribution
 if(NOT DEFINED ROS_DISTRO_TARGET)
   if(DEFINED ENV{ROS_DISTRO})
@@ -246,16 +248,29 @@ install(DIRECTORY cmake/
                        PATTERN "*.cmake.in"
                        )
 
+set(_rtest_export_targets
+  rtest_common
+  subscription_mock
+  publisher_mock
+  service_mock
+  service_client_mock
+  timer_mock
+  action_server_mock
+  action_client_mock
+)
+
+# Mark exported include dirs as NO_SYSTEM: clang-tidy skips -isystem headers,
+# but release installs should stay SYSTEM so downstream compilers do not warn
+# on rtest internals.
+if(ENABLE_CLANG_TIDY)
+  foreach(_t IN LISTS _rtest_export_targets)
+    set_property(TARGET ${_t} PROPERTY EXPORT_NO_SYSTEM TRUE)
+  endforeach()
+endif()
+
 install(
   TARGETS
-    rtest_common
-    subscription_mock
-    publisher_mock
-    service_mock
-    service_client_mock
-    timer_mock
-    action_server_mock
-    action_client_mock
+    ${_rtest_export_targets}
   EXPORT ${PROJECT_NAME}_targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -266,8 +281,6 @@ ament_export_targets(${PROJECT_NAME}_targets HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_action rcl_action)
 
 if(BUILD_TESTING)
-  # Option to enable clang-tidy tests (default: disabled)
-  option(ENABLE_CLANG_TIDY "Enable clang-tidy tests (can be time-consuming)" OFF)
   if(ENABLE_CLANG_TIDY)
     find_package(ament_lint_auto REQUIRED)
     find_package(ament_clang_tidy REQUIRED)
