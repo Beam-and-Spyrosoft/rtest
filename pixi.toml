@@ -9,6 +9,7 @@ channels = [
 platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
 
 [environments]
+default = ["jazzy"]
 jazzy = ["jazzy"]
 kilted = ["kilted"]
 lyrical = ["lyrical"]
@@ -89,14 +90,12 @@ cmd = "rm -rf build install log"
 inputs = ["rtest", "rtest_examples_interfaces", "examples", "build", "install"]
 cmd = """
     bash -c '
-        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-{{compiler}}"
+        BUILD_DIR="${ROS_DISTRO}-{{compiler}}"
         colcon --log-base "log/${BUILD_DIR}" build \
           --build-base "build/${BUILD_DIR}" \
           --install-base "install/${BUILD_DIR}" \
-          $([ "{{compiler}}" = "clang" ] && echo "--mixin clang lld") \
-          --cmake-args="-DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On" && \
-          python3 scripts/merge_compile_commands.py "build/${BUILD_DIR}" && \
-          ln -sfn "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
+          --mixin compile-commands ninja ccache release build-testing-on examples {{compiler}} && \
+          python3 scripts/merge_compile_commands.py "build/${BUILD_DIR}"
     '
 """
 args = [
@@ -116,7 +115,7 @@ args = [
 depends-on = [{ task = "build", args = ["{{compiler}}"] }]
 cmd = """
     bash -c '
-        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-{{compiler}}"
+        BUILD_DIR="${ROS_DISTRO}-{{compiler}}"
         source install/${BUILD_DIR}/setup.bash && \
           colcon test --build-base "build/${BUILD_DIR}" && \
           colcon test-result --test-result-base "build/${BUILD_DIR}"
@@ -144,11 +143,10 @@ description = "Run clang-tidy static analysis across project code"
 depends-on = [{ task = "build", args = ["clang"] }]
 cmd = """
     bash -c '
-        BUILD_DIR="${PIXI_ENVIRONMENT_NAME}-clang"
+        BUILD_DIR="${ROS_DISTRO}-clang"
         # Rebuild the merge/symlink in case compile_commands was pointed at
         # another environment (or removed) after the dependent build task.
         python3 scripts/merge_compile_commands.py "build/${BUILD_DIR}"
-        ln -sfn "build/${BUILD_DIR}/compile_commands.json" compile_commands.json
         test -e compile_commands.json
         pre-commit run clang-tidy --all-files
     '

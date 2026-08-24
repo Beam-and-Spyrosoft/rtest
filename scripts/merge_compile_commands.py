@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -24,8 +25,10 @@ def merge_compile_commands(build_base: Path) -> Path:
 
     sources = sorted(build_base.glob("*/compile_commands.json"))
     if not sources:
+        entries = sorted(p.name for p in build_base.iterdir())
         raise SystemExit(
-            f"error: no per-package compile_commands.json under {build_base}"
+            f"error: no per-package compile_commands.json under {build_base}\n"
+            f"entries: {', '.join(entries) if entries else '(empty)'}"
         )
 
     merged: list[object] = []
@@ -41,6 +44,13 @@ def merge_compile_commands(build_base: Path) -> Path:
     print(
         f"Merged {len(merged)} compile commands from {len(sources)} packages -> {out}"
     )
+
+    link = Path.cwd() / "compile_commands.json"
+    target = os.path.relpath(out, Path.cwd())
+    if link.exists() or link.is_symlink():
+        link.unlink()
+    link.symlink_to(target)
+    print(f"Linked {link} -> {target}")
     return out
 
 
