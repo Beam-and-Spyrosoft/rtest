@@ -21,6 +21,7 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/node_interfaces/node_interfaces.hpp>
 #include <chrono>
 #include <type_traits>
 
@@ -36,6 +37,10 @@ template <typename Rep, typename Period>
 struct is_chrono_duration<std::chrono::duration<Rep, Period>> : std::true_type
 {
 };
+using TestClockNodeInterface = rclcpp::node_interfaces::NodeInterfaces<
+  rclcpp::node_interfaces::NodeBaseInterface,
+  rclcpp::node_interfaces::NodeParametersInterface,
+  rclcpp::node_interfaces::NodeClockInterface>;
 
 /**
  * @brief Test utility for manual time control. Takes over control over the given Node's clock.
@@ -45,17 +50,20 @@ struct is_chrono_duration<std::chrono::duration<Rep, Period>> : std::true_type
 class TestClock
 {
 public:
-  TestClock(rclcpp::Node::SharedPtr node)
+  TestClock(TestClockNodeInterface node)
   {
-    if (!node) {
-      throw std::invalid_argument{"TestClock - invalid node ptr"};
+    auto param_interface = node.get_node_parameters_interface();
+    auto clock_interface = node.get_node_clock_interface();
+    if (!param_interface || !clock_interface) {
+      throw std::invalid_argument("TestClock - invalid node ptr");
     }
-    auto use_sim_time = node->get_parameter("use_sim_time");
+
+    auto use_sim_time = param_interface->get_parameter("use_sim_time");
     if (!use_sim_time.as_bool()) {
       throw std::invalid_argument{"TestClock - The node must be set with use_sim_time = true"};
     }
 
-    clock_ = node->get_clock()->get_clock_handle();
+    clock_ = clock_interface->get_clock()->get_clock_handle();
     resetClock();
   }
 
@@ -95,7 +103,14 @@ private:
 class TriggeringTestClock
 {
 public:
-  TriggeringTestClock(rclcpp::Node::SharedPtr node) : clock_{TestClock(node)}, node_{node} {}
+  TriggeringTestClock(TestClockNodeInterface node) : clock_{TestClock(node)}
+  {
+    const auto base_interface = node.get_node_base_interface();
+    if (!base_interface) {
+      throw std::invalid_argument("TriggeringTestClock - invalid node ptr");
+    }
+    node_name_ = base_interface->get_fully_qualified_name();
+  }
 
   rcl_time_point_value_t now() const { return clock_.now(); }
 
@@ -106,7 +121,7 @@ public:
       is_chrono_duration<Duration>::value, "target_time must be a std::chrono::duration type");
 
     // Nodes might have added/removed/changed timers -> update the timers list
-    const auto timers = findTimers(node_.lock());
+    const auto timers = findTimers(node_name_);
 
     if (!timers.empty()) {
       const auto time_step = get_timers_min_period(timers);
@@ -156,7 +171,7 @@ private:
   }
 
   TestClock clock_;
-  rclcpp::Node::WeakPtr node_;
+  std::string node_name_;
 };
 
 }  // namespace rtest

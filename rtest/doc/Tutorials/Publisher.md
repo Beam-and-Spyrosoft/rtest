@@ -184,7 +184,7 @@ TEST_F(PubSubTest, WhenTheTimeIsMovedByTimerPeriodCallbackShouldBeExecuted)
   // set use sim timer for mocked timers
   opts = rclcpp::NodeOptions().parameter_overrides({rclcpp::Parameter("use_sim_time", true)});
   auto node = std::make_shared<test_composition::Publisher>(opts);
-  auto triggering_test_clock = rtest::TriggeringTestClock{node};
+  auto triggering_test_clock = rtest::TriggeringTestClock{*node};
 
   /// Retrieve the publisher created by the Node
   auto publisher = rtest::findPublisher<std_msgs::msg::String>(node, "/test_topic");
