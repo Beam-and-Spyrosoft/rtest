@@ -1,0 +1,60 @@
+CompileFlags:
+  CompilationDatabase: .
+---
+# Our mock headers (rtest/include/**) are pure header-only libraries. In real
+# builds, CMake attaches the RTEST_*_MOCK defines (via INTERFACE compile
+# definitions on e.g. service_client_mock, action_server_mock, timer_mock)
+# and force-includes includes_mock.hpp only to the .cpp translation units
+# that actually consume them. They have no standalone entry in
+# compile_commands.json.
+#
+# When one of these headers is opened directly in the editor (not reached
+# through such a .cpp TU), clangd has to guess a compile command, missing
+# those defines. That leaves mock_defines.hpp's guards inactive, so the real
+# rclcpp headers get included alongside our mocks, producing bogus
+# redefinition / undeclared-identifier diagnostics.
+#
+# This fragment replicates the same defines and forced include for standalone
+# editing, matching what a real consuming TU would see. It applies to all of
+# rtest/include/** (jazzy/kilted/lyrical/rtest).
+If:
+  PathMatch: .*/rtest/include/.*\.hpp
+CompileFlags:
+  Add:
+    - -DRTEST_PUBLISHER_MOCK
+    - -DRTEST_SUBSCRIPTION_MOCK
+    - -DRTEST_SERVICE_MOCK
+    - -DRTEST_CLIENT_MOCK
+    - -DRTEST_ACTION_SERVER_MOCK
+    - -DRTEST_ACTION_CLIENT_MOCK
+    - -DRTEST_TIMER_MOCK
+    - -include
+    - rtest/include/rtest/includes_mock.hpp
+
+---
+# RTEST_ROS_VERSION is only referenced inside the distro-agnostic common
+# headers (rtest/include/rtest/*.hpp), which use it (see ros_versions.hpp) to
+# pick which ROS distribution's real headers/types to reference. Headers
+# under include/{jazzy,kilted,lyrical}/** don't reference it themselves, so
+# we don't need to set it there.
+#
+# This default (jazzy) only affects the standalone-editing fallback above;
+# real .cpp TUs already get the correct value from compile_commands.json.
+#
+# clangd can't read env vars or know "which pixi environment is active" from
+# this (checked-in, shared) file. If you mainly work against kilted or
+# lyrical, override this in your own untracked user config instead of
+# editing this file (see https://clangd.llvm.org/config#files for the path
+# on your OS, e.g. ~/.config/clangd/config.yaml on Linux):
+#
+#   If:
+#     PathMatch: .*/rtest/include/rtest/.*\.hpp
+#   CompileFlags:
+#     Add: -DRTEST_ROS_VERSION=25   # 24=jazzy, 25=kilted, 26=lyrical
+#
+# User config takes precedence over this project config, so it'll cleanly
+# override the default below without touching the shared file.
+If:
+  PathMatch: .*/rtest/include/rtest/.*\.hpp
+CompileFlags:
+  Add: -DRTEST_ROS_VERSION=24

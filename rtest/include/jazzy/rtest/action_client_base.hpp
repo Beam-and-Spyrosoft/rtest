@@ -43,14 +43,16 @@ public:
   };
 
   ClientBase() = default;
-  virtual ~ClientBase() = default;
+  ~ClientBase() override = default;
 
   // Basic action client interface
   virtual bool action_server_is_ready() const { return true; }
   virtual rclcpp::Logger get_logger() { return rclcpp::get_logger("action_client_mock"); }
+  // NOLINTBEGIN(bugprone-easily-swappable-parameters)
   virtual std::shared_future<std::shared_ptr<void>> async_send_goal(
     std::shared_ptr<void> goal,
     std::shared_ptr<void> options)
+  // NOLINTEND(bugprone-easily-swappable-parameters)
   {
     (void)goal;
     (void)options;

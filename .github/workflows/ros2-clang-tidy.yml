@@ -6,82 +6,34 @@ on:
   workflow_dispatch: # On-demand trigger
 
 jobs:
-  clang-tidy-check:
-    name: Static Code Analysis with clang-tidy
-
+  clang-tidy:
+    name: "clang-tidy (${{ matrix.environment }})"
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - ros_distro: jazzy
-            os: ubuntu-24.04
-            branch: jazzy
-            arch: amd64
-          - ros_distro: kilted
-            os: ubuntu-24.04
-            branch: kilted
-            arch: amd64
-          - ros_distro: lyrical
-            os: ubuntu-24.04
-            branch: lyrical
-            arch: amd64
-    runs-on: ${{ matrix.os }}
-    container:
-      image: osrf/ros:${{ matrix.ros_distro }}-desktop
+        environment: [jazzy, kilted, lyrical]
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Install build tools
-        run: |
-          apt-get update
-          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-vcstool git jq \
-          libboost-all-dev libgmock-dev ros-${{ matrix.ros_distro }}-ament-clang-tidy
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.10.1
+        with:
+          pixi-version: v0.77.0
+          environments: ${{ matrix.environment }}
+          cache: true
 
-      - name: Update rosdep database
-        run: rosdep update || true
-
-      - name: Install dependencies
-        run: |
-          rosdep install --from-paths . --ignore-src -r -y
-
-      - name: Build project and generate compile_commands.json
-        shell: bash
-        run: |
-          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
-          colcon build --event-handlers console_cohesion+ --cmake-args -DRTEST_BUILD_EXAMPLES=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On
-
-      - name: Filter compile_commands.json
-        shell: bash
-        run: |
-          jq 'map(select(.directory | contains("rtest_examples_interfaces") | not))' build/compile_commands.json > build/compile_commands_filtered.json
-
-      - name: Run clang-tidy
-        shell: bash
-        run: |
-          . /opt/ros/${{ matrix.ros_distro }}/setup.bash
-          ament_clang_tidy --config .clang-tidy --xunit-file build/clang-tidy-report.xml build/compile_commands_filtered.json --jobs $(nproc)
+      - name: Run clang-tidy analysis
+        run: pixi run -e ${{ matrix.environment }} clang-tidy
 
       - name: Upload clang-tidy report
-        if: ${{ !env.ACT && always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: clang-tidy-report-${{ matrix.ros_distro }}
-          path: build/clang-tidy-report.xml
-          if-no-files-found: warn
-
-      - name: Check analysis status
         if: always()
-        run: |
-          failures=$(grep 'failures' build/clang-tidy-report.xml | sed -E 's/.*failures="([0-9]+)".*/\1/' | head -n 1)
-          failures=${failures:-0} # If nothing was found, set failures to 0
-
-          if [ "$failures" -gt 1 ]; then
-            echo "❌ Static analysis has found ${failures} issues. Please check the report."
-            exit 1
-          else
-            echo "✅ Static analysis clear, no issues found"
-          fi
-
+        uses: actions/upload-artifact@v7
+        with:
+          name: clang-tidy-report-${{ matrix.environment }}
+          path: build/${{ matrix.environment }}-clang/clang-tidy-report.xml
+          if-no-files-found: warn

@@ -1,0 +1,4 @@
+build:
+  examples:
+    cmake-args:
+      - "-DRTEST_BUILD_EXAMPLES=On"

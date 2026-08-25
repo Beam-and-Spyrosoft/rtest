@@ -18,7 +18,8 @@
 
 #pragma once
 
-// Disable original ROS2 implementations
+// Disable original ROS2 implementations by defining their include guards.
+// NOLINTBEGIN(bugprone-reserved-identifier)
 
 #ifdef RTEST_PUBLISHER_MOCK
 #define RCLCPP__PUBLISHER_HPP_
@@ -49,3 +50,5 @@
 #ifdef RTEST_TIMER_MOCK
 #define RCLCPP__CREATE_TIMER_HPP_
 #endif
+
+// NOLINTEND(bugprone-reserved-identifier)

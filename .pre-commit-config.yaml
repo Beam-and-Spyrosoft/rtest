@@ -1,0 +1,53 @@
+# Pre-commit configuration for code quality
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+default_stages: [pre-commit, pre-push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      # clang-format (uses .clang-format)
+      - id: clang-format
+        args: [--style=file]
+
+      # clang-tidy
+      # Requires a compile_commands.json (run `pixi run -e <env> build clang` first locally)
+      # In CI the task builds first, then runs this.
+      # Uses our .clang-tidy config and header filter.
+      #
+      # IMPORTANT: only match actual translation units (.cpp), never headers.
+      # Headers (e.g. our mock headers) have no standalone entry in
+      # compile_commands.json, and are only valid when compiled as part of a
+      # .cpp TU that carries the right per-target defines (RTEST_*_MOCK) and
+      # forced includes. Linting a header directly causes clang-tidy to guess
+      # a generic compile command, missing those defines, which produces
+      # bogus redefinition/undeclared-identifier errors. Header-based
+      # diagnostics are still surfaced via --header-filter below, but only
+      # when reached through a properly-configured .cpp TU.
+      - id: clang-tidy
+        verbose: true
+        args:
+          # Compilation database at workspace root (symlink created by
+          # `pixi run build` / `pixi run clang-tidy` via merge_compile_commands.py).
+          - -p=.
+          # rtest/include/ (not /rtest/): workspace path is .../rtest/ and would
+          # otherwise match .pixi ROS headers. --system-headers is required
+          # because ament marks imported rtest includes as -isystem.
+          - --header-filter=(rtest/include/|examples/)
+          - --system-headers
+          - --quiet
+          - --warnings-as-errors=*
+        files: ^(rtest|examples)/.*\.cpp$
+        # Full scan after build in CI (and when run via pre-commit --all-files).
+        always_run: true
+        pass_filenames: true

@@ -34,6 +34,21 @@
 #include <rtest/single_instance.hpp>
 #include <rtest/registry_cleaner.hpp>
 
+#define TEST_TOOLS_MAKE_SHARED_DEFINITION(...)                             \
+  template <typename... Args>                                              \
+  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&... args)         \
+  {                                                                        \
+    auto ptr = std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
+    ptr->post_init_setup();                                                \
+    return ptr;                                                            \
+  }
+
+#define TEST_TOOLS_SMART_PTR_DEFINITIONS(...) \
+  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__)      \
+  __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)        \
+  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
+  TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
+
 namespace rclcpp
 {
 class PublisherBase;

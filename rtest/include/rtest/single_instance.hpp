@@ -33,7 +33,12 @@ namespace rtest
 template <typename T>
 class SingleInstance
 {
+  friend T;
+
 public:
+  ~SingleInstance() { instanceCreated_.clear(); }
+
+private:
   SingleInstance()
   {
     if (instanceCreated_.test_and_set()) {
@@ -43,9 +48,6 @@ public:
     }
   }
 
-  ~SingleInstance() { instanceCreated_.clear(); }
-
-private:
   static std::atomic_flag instanceCreated_;
 };
 

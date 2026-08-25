@@ -7,4 +7,6 @@ cppcoreguidelines-*
 -cppcoreguidelines-avoid-magic-numbers
 '
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*'
+# Match source and colcon-installed copies of our headers. Do not use /rtest/
+# alone: the workspace path is .../rtest/, which would include .pixi/envs.
+HeaderFilterRegex: '(rtest/include/|examples/)'

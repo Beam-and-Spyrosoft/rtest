@@ -6,6 +6,7 @@ log/
 
 # Pixi build artifacts
 .pixi
+.ccache/
 
 # General IDE and editor files
 *.swp
@@ -33,6 +34,7 @@ compile_commands.json
 *.orig
 *.rej
 *.conda
+.cache
 
 # Documentation artifacts
 rtest/doc/_build

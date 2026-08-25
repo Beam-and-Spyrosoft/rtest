@@ -42,21 +42,6 @@
 #include "rclcpp/visibility_control.hpp"
 #include "rclcpp/exceptions.hpp"
 
-#define TEST_TOOLS_MAKE_SHARED_DEFINITION(...)                             \
-  template <typename... Args>                                              \
-  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&... args)         \
-  {                                                                        \
-    auto ptr = std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
-    ptr->post_init_setup();                                                \
-    return ptr;                                                            \
-  }
-
-#define TEST_TOOLS_SMART_PTR_DEFINITIONS(...) \
-  __RCLCPP_SHARED_PTR_ALIAS(__VA_ARGS__)      \
-  __RCLCPP_WEAK_PTR_ALIAS(__VA_ARGS__)        \
-  __RCLCPP_UNIQUE_PTR_ALIAS(__VA_ARGS__)      \
-  TEST_TOOLS_MAKE_SHARED_DEFINITION(__VA_ARGS__)
-
 namespace rtest
 {
 
@@ -84,7 +69,7 @@ public:
   }
   ~ServiceMock() { StaticMocksRegistry::instance().detachMock(service_); }
 
-  TEST_TOOLS_SMART_PTR_DEFINITIONS(ServiceMock<ServiceT>)
+  RCLCPP_SMART_PTR_ALIASES_ONLY(ServiceMock<ServiceT>)
 
   MOCK_METHOD(void, send_response, (rmw_request_id_t &, typename ServiceT::Response &), ());
 
@@ -121,8 +106,8 @@ public:
     std::shared_ptr<rcl_node_t> node_handle,
     const std::string & service_name,
     AnyServiceCallback<ServiceT> callback,
-    rcl_service_options_t & service_options)
-  : ServiceBase(node_handle), service_name_(service_name), any_callback_(callback)
+    rcl_service_options_t &)
+  : ServiceBase(node_handle), any_callback_(callback), service_name_(service_name)
   {
     const char * name = rcl_node_get_name(node_handle.get());
     const char * namespace_ = rcl_node_get_namespace(node_handle.get());
@@ -227,7 +212,7 @@ std::shared_ptr<ServiceMock<ServiceT>> findService(
 
 }  // namespace rtest
 
-static bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs)
+[[maybe_unused]] static bool operator==(const rmw_request_id_t lhs, const rmw_request_id_t rhs)
 {
   const bool arrays_equal = std::equal(
     std::begin(lhs.writer_guid),

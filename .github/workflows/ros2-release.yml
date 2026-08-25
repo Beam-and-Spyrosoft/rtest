@@ -91,7 +91,7 @@ jobs:
           apt-get install -y nodejs
 
       - name: Checkout specific branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ matrix.branch }}
 
@@ -125,7 +125,7 @@ jobs:
 
       - name: Upload .deb packages as artifacts
         if: ${{ !env.ACT && always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ros-deb-packages-${{ matrix.ros_distro }}-${{ matrix.arch }}
           path: deb_packages/*.deb
@@ -139,7 +139,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout main branch for tagging
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0

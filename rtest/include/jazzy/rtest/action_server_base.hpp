@@ -50,7 +50,7 @@ public:
     Expired,
   };
   ServerBase() = default;
-  virtual ~ServerBase() = default;
+  ~ServerBase() override = default;
 
   virtual void publish_status() {}
   virtual void notify_goal_terminal_state() {}
