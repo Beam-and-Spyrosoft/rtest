@@ -39,15 +39,6 @@
 #include "rclcpp/exceptions.hpp"
 #include "rclcpp/function_traits.hpp"
 
-#define TEST_TOOLS_MAKE_SHARED_DEFINITION(...)                             \
-  template <typename... Args>                                              \
-  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&... args)         \
-  {                                                                        \
-    auto ptr = std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
-    ptr->post_init_setup();                                                \
-    return ptr;                                                            \
-  }
-
 namespace rtest
 {
 
@@ -111,7 +102,7 @@ public:
   using CallbackType = typename Types::CallbackType;
   using CallbackWithRequestType = typename Types::CallbackWithRequestType;
 
-  RCLCPP_SMART_PTR_ALIASES_ONLY(Client<ServiceT>)
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(Client<ServiceT>)
 
   Client(
     rclcpp::node_interfaces::NodeBaseInterface * node_base,

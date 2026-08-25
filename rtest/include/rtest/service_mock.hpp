@@ -42,15 +42,6 @@
 #include "rclcpp/visibility_control.hpp"
 #include "rclcpp/exceptions.hpp"
 
-#define TEST_TOOLS_MAKE_SHARED_DEFINITION(...)                             \
-  template <typename... Args>                                              \
-  static std::shared_ptr<__VA_ARGS__> make_shared(Args &&... args)         \
-  {                                                                        \
-    auto ptr = std::make_shared<__VA_ARGS__>(std::forward<Args>(args)...); \
-    ptr->post_init_setup();                                                \
-    return ptr;                                                            \
-  }
-
 namespace rtest
 {
 
@@ -109,7 +100,7 @@ public:
     const std::shared_ptr<typename ServiceT::Request>,
     std::shared_ptr<typename ServiceT::Response>)>;
 
-  RCLCPP_SMART_PTR_ALIASES_ONLY(Service<ServiceT>)
+  TEST_TOOLS_SMART_PTR_DEFINITIONS(Service<ServiceT>)
 
   Service(
     std::shared_ptr<rcl_node_t> node_handle,
