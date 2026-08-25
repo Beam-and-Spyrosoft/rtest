@@ -21,8 +21,11 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/node_interfaces/node_interfaces.hpp>
 #include <chrono>
+#include <stdexcept>
 #include <type_traits>
+#include <utility>
 
 namespace rtest
 {
@@ -38,6 +41,30 @@ struct is_chrono_duration<std::chrono::duration<Rep, Period>> : std::true_type
 };
 
 /**
+ * @brief Dereferences a pointer (raw or smart), throwing instead of invoking UB when it is null.
+ *        Usable in mem-initializer lists, where validation cannot happen in a constructor body.
+ */
+template <typename Ptr>
+decltype(auto) checkedDeref(Ptr && ptr, const char * message = "checkedDeref - null pointer")
+{
+  if (!ptr) {
+    throw std::invalid_argument(message);
+  }
+  return *std::forward<Ptr>(ptr);
+}
+
+/// Combined NodeInterfaces type with base-, parameters-, and clock-interfaces.
+using TestClockNodeInterface = rclcpp::node_interfaces::NodeInterfaces<
+  rclcpp::node_interfaces::NodeBaseInterface,
+  rclcpp::node_interfaces::NodeParametersInterface,
+  rclcpp::node_interfaces::NodeClockInterface>;
+
+/// A template type constraint to check if a type can be used to get the relevant node interfaces.
+template <typename T>
+using EnableIfNodeInterfaceCompatible =
+  std::enable_if_t<std::is_constructible_v<TestClockNodeInterface, T &>>;
+
+/**
  * @brief Test utility for manual time control. Takes over control over the given Node's clock.
  *        The Node must be constructed with parameter "use_sim_time" set to true.
  *
@@ -45,17 +72,24 @@ struct is_chrono_duration<std::chrono::duration<Rep, Period>> : std::true_type
 class TestClock
 {
 public:
-  TestClock(rclcpp::Node::SharedPtr node)
+  template <typename NodeT, typename = EnableIfNodeInterfaceCompatible<NodeT>>
+  explicit TestClock(const std::shared_ptr<NodeT> & node)
+  : TestClock(checkedDeref(node, "TestClock - invalid node ptr"))
   {
-    if (!node) {
-      throw std::invalid_argument{"TestClock - invalid node ptr"};
+  }
+
+  explicit TestClock(TestClockNodeInterface iface)
+  {
+    auto param_interface = iface.get_node_parameters_interface();
+    auto clock_interface = iface.get_node_clock_interface();
+    if (!param_interface || !clock_interface) {
+      throw std::invalid_argument("TestClock - invalid node interface ptr");
     }
-    auto use_sim_time = node->get_parameter("use_sim_time");
+    auto use_sim_time = param_interface->get_parameter("use_sim_time");
     if (!use_sim_time.as_bool()) {
       throw std::invalid_argument{"TestClock - The node must be set with use_sim_time = true"};
     }
-
-    clock_ = node->get_clock()->get_clock_handle();
+    clock_ = clock_interface->get_clock()->get_clock_handle();
     resetClock();
   }
 
@@ -95,7 +129,20 @@ private:
 class TriggeringTestClock
 {
 public:
-  TriggeringTestClock(rclcpp::Node::SharedPtr node) : clock_{TestClock(node)}, node_{node} {}
+  template <typename NodeT, typename = EnableIfNodeInterfaceCompatible<NodeT>>
+  explicit TriggeringTestClock(const std::shared_ptr<NodeT> & node)
+  : TriggeringTestClock(checkedDeref(node, "TriggeringTestClock - invalid node ptr"))
+  {
+  }
+
+  explicit TriggeringTestClock(TestClockNodeInterface iface) : clock_{TestClock(iface)}
+  {
+    const auto base_interface = iface.get_node_base_interface();
+    if (!base_interface) {
+      throw std::invalid_argument("TriggeringTestClock - invalid node base_interface ptr");
+    }
+    node_name_ = base_interface->get_fully_qualified_name();
+  }
 
   rcl_time_point_value_t now() const { return clock_.now(); }
 
@@ -106,7 +153,7 @@ public:
       is_chrono_duration<Duration>::value, "target_time must be a std::chrono::duration type");
 
     // Nodes might have added/removed/changed timers -> update the timers list
-    const auto timers = findTimers(node_.lock());
+    const auto timers = findTimers(node_name_);
 
     if (!timers.empty()) {
       const auto time_step = get_timers_min_period(timers);
@@ -156,7 +203,7 @@ private:
   }
 
   TestClock clock_;
-  rclcpp::Node::WeakPtr node_;
+  std::string node_name_;
 };
 
 }  // namespace rtest
