@@ -16,9 +16,11 @@ repos:
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: v1.3.5
     hooks:
-      # clang-format (uses .clang-format)
+      # clang-format (uses .clang-format). Headers are in-scope; they do not
+      # need a compile_commands.json entry (unlike clang-tidy).
       - id: clang-format
-        args: [--style=file]
+        args: [--style=file, -i]
+        files: \.(cpp|hpp)$
 
       # clang-tidy
       # Requires a compile_commands.json (run `pixi run -e <env> build clang` first locally)

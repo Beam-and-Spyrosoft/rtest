@@ -188,6 +188,10 @@ args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]
 
+[tasks.clang-format]
+description = "Check C++ formatting with clang-format via pre-commit"
+cmd = "pre-commit run clang-format --all-files --show-diff-on-failure"
+
 # Static analysis with clang-tidy. Uses the clang compiler variant for
 # consistent compile_commands.json that clang-tidy can parse reliably.
 # Depends on build, which merges per-package DBs into build/${env}-clang/
