@@ -2,6 +2,11 @@
 Changelog for package rtest_examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add use of NodeInterfaces for TestClock and TriggeringTestClock (`#111 <https://github.com/Beam-and-Spyrosoft/rtest/issues/111>`_)
+* Contributors: Felix Blix Everberg
+
 0.2.3 (2026-05-23)
 -----------
 * Feature/pixi (`#118 <https://github.com/Beam-and-Spyrosoft/rtest/issues/118>`_)

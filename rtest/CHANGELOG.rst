@@ -2,8 +2,14 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.2.3 (2026-05-23)
+Forthcoming
 -----------
+* Add use of NodeInterfaces for TestClock and TriggeringTestClock (`#111 <https://github.com/Beam-and-Spyrosoft/rtest/issues/111>`_)
+* fix: static analysis with clang-tidy (`#124 <https://github.com/Beam-and-Spyrosoft/rtest/issues/124>`_)
+* Contributors: Felix Blix Everberg, Sławek Cielepak
+
+0.2.3 (2026-05-23)
+------------------
 * Support ROS Lyrical distribution (`#120 <https://github.com/Beam-and-Spyrosoft/rtest/issues/120>`_)
 * fix: add missing include guard to test_clock.hpp (`#119 <https://github.com/Beam-and-Spyrosoft/rtest/issues/119>`_)
 * Feature/pixi (`#118 <https://github.com/Beam-and-Spyrosoft/rtest/issues/118>`_)
