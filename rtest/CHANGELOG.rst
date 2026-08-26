@@ -2,8 +2,8 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.4 (2026-08-26)
+------------------
 * Add use of NodeInterfaces for TestClock and TriggeringTestClock (`#111 <https://github.com/Beam-and-Spyrosoft/rtest/issues/111>`_)
 * fix: static analysis with clang-tidy (`#124 <https://github.com/Beam-and-Spyrosoft/rtest/issues/124>`_)
 * Contributors: Felix Blix Everberg, Sławek Cielepak
