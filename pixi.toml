@@ -18,22 +18,22 @@ release = { features = ["release"], no-default-feature = true }
 
 [dependencies]
 cmake = ">=3.28,<4"
-ninja = ">=1.13.0,<1.14"
-make = ">=4.4.0,<4.5"
-ccache = ">=4.13,<5"
+ninja = ">=1.13.2,<2"
+make = ">=4.4.1,<5"
+ccache = ">=4.14,<5"
 lld = ">=21.1,<22"
 clang = ">=21.1,<22"
 clangxx = ">=21.1,<22"
 clang-tools = ">=21.1,<22"
 colcon-common-extensions = ">=0.3.0,<0.4"
 colcon-mixin = ">=0.2.3,<0.3"
-pre-commit = ">=3.7,<4"
+pre-commit = ">=4.6.2,<5"
 
 [target.linux-64.dependencies]
-lttng-ust = ">=2.13,<2.14"
+lttng-ust = ">=2.13,<3"
 
 [target.linux-aarch64.dependencies]
-lttng-ust = ">=2.13,<2.14"
+lttng-ust = ">=2.13,<3"
 
 
 [activation.env]
@@ -92,18 +92,18 @@ channels = [
 ]
 
 [feature.release.dependencies]
-python = ">=3.10,<3.13"
-git = ">=2.40"
-openssh = ">=9"
+python = ">=3.14,<3.15"
+git = ">=2.55,<3"
+openssh = ">=10.5p1,<11"
 
 [feature.release.activation.env]
 LANG = "C.UTF-8"
 LC_ALL = "C.UTF-8"
 
 [feature.release.pypi-dependencies]
-bloom = "*"
-rosdep = "*"
-catkin_pkg = "*"
+bloom = ">=0.14.3, <0.15"
+rosdep = ">=0.26.0, <0.27"
+catkin_pkg = ">=1.1.0, <2"
 
 [feature.release.tasks.rosdep-setup]
 cmd = "bash scripts/release/rosdep-setup.sh"
@@ -187,6 +187,10 @@ depends-on = [
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
 ]
+
+[tasks.clang-format]
+description = "Check C++ formatting with clang-format via pre-commit"
+cmd = "pre-commit run clang-format --all-files --show-diff-on-failure"
 
 # Static analysis with clang-tidy. Uses the clang compiler variant for
 # consistent compile_commands.json that clang-tidy can parse reliably.
