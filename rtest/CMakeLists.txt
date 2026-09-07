@@ -296,6 +296,12 @@ if(BUILD_TESTING)
     find_package(ament_cmake_copyright REQUIRED)
     ament_copyright()
   endif()
+
+  find_package(ament_cmake_gmock REQUIRED)
+  find_package(example_interfaces REQUIRED)
+  find_package(std_msgs REQUIRED)
+  find_package(std_srvs REQUIRED)
+  add_subdirectory(test)
 endif()
 
 ament_package(

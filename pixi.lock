@@ -269,6 +269,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-cyclonedds-0.10.5-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-domain-coordinator-0.12.0-np2py312h2ed9cc7_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-example-interfaces-0.12.0-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastcdr-2.2.7-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastrtps-2.14.6-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h2ed9cc7_18.conda
@@ -582,6 +583,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-cyclonedds-0.10.5-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-domain-coordinator-0.12.0-np2py312h61f2ce4_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-example-interfaces-0.12.0-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastcdr-2.2.7-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastrtps-2.14.6-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h61f2ce4_18.conda
@@ -886,6 +888,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-cyclonedds-0.10.5-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-domain-coordinator-0.12.0-np2py312h90712bc_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-example-interfaces-0.12.0-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastcdr-2.2.7-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastrtps-2.14.6-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h90712bc_18.conda
@@ -1190,6 +1193,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-cyclonedds-0.10.5-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-domain-coordinator-0.12.0-np2py312hd441986_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-example-interfaces-0.12.0-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastcdr-2.2.7-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastrtps-2.14.6-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312hd441986_18.conda
@@ -1509,6 +1513,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-cyclonedds-0.10.5-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-domain-coordinator-0.12.0-np2py312h2ed9cc7_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-example-interfaces-0.12.0-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastcdr-2.2.7-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastrtps-2.14.6-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h2ed9cc7_18.conda
@@ -1822,6 +1827,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-cyclonedds-0.10.5-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-domain-coordinator-0.12.0-np2py312h61f2ce4_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-example-interfaces-0.12.0-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastcdr-2.2.7-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastrtps-2.14.6-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h61f2ce4_18.conda
@@ -2126,6 +2132,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-cyclonedds-0.10.5-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-domain-coordinator-0.12.0-np2py312h90712bc_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-example-interfaces-0.12.0-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastcdr-2.2.7-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastrtps-2.14.6-np2py312h90712bc_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312h90712bc_18.conda
@@ -2430,6 +2437,7 @@ environments:
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-console-bridge-vendor-1.7.1-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-cyclonedds-0.10.5-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-domain-coordinator-0.12.0-np2py312hd441986_18.conda
+      - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-example-interfaces-0.12.0-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastcdr-2.2.7-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastrtps-2.14.6-np2py312hd441986_18.conda
       - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastrtps-cmake-module-3.6.3-np2py312hd441986_18.conda
@@ -2747,6 +2755,7 @@ environments:
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-composition-interfaces-2.3.1-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-console-bridge-vendor-1.8.0-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-cyclonedds-0.10.5-np2py312h2ed9cc7_21.conda
+      - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-example-interfaces-0.13.1-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-fastcdr-2.3.5-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-fastdds-3.2.3-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-foonathan-memory-vendor-1.3.1-np2py312h2ed9cc7_21.conda
@@ -3061,6 +3070,7 @@ environments:
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-composition-interfaces-2.3.1-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-console-bridge-vendor-1.8.0-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-cyclonedds-0.10.5-np2py312h61f2ce4_21.conda
+      - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-example-interfaces-0.13.1-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-fastcdr-2.3.5-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-fastdds-3.2.3-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-foonathan-memory-vendor-1.3.1-np2py312h61f2ce4_21.conda
@@ -3367,6 +3377,7 @@ environments:
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-composition-interfaces-2.3.1-np2py312h495fd31_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-console-bridge-vendor-1.8.0-np2py312h495fd31_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-cyclonedds-0.10.5-np2py312h495fd31_21.conda
+      - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-example-interfaces-0.13.1-np2py312h495fd31_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-fastcdr-2.3.5-np2py312h495fd31_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-fastdds-3.2.3-np2py312h495fd31_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-foonathan-memory-vendor-1.3.1-np2py312h495fd31_21.conda
@@ -3673,6 +3684,7 @@ environments:
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-composition-interfaces-2.3.1-np2py312h50b1e4c_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-console-bridge-vendor-1.8.0-np2py312h50b1e4c_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-cyclonedds-0.10.5-np2py312h50b1e4c_21.conda
+      - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-example-interfaces-0.13.1-np2py312h50b1e4c_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-fastcdr-2.3.5-np2py312h50b1e4c_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-fastdds-3.2.3-np2py312h50b1e4c_21.conda
       - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-foonathan-memory-vendor-1.3.1-np2py312h50b1e4c_21.conda
@@ -4001,6 +4013,7 @@ environments:
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-composition-interfaces-2.4.5-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-console-bridge-vendor-1.9.1-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-cyclonedds-11.0.1-np2py314hb48eaa3_22.conda
+      - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-example-interfaces-0.14.1-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-fastcdr-2.3.6-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-fastdds-3.6.1-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-foonathan-memory-vendor-1.4.1-np2py314hb48eaa3_22.conda
@@ -4328,6 +4341,7 @@ environments:
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-composition-interfaces-2.4.5-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-console-bridge-vendor-1.9.1-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-cyclonedds-11.0.1-np2py314h2824dc6_22.conda
+      - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-example-interfaces-0.14.1-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-fastcdr-2.3.6-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-fastdds-3.6.1-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-foonathan-memory-vendor-1.4.1-np2py314h2824dc6_22.conda
@@ -4647,6 +4661,7 @@ environments:
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-composition-interfaces-2.4.5-np2py314h8fa4802_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-console-bridge-vendor-1.9.1-np2py314h8fa4802_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-cyclonedds-11.0.1-np2py314h8fa4802_22.conda
+      - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-example-interfaces-0.14.1-np2py314h8fa4802_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-fastcdr-2.3.6-np2py314h8fa4802_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-fastdds-3.6.1-np2py314h8fa4802_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-foonathan-memory-vendor-1.4.1-np2py314h8fa4802_22.conda
@@ -4966,6 +4981,7 @@ environments:
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-composition-interfaces-2.4.5-np2py314h1e5664e_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-console-bridge-vendor-1.9.1-np2py314h1e5664e_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-cyclonedds-11.0.1-np2py314h1e5664e_22.conda
+      - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-example-interfaces-0.14.1-np2py314h1e5664e_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-fastcdr-2.3.6-np2py314h1e5664e_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-fastdds-3.6.1-np2py314h1e5664e_22.conda
       - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-foonathan-memory-vendor-1.4.1-np2py314h1e5664e_22.conda
@@ -14875,6 +14891,24 @@ packages:
   run_exports: {}
   size: 20891
   timestamp: 1782299168329
+- conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-example-interfaces-0.12.0-np2py312h2ed9cc7_18.conda
+  sha256: e871382ec9a5990926fdad69c80df6b903c91f6e165dd8ac87f902203e36756d
+  md5: 010d5a5f88018d006a23ee5bdb51c31e
+  depends:
+  - python
+  - ros-jazzy-ros-workspace
+  - ros-jazzy-rosidl-default-runtime
+  - ros2-distro-mutex 0.15.* jazzy_*
+  - libgcc >=14
+  - __glibc >=2.17,<3.0.a0
+  - libstdcxx >=14
+  - ros2-distro-mutex >=0.15.0,<0.16.0a0
+  - python_abi 3.12.* *_cp312
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 551516
+  timestamp: 1782301595947
 - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-fastcdr-2.2.7-np2py312h2ed9cc7_18.conda
   sha256: be9c463e1090138b528b83fee4512500ff79dc6148a9faf2e363fd125230b0fb
   md5: 67de050a74a508eb3936584654f52e73
@@ -17392,6 +17426,23 @@ packages:
   run_exports: {}
   size: 21081
   timestamp: 1782299508252
+- conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-example-interfaces-0.12.0-np2py312h61f2ce4_18.conda
+  sha256: 22068c8e2ae87f5096eeea62ae41f77022784ae10a4e81ee936d1d71e4645b69
+  md5: a0c68c2dc693d0435dcaf0553ea1f8c4
+  depends:
+  - python
+  - ros-jazzy-ros-workspace
+  - ros-jazzy-rosidl-default-runtime
+  - ros2-distro-mutex 0.15.* jazzy_*
+  - libstdcxx >=14
+  - libgcc >=14
+  - python_abi 3.12.* *_cp312
+  - numpy >=1.25,<3
+  - ros2-distro-mutex >=0.15.0,<0.16.0a0
+  license: Apache-2.0
+  run_exports: {}
+  size: 561475
+  timestamp: 1782301831609
 - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-fastcdr-2.2.7-np2py312h61f2ce4_18.conda
   sha256: e0c026f3616350ffbb0d6935fe58e7f0882bb6ebfa2fa550c8a46384bb01ddc9
   md5: 149fa3af17b3f89cc02e08d987f0b9af
@@ -19887,6 +19938,24 @@ packages:
   run_exports: {}
   size: 22001
   timestamp: 1782301237160
+- conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-example-interfaces-0.12.0-np2py312h90712bc_18.conda
+  sha256: 279ac9ee13fbb0fcac3a05e27b8a4c57892f1ea9799fa5832ba6b9a3a8778e3e
+  md5: 2c81965f6de47b804e992be188fad492
+  depends:
+  - python
+  - ros-jazzy-ros-workspace
+  - ros-jazzy-rosidl-default-runtime
+  - ros2-distro-mutex 0.15.* jazzy_*
+  - __osx >=10.14
+  - __osx >=11.0
+  - libcxx >=19
+  - ros2-distro-mutex >=0.15.0,<0.16.0a0
+  - python_abi 3.12.* *_cp312
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 472416
+  timestamp: 1782310459691
 - conda: https://prefix.dev/robostack-jazzy/osx-64/ros-jazzy-fastcdr-2.2.7-np2py312h90712bc_18.conda
   sha256: 756132ea931425d7a19f64de514d5c545f50f88d2317728e3cb6a92281304209
   md5: 2e1eed918bfd35000ef64ed1d52170f8
@@ -22400,6 +22469,23 @@ packages:
   run_exports: {}
   size: 22324
   timestamp: 1782300078969
+- conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-example-interfaces-0.12.0-np2py312hd441986_18.conda
+  sha256: 29326f522f4db10056ab0823d87da765fe0b7d98a67230bc7214391260b9c3a2
+  md5: 3e59f414633d78976140bbe093fc1182
+  depends:
+  - python
+  - ros-jazzy-ros-workspace
+  - ros-jazzy-rosidl-default-runtime
+  - ros2-distro-mutex 0.15.* jazzy_*
+  - libcxx >=19
+  - __osx >=11.0
+  - ros2-distro-mutex >=0.15.0,<0.16.0a0
+  - python_abi 3.12.* *_cp312
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 461569
+  timestamp: 1782303681960
 - conda: https://prefix.dev/robostack-jazzy/osx-arm64/ros-jazzy-fastcdr-2.2.7-np2py312hd441986_18.conda
   sha256: 5eb81a3e8f193bf6ad26ee4ab5ed6f7b43d0e3c476044831eb31f1432f5c6771
   md5: 9950729e54c4d77ef2c5d9e507764d17
@@ -24891,6 +24977,24 @@ packages:
   run_exports: {}
   size: 1199651
   timestamp: 1783541669365
+- conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-example-interfaces-0.13.1-np2py312h2ed9cc7_21.conda
+  sha256: 59669032983e404e3ed5721d00c494e1256113d45aaead11432e4386f4287aae
+  md5: b9aa977b853d19dc073c030bcc06e19b
+  depends:
+  - python
+  - ros-kilted-ros-workspace
+  - ros-kilted-rosidl-default-runtime
+  - ros2-distro-mutex 0.17.* kilted_*
+  - libstdcxx >=14
+  - libgcc >=14
+  - __glibc >=2.17,<3.0.a0
+  - numpy >=1.25,<3
+  - python_abi 3.12.* *_cp312
+  - ros2-distro-mutex >=0.17.0,<0.18.0a0
+  license: Apache-2.0
+  run_exports: {}
+  size: 548420
+  timestamp: 1783543667318
 - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-fastcdr-2.3.5-np2py312h2ed9cc7_21.conda
   sha256: 78296d89aea960fe59636c760a9679ff6f96ea09772d1bf97110f489464b10cf
   md5: 346a1e868ee728a4036d37fde44ac1b0
@@ -27481,6 +27585,23 @@ packages:
   run_exports: {}
   size: 1265524
   timestamp: 1783541940941
+- conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-example-interfaces-0.13.1-np2py312h61f2ce4_21.conda
+  sha256: f03bce5d2cb4b22359a83bac953b36a0917be04f9a79c6b89d5effc21efcbf5c
+  md5: 7fdb50b544771763ed921dbc5a2f9cec
+  depends:
+  - python
+  - ros-kilted-ros-workspace
+  - ros-kilted-rosidl-default-runtime
+  - ros2-distro-mutex 0.17.* kilted_*
+  - libgcc >=14
+  - libstdcxx >=14
+  - numpy >=1.25,<3
+  - ros2-distro-mutex >=0.17.0,<0.18.0a0
+  - python_abi 3.12.* *_cp312
+  license: Apache-2.0
+  run_exports: {}
+  size: 558265
+  timestamp: 1783543953370
 - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-fastcdr-2.3.5-np2py312h61f2ce4_21.conda
   sha256: 8f12f2a6d5305d591cd3658473652d6072027d71d48d6df10aa8d1f90d9e0047
   md5: 8d45fa2a0817475d0580e40d97e4a9fc
@@ -29996,6 +30117,23 @@ packages:
   run_exports: {}
   size: 1123789
   timestamp: 1783542997605
+- conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-example-interfaces-0.13.1-np2py312h495fd31_21.conda
+  sha256: 22e8a17b53b5d54d99b32f085c0c8cf5129340ebec08c6c7cf081f949cd50aed
+  md5: 4e4a273e17c3f059d14dddbfb3ce4e5f
+  depends:
+  - python
+  - ros-kilted-ros-workspace
+  - ros-kilted-rosidl-default-runtime
+  - ros2-distro-mutex 0.17.* kilted_*
+  - libcxx >=18
+  - __osx >=11.0
+  - python_abi 3.12.* *_cp312
+  - ros2-distro-mutex >=0.17.0,<0.18.0a0
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 470608
+  timestamp: 1783549584319
 - conda: https://prefix.dev/robostack-kilted/osx-64/ros-kilted-fastcdr-2.3.5-np2py312h495fd31_21.conda
   sha256: fa4fdd1e5af100514a2d82fc4694c41623f97ddeb29cbcb3ee21b11aae5b0340
   md5: 93dbe5ea308db34cde0b1198b4431b12
@@ -32507,6 +32645,23 @@ packages:
   run_exports: {}
   size: 1054479
   timestamp: 1783542210777
+- conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-example-interfaces-0.13.1-np2py312h50b1e4c_21.conda
+  sha256: 91da6d44fd280013b9aa3c675ab05413507eec6441d7ddf4817959a1dd2e5012
+  md5: c00671159e2e8e2599b8a06e2efb6e99
+  depends:
+  - python
+  - ros-kilted-ros-workspace
+  - ros-kilted-rosidl-default-runtime
+  - ros2-distro-mutex 0.17.* kilted_*
+  - libcxx >=18
+  - __osx >=11.0
+  - ros2-distro-mutex >=0.17.0,<0.18.0a0
+  - numpy >=1.25,<3
+  - python_abi 3.12.* *_cp312
+  license: Apache-2.0
+  run_exports: {}
+  size: 456535
+  timestamp: 1783545903640
 - conda: https://prefix.dev/robostack-kilted/osx-arm64/ros-kilted-fastcdr-2.3.5-np2py312h50b1e4c_21.conda
   sha256: 685a150a777ca11bc9c50b4b4a118352929b3551176eaa9d420162a4330fd86d
   md5: bbd4118d828335f408180dca590b04c7
@@ -35079,6 +35234,24 @@ packages:
   run_exports: {}
   size: 1271633
   timestamp: 1782732094137
+- conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-example-interfaces-0.14.1-np2py314hb48eaa3_22.conda
+  sha256: 4f6779b8964972e2f72ad8f5d911b4897456bdad7f1391f197768892a2d5798c
+  md5: eb56eb4f668cd41e90c33ab01c90222b
+  depends:
+  - python
+  - ros-lyrical-ros-workspace
+  - ros-lyrical-rosidl-default-runtime
+  - ros2-distro-mutex 0.18.* lyrical_*
+  - libstdcxx >=14
+  - libgcc >=14
+  - __glibc >=2.28,<3.0.a0
+  - numpy >=1.25,<3
+  - python_abi 3.14.* *_cp314
+  - ros2-distro-mutex >=0.18.0,<0.19.0a0
+  license: Apache-2.0
+  run_exports: {}
+  size: 596418
+  timestamp: 1782734385037
 - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-fastcdr-2.3.6-np2py314hb48eaa3_22.conda
   sha256: f6da09c41f7282376510f88704275b634f448404f531b1de918626ef5e90d6e0
   md5: 6ba10ac08b08068ca93d475bcfa0de4c
@@ -37849,6 +38022,24 @@ packages:
   run_exports: {}
   size: 1331242
   timestamp: 1782732351288
+- conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-example-interfaces-0.14.1-np2py314h2824dc6_22.conda
+  sha256: f7133e00145436752b3c38ff8a829b4d14844cf3a5b431bfcf3c3d654a60e612
+  md5: f527de16b735d1a26772cc22b98d0290
+  depends:
+  - python
+  - ros-lyrical-ros-workspace
+  - ros-lyrical-rosidl-default-runtime
+  - ros2-distro-mutex 0.18.* lyrical_*
+  - __glibc >=2.28,<3.0.a0
+  - libgcc >=14
+  - libstdcxx >=14
+  - ros2-distro-mutex >=0.18.0,<0.19.0a0
+  - python_abi 3.14.* *_cp314
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 602757
+  timestamp: 1782734790324
 - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-fastcdr-2.3.6-np2py314h2824dc6_22.conda
   sha256: 5d94f0c363468830ed03889dac40906898c3c7391e4647a75c64103c618491b7
   md5: 7f8d0b3eb6e9ee9ccbd39c65c42f095c
@@ -40568,6 +40759,23 @@ packages:
   run_exports: {}
   size: 1178767
   timestamp: 1782732898697
+- conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-example-interfaces-0.14.1-np2py314h8fa4802_22.conda
+  sha256: 45ce3c02da41eacb65069c2020aa5ac13c0378f410e716d962da27dfcf80d73f
+  md5: 44697a654c71bbdee8fc7104bf8563fe
+  depends:
+  - python
+  - ros-lyrical-ros-workspace
+  - ros-lyrical-rosidl-default-runtime
+  - ros2-distro-mutex 0.18.* lyrical_*
+  - libcxx >=18
+  - __osx >=11.0
+  - python_abi 3.14.* *_cp314
+  - numpy >=1.25,<3
+  - ros2-distro-mutex >=0.18.0,<0.19.0a0
+  license: Apache-2.0
+  run_exports: {}
+  size: 504467
+  timestamp: 1782741062219
 - conda: https://prefix.dev/robostack-lyrical/osx-64/ros-lyrical-fastcdr-2.3.6-np2py314h8fa4802_22.conda
   sha256: 1cd1e013cc385d69dffe88954019cf4d463134e52b72204ead3c9d0c9c8e88b5
   md5: 106ffdecbb76510decaf63d1dc50b9ae
@@ -43203,6 +43411,23 @@ packages:
   run_exports: {}
   size: 1098934
   timestamp: 1782732533682
+- conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-example-interfaces-0.14.1-np2py314h1e5664e_22.conda
+  sha256: a101960ebc1af36399c3ffd736663412bda743ae611e5f473e4d3819a737ab7c
+  md5: ab8015ae4cd7136e4ec729eb90c7c39b
+  depends:
+  - python
+  - ros-lyrical-ros-workspace
+  - ros-lyrical-rosidl-default-runtime
+  - ros2-distro-mutex 0.18.* lyrical_*
+  - __osx >=11.0
+  - libcxx >=18
+  - ros2-distro-mutex >=0.18.0,<0.19.0a0
+  - python_abi 3.14.* *_cp314
+  - numpy >=1.25,<3
+  license: Apache-2.0
+  run_exports: {}
+  size: 483485
+  timestamp: 1782735950708
 - conda: https://prefix.dev/robostack-lyrical/osx-arm64/ros-lyrical-fastcdr-2.3.6-np2py314h1e5664e_22.conda
   sha256: 6a4ddaf41f4f32b28708ab574739c49db58ab0c30dea3cfebde50a4f0b2f9ebe
   md5: 7dbc492de03615e00b3c751b7e701263
