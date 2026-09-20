@@ -148,7 +148,7 @@ typename rclcpp::GenericTimer<CallbackT>::SharedPtr create_timer(
   node_timers->add_timer(timer, group);
 
   rtest::StaticMocksRegistry::instance().registerTimer(
-    node_base->get_fully_qualified_name(), timer);
+    node_base->get_shared_rcl_node_handle(), timer);
 
   return timer;
 }
@@ -181,7 +181,7 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
   node_timers->add_timer(timer, group);
 
   rtest::StaticMocksRegistry::instance().registerTimer(
-    node_base->get_fully_qualified_name(), timer);
+    node_base->get_shared_rcl_node_handle(), timer);
 
   return timer;
 }
@@ -190,18 +190,13 @@ typename rclcpp::WallTimer<CallbackT>::SharedPtr create_wall_timer(
 namespace rtest
 {
 
-/**
- * @brief Convenience function for getting a list of Timers created by thje given Node.
- *
- * @param fullyQualifiedNodeName Fully-qualified node name
- *
- * @return std::vector<std::shared_ptr<rclcpp::TimerBase>>
- */
+namespace detail
+{
 static inline std::vector<std::shared_ptr<rclcpp::TimerBase>> findTimers(
-  const std::string & fullyQualifiedNodeName)
+  const StaticMocksRegistry::NodeId & node)
 {
   std::vector<std::shared_ptr<rclcpp::TimerBase>> timers{};
-  for (auto & weakPtr : StaticMocksRegistry::instance().getTimers(fullyQualifiedNodeName)) {
+  for (auto & weakPtr : StaticMocksRegistry::instance().getTimers(node)) {
     if (auto timer = weakPtr.lock()) {
       timers.push_back(timer);
     }
@@ -209,8 +204,10 @@ static inline std::vector<std::shared_ptr<rclcpp::TimerBase>> findTimers(
   return timers;
 }
 
+}  // namespace detail
+
 /**
- * @brief Convenience function for getting a list of Timers created by thje given Node.
+ * @brief Convenience function for getting a list of Timers created by the given Node.
  *
  * @param nodePtr shared_ptr to the Node
  *
@@ -220,7 +217,7 @@ template <typename NodeT>
 static inline std::vector<std::shared_ptr<rclcpp::TimerBase>> findTimers(
   const std::shared_ptr<NodeT> nodePtr)
 {
-  return findTimers(nodePtr->get_fully_qualified_name());
+  return detail::findTimers(nodePtr->get_node_base_interface()->get_shared_rcl_node_handle());
 }
 
 }  // namespace rtest

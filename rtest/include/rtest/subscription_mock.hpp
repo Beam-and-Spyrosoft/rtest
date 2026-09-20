@@ -182,7 +182,7 @@ public:
     (void)options;
 
     rtest::StaticMocksRegistry::instance().registerSubscription<MessageT>(
-      node_base->get_fully_qualified_name(), get_topic_name(), weak_from_this());
+      node_base->get_shared_rcl_node_handle(), get_topic_name(), weak_from_this());
   }
 
   /**
@@ -391,17 +391,17 @@ namespace rtest
 {
 
 /**
- * @brief Convenience function for getting subscription object for given Node name and Topic name.
+ * @brief Convenience function for getting subscription object for given Node and Topic name.
  *
  * @tparam MessageT Type of the ROS 2 message for the topic
- * @param fullyQualifiedNodeName Fully-qualified node name
+ * @param node Node instance
  * @param topicName               Topic name
  *
  * @return std::shared_ptr<rclcpp::Subscription<MessageT>>
  */
-template <typename MessageT>
+template <typename MessageT, typename NodeT>
 std::shared_ptr<rclcpp::Subscription<MessageT>> findSubscription(
-  const std::string & fullyQualifiedNodeName,
+  const std::shared_ptr<NodeT> & node,
   std::string topicName)
 {
   if (topicName.empty()) {
@@ -411,26 +411,10 @@ std::shared_ptr<rclcpp::Subscription<MessageT>> findSubscription(
     topicName.insert(topicName.begin(), '/');
   }
   auto sub =
-    StaticMocksRegistry::instance().getSubscription(fullyQualifiedNodeName, topicName).lock();
+    StaticMocksRegistry::instance()
+      .getSubscription(node->get_node_base_interface()->get_shared_rcl_node_handle(), topicName)
+      .lock();
   return std::dynamic_pointer_cast<rclcpp::Subscription<MessageT>>(sub);
-}
-
-/**
- * @brief Convenience function for getting subscription object for given Node and Topic name.
- *
- * @tparam MessageT Type of the ROS 2 message for the topic
- * @tparam NodeT    Type of the ROS 2 Node
- * @param nodePtr    shared_ptr to the Node
- * @param topicName  Topic name
- *
- * @return std::shared_ptr<rclcpp::Subscription<MessageT>>
- */
-template <typename MessageT, typename NodeT>
-std::shared_ptr<rclcpp::Subscription<MessageT>> findSubscription(
-  const std::shared_ptr<NodeT> nodePtr,
-  const std::string & topicName)
-{
-  return findSubscription<MessageT>(nodePtr->get_fully_qualified_name(), topicName);
 }
 
 }  // namespace rtest

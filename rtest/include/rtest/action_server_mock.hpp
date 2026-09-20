@@ -137,7 +137,7 @@ public:
   void post_init_setup()
   {
     rtest::StaticMocksRegistry::instance().registerActionServer<ActionT>(
-      node_base_->get_fully_qualified_name(), action_name_, this->shared_from_this());
+      node_base_->get_shared_rcl_node_handle(), action_name_, this->shared_from_this());
   }
 
   GoalCallback handle_goal_;
@@ -195,14 +195,16 @@ private:
   rclcpp_action::Server<ActionT> * server_{nullptr};
 };
 
-template <typename ActionT>
+template <typename ActionT, typename NodeT>
 std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
-  const std::string & fullyQualifiedNodeName,
+  const std::shared_ptr<NodeT> & node,
   const std::string & actionName)
 {
   std::shared_ptr<ActionServerMock<ActionT>> server_mock{};
   auto server_base =
-    StaticMocksRegistry::instance().getActionServer(fullyQualifiedNodeName, actionName).lock();
+    StaticMocksRegistry::instance()
+      .getActionServer(node->get_node_base_interface()->get_shared_rcl_node_handle(), actionName)
+      .lock();
 
   if (server_base) {
     if (StaticMocksRegistry::instance().getMock(server_base.get()).lock()) {
@@ -222,12 +224,5 @@ std::shared_ptr<rclcpp_action::GoalHandleMock<ActionT>> createMockGoalHandle(
   return std::make_shared<rclcpp_action::GoalHandleMock<ActionT>>(goal);
 }
 
-template <typename ActionT, typename NodeT>
-std::shared_ptr<ActionServerMock<ActionT>> findActionServer(
-  const std::shared_ptr<NodeT> & node,
-  const std::string & actionName)
-{
-  return findActionServer<ActionT>(node->get_fully_qualified_name(), actionName);
-}
 }  // namespace experimental
 }  // namespace rtest

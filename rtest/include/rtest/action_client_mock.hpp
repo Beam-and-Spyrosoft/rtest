@@ -220,7 +220,7 @@ public:
   void post_init_setup()
   {
     rtest::StaticMocksRegistry::instance().registerActionClient<ActionT>(
-      node_base_->get_fully_qualified_name(), action_name_, this->shared_from_this());
+      node_base_->get_shared_rcl_node_handle(), action_name_, this->shared_from_this());
   }
 #if RTEST_ROS_VERSION <= RTEST_ROS_JAZZY
   bool action_server_is_ready() const override
@@ -506,14 +506,16 @@ private:
   rclcpp_action::ClientBase * client_{nullptr};
 };
 
-template <typename ActionT>
+template <typename ActionT, typename NodeT>
 std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
-  const std::string & fullyQualifiedNodeName,
+  const std::shared_ptr<NodeT> & node,
   const std::string & actionName)
 {
   std::shared_ptr<ActionClientMock<ActionT>> client_mock{};
   auto client_base =
-    StaticMocksRegistry::instance().getActionClient(fullyQualifiedNodeName, actionName).lock();
+    StaticMocksRegistry::instance()
+      .getActionClient(node->get_node_base_interface()->get_shared_rcl_node_handle(), actionName)
+      .lock();
   if (client_base) {
     if (StaticMocksRegistry::instance().getMock(client_base.get()).lock()) {
       std::cerr << "WARNING: ActionClientMock already attached\n";
@@ -523,14 +525,6 @@ std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
     }
   }
   return client_mock;
-}
-
-template <typename ActionT, typename NodeT>
-std::shared_ptr<ActionClientMock<ActionT>> findActionClient(
-  const std::shared_ptr<NodeT> & node,
-  const std::string & actionName)
-{
-  return findActionClient<ActionT>(node->get_fully_qualified_name(), actionName);
 }
 
 // Expose rclcpp_action::makeClientGoalHandle<ActionT> in the rtest namespace

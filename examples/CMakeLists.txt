@@ -24,7 +24,7 @@ if(RTEST_BUILD_EXAMPLES)
   find_package(std_msgs REQUIRED)
   find_package(std_srvs REQUIRED)
   find_package(Threads REQUIRED)
-  find_package(Python3 REQUIRED COMPONENTS Development)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
   # Publisher component
   add_library(publisher_component SHARED src/publisher.cpp)

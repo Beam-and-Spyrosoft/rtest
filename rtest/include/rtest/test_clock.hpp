@@ -141,7 +141,7 @@ public:
     if (!base_interface) {
       throw std::invalid_argument("TriggeringTestClock - invalid node base_interface ptr");
     }
-    node_name_ = base_interface->get_fully_qualified_name();
+    node_id_ = base_interface->get_shared_rcl_node_handle();
   }
 
   rcl_time_point_value_t now() const { return clock_.now(); }
@@ -153,7 +153,7 @@ public:
       is_chrono_duration<Duration>::value, "target_time must be a std::chrono::duration type");
 
     // Nodes might have added/removed/changed timers -> update the timers list
-    const auto timers = findTimers(node_name_);
+    const auto timers = detail::findTimers(node_id_);
 
     if (!timers.empty()) {
       const auto time_step = get_timers_min_period(timers);
@@ -203,7 +203,7 @@ private:
   }
 
   TestClock clock_;
-  std::string node_name_;
+  StaticMocksRegistry::NodeId node_id_;
 };
 
 }  // namespace rtest
