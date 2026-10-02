@@ -1,4 +1,7 @@
 find_package(ament_cmake_gmock REQUIRED)
+# rclcpp transitively links rosidl_generator_py libraries, which have undefined
+# libpython symbols. LLD rejects them (--no-allow-shlib-undefined), GNU ld does not.
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 #
 # Use add_executable + GTest::gmock instead of `ament_add_gmock`.
@@ -23,6 +26,7 @@ target_link_libraries(${PROJECT_NAME}-test
   rtest::timer_mock
   rclcpp::rclcpp
   rclcpp_action::rclcpp_action
+  Python3::Python
   ${example_interfaces_TARGETS}
   ${std_msgs_TARGETS}
   ${std_srvs_TARGETS}
