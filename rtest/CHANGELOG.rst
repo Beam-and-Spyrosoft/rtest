@@ -4,6 +4,9 @@ Changelog for package rtest
 
 Forthcoming
 -----------
+* Add ``remove_pending_request()``, ``prune_pending_requests()`` and ``prune_requests_older_than()``
+  to the mocked ``rclcpp::Client``.
+  They forward to ``ServiceClientMock`` so tests can set expectations on them (#128).
 * Fix same-named node collisions in mock lookup, including action registration and timer clocks (#126).
 * Breaking API change: lookup by node-name string has been removed. Pass the node instance instead,
   e.g. ``findPublisher<MessageT>(node, "topic")`` instead of
