@@ -111,7 +111,7 @@ public:
     rcl_client_options_t &)
   : ClientBase(node_base, node_graph), service_name_(service_name)
   {
-    fully_qualified_name_ = node_base->get_fully_qualified_name();
+    node_id_ = node_base->get_shared_rcl_node_handle();
   }
 
   ~Client() override = default;
@@ -194,14 +194,13 @@ public:
   void post_init_setup()
   {
     rtest::StaticMocksRegistry::instance().registerServiceClient<ServiceT>(
-      fully_qualified_name_, service_name_, this->weak_from_this());
+      node_id_, service_name_, this->weak_from_this());
   }
 
 private:
   RCLCPP_DISABLE_COPY(Client)
 
-  std::shared_ptr<rcl_node_t> node_handle_;
-  std::string fully_qualified_name_;
+  rtest::StaticMocksRegistry::NodeId node_id_;
   std::string service_name_;
 };
 
@@ -210,14 +209,19 @@ private:
 namespace rtest
 {
 
-template <typename ServiceT>
+template <typename ServiceT, typename NodeT>
 std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
-  const std::string & fullyQualifiedNodeName,
-  const std::string & serviceName)
+  const std::shared_ptr<NodeT> & node,
+  std::string serviceName)
 {
+  if (!serviceName.empty() && serviceName.front() == '/') {
+    serviceName.erase(0, 1);
+  }
   std::shared_ptr<ServiceClientMock<ServiceT>> client_mock{};
   auto client_base =
-    StaticMocksRegistry::instance().getServiceClient(fullyQualifiedNodeName, serviceName).lock();
+    StaticMocksRegistry::instance()
+      .getServiceClient(node->get_node_base_interface()->get_shared_rcl_node_handle(), serviceName)
+      .lock();
 
   if (client_base) {
     if (StaticMocksRegistry::instance().getMock(client_base.get()).lock()) {
@@ -229,18 +233,6 @@ std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
     }
   }
   return client_mock;
-}
-
-template <typename ServiceT, typename NodeT>
-std::shared_ptr<ServiceClientMock<ServiceT>> findServiceClient(
-  const std::shared_ptr<NodeT> nodePtr,
-  const std::string & serviceName)
-{
-  const char * namePtr = serviceName.c_str();
-  if (!serviceName.empty() && serviceName[0] == '/') {
-    namePtr++;
-  }
-  return findServiceClient<ServiceT>(nodePtr->get_fully_qualified_name(), namePtr);
 }
 
 }  // namespace rtest

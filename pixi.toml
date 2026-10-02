@@ -17,7 +17,7 @@ lyrical = ["lyrical"]
 release = { features = ["release"], no-default-feature = true }
 
 [dependencies]
-cmake = ">=3.28,<4"
+cmake = ">=3.29,<4"
 ninja = ">=1.13.2,<2"
 make = ">=4.4.1,<5"
 ccache = ">=4.14,<5"
@@ -48,6 +48,7 @@ channels = [
 
 [feature.jazzy.dependencies]
 ros-jazzy-rclcpp = ">=28.1,<29"
+ros-jazzy-example-interfaces = ">=0.12,<0.13"
 
 [feature.jazzy.dev]
 ros-jazzy-rtest = { path = "rtest" }
@@ -62,6 +63,7 @@ channels = [
 
 [feature.kilted.dependencies]
 ros-kilted-rclcpp = ">=29.5,<30"
+ros-kilted-example-interfaces = ">=0.13,<0.14"
 
 [feature.kilted.dev]
 ros-kilted-rtest = { path = "rtest" }
@@ -76,6 +78,7 @@ channels = [
 
 [feature.lyrical.dependencies]
 ros-lyrical-rclcpp = ">=32.0,<33"
+ros-lyrical-example-interfaces = ">=0.14,<0.15"
 
 [feature.lyrical.dev]
 ros-lyrical-rtest = { path = "rtest" }
