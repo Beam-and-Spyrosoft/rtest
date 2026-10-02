@@ -30,8 +30,11 @@ target_link_libraries(${PROJECT_NAME}-test
   ${example_interfaces_TARGETS}
   ${std_msgs_TARGETS}
   ${std_srvs_TARGETS}
-  GTest::gmock
-  GTest::gtest
+  # GTest::gmock / GTest::gtest come in transitively through rtest_common. Do not
+  # list them here: with static gtest (apt libgmock-dev) they would precede
+  # librtest_common.so on the link line and give the executable its own copy of
+  # gmock globals, which are then destroyed twice at exit (pthread_key_delete
+  # failed with error 22).
 )
 
 ament_add_gmock_test(${PROJECT_NAME}-test)

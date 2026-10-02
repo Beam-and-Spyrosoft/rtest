@@ -131,6 +131,8 @@ target_link_libraries(${PROJECT_NAME}-test
 )
 ```
 
+> **NOTE**: Do not add `GTest::gmock` / `GTest::gtest` to `target_link_libraries`. They are provided transitively by the `rtest::*` targets. Listing them explicitly can give the test executable a second copy of the GMock globals when GTest is a static library (e.g. Ubuntu's `libgmock-dev`), and the test then aborts at exit with `pthread_key_delete(key_) failed with error 22`.
+
 ### 3. Create Test Main File
 
 The testing library uses Google Mocking framework and requires initialization:
