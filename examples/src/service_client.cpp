@@ -42,12 +42,15 @@ bool ServiceClient::setState(bool state)
   auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
   request->data = state;
 
-  auto future_result = client_->async_send_request(request).share();
+  auto future_and_id = client_->async_send_request(request);
 
   if (
     rclcpp::spin_until_future_complete(
-      this->get_node_base_interface(), future_result, std::chrono::seconds(1)) !=
+      this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
     rclcpp::FutureReturnCode::SUCCESS) {
+    // The client keeps the request until a response arrives; drop it or it is retained for the
+    // whole lifetime of the client.
+    client_->remove_pending_request(future_and_id);
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -55,7 +58,7 @@ bool ServiceClient::setState(bool state)
   }
 
   try {
-    auto response = future_result.get();
+    auto response = future_and_id.future.get();
     last_call_success_ = response->success;
     last_response_message_ = response->message;
     return response->success;
@@ -85,6 +88,7 @@ bool ServiceClient::setStateWithCallback(bool state, ServiceClient::CallbackType
     rclcpp::spin_until_future_complete(
       this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
     rclcpp::FutureReturnCode::SUCCESS) {
+    client_->remove_pending_request(future_and_id);
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -124,6 +128,7 @@ bool ServiceClient::setStateWithRequestCallback(
     rclcpp::spin_until_future_complete(
       this->get_node_base_interface(), future_and_id.future, std::chrono::seconds(1)) !=
     rclcpp::FutureReturnCode::SUCCESS) {
+    client_->remove_pending_request(future_and_id);
     RCLCPP_ERROR(get_logger(), "Service call failed");
     last_call_success_ = false;
     last_response_message_ = "Service call failed";
@@ -141,6 +146,59 @@ bool ServiceClient::setStateWithRequestCallback(
     last_response_message_ = e.what();
     return false;
   }
+}
+
+bool ServiceClient::setStateWithTimeout(bool state, std::chrono::nanoseconds timeout)
+{
+  auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
+  request->data = state;
+
+  auto future_and_id = client_->async_send_request(request);
+
+  if (future_and_id.wait_for(timeout) != std::future_status::ready) {
+    client_->remove_pending_request(future_and_id);
+    RCLCPP_ERROR(get_logger(), "Service call timed out");
+    last_call_success_ = false;
+    last_response_message_ = "Service call timed out";
+    return false;
+  }
+
+  // A ready future may hold std::future_error(broken_promise) instead of a response, when the
+  // request was pruned or removed concurrently (e.g. by dropRequestsOlderThan() on another thread)
+  try {
+    auto response = future_and_id.get();
+    last_call_success_ = response->success;
+    last_response_message_ = response->message;
+    return response->success;
+  } catch (const std::exception & e) {
+    RCLCPP_ERROR(get_logger(), "Service call error: %s", e.what());
+    last_call_success_ = false;
+    last_response_message_ = e.what();
+    return false;
+  }
+}
+
+size_t ServiceClient::cancelPendingRequests()
+{
+  auto pruned = client_->prune_pending_requests();
+  RCLCPP_INFO(get_logger(), "Dropped %zu pending request(s)", pruned);
+  return pruned;
+}
+
+std::vector<int64_t> ServiceClient::dropRequestsOlderThan(std::chrono::nanoseconds max_age)
+{
+  std::vector<int64_t> pruned;
+  client_->prune_requests_older_than(
+    std::chrono::system_clock::now() -
+      std::chrono::duration_cast<std::chrono::system_clock::duration>(max_age),
+    &pruned);
+  for (auto request_id : pruned) {
+    RCLCPP_WARN(
+      get_logger(),
+      "Request %lld got no response in time, dropped",
+      static_cast<long long>(request_id));
+  }
+  return pruned;
 }
 
 }  // namespace test_composition

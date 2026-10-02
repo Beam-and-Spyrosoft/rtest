@@ -19,7 +19,9 @@
 #pragma once
 #include <rclcpp/rclcpp.hpp>
 #include <std_srvs/srv/set_bool.hpp>
+#include <chrono>
 #include <functional>
+#include <vector>
 
 namespace test_composition
 {
@@ -59,6 +61,35 @@ public:
    * @return true if service call succeeded, false otherwise
    */
   bool setStateWithRequestCallback(bool state, CallbackWithRequestType callback);
+
+  /**
+   * @brief Call service to set state, blocking on the future instead of spinning the node
+   *
+   * On timeout the request is removed from the client, because
+   * rclcpp::Client keeps every request without a response for the whole lifetime of the client.
+   *
+   * @param state New state to set
+   * @param timeout Maximum time to wait for the response
+   * @return true if service call succeeded, false otherwise
+   */
+  bool setStateWithTimeout(bool state, std::chrono::nanoseconds timeout);
+
+  /**
+   * @brief Give up on all requests that have not received a response yet
+   * @return Number of requests that were dropped
+   */
+  size_t cancelPendingRequests();
+
+  /**
+   * @brief Give up on requests that have been waiting for a response for longer than max_age
+   *
+   * Typically called periodically from a timer, as recommended by rclcpp for requests sent with
+   * a response callback.
+   *
+   * @param max_age Maximum time a request may wait for its response
+   * @return Ids of the requests that were dropped
+   */
+  std::vector<int64_t> dropRequestsOlderThan(std::chrono::nanoseconds max_age);
 
   /**
    * @brief Get last service call success status
