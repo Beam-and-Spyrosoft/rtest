@@ -193,6 +193,90 @@ TEST_F(ServiceClientTest, WhenServiceCallWithRequestCallback_ThenSetStateSucceed
   EXPECT_EQ(node->getLastResponseMessage(), "State updated with request callback successfully");
 }
 
+TEST_F(ServiceClientTest, WhenServiceCallTimesOut_ThenPendingRequestIsRemoved)
+{
+  auto node = std::make_shared<test_composition::ServiceClient>(opts);
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  ASSERT_TRUE(client);
+
+  // The promise is never fulfilled, so the future never becomes ready and the call times out
+  std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> never_fulfilled;
+  EXPECT_CALL(*client, async_send_request(::testing::_))
+    .WillOnce([&never_fulfilled](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
+        never_fulfilled.get_future(), 42UL);
+    });
+
+  // A timed out request must be removed from the client, otherwise rclcpp::Client keeps it
+  // in memory until the client is destroyed. The test fails if the Node forgets to do it.
+  EXPECT_CALL(*client, remove_pending_request(42)).WillOnce(::testing::Return(true));
+
+  EXPECT_FALSE(node->setStateWithTimeout(true, std::chrono::milliseconds(1)));
+  EXPECT_FALSE(node->getLastCallSuccess());
+  EXPECT_EQ(node->getLastResponseMessage(), "Service call timed out");
+}
+
+TEST_F(ServiceClientTest, WhenServiceCallCompletesInTime_ThenNoPendingRequestIsRemoved)
+{
+  auto node = std::make_shared<test_composition::ServiceClient>(opts);
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  ASSERT_TRUE(client);
+
+  auto response = std::make_shared<std_srvs::srv::SetBool::Response>();
+  response->success = true;
+  response->message = "State updated in time";
+
+  EXPECT_CALL(*client, async_send_request(::testing::_))
+    .WillOnce([response](std::shared_ptr<std_srvs::srv::SetBool::Request>) {
+      std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
+      promise.set_value(response);
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::FutureResponseAndId(
+        promise.get_future(), 1UL);
+    });
+
+  // A request that received its response is already gone from the client: nothing to clean up
+  EXPECT_CALL(*client, remove_pending_request(::testing::_)).Times(0);
+  EXPECT_CALL(*client, prune_pending_requests()).Times(0);
+
+  EXPECT_TRUE(node->setStateWithTimeout(true, std::chrono::milliseconds(1)));
+  EXPECT_EQ(node->getLastResponseMessage(), "State updated in time");
+}
+
+TEST_F(ServiceClientTest, WhenPendingRequestsAreCancelled_ThenClientIsPruned)
+{
+  auto node = std::make_shared<test_composition::ServiceClient>(opts);
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  ASSERT_TRUE(client);
+
+  // The return value tells the Node how many requests were dropped
+  EXPECT_CALL(*client, prune_pending_requests()).WillOnce(::testing::Return(3));
+
+  EXPECT_EQ(node->cancelPendingRequests(), 3u);
+}
+
+TEST_F(ServiceClientTest, WhenStaleRequestsAreDropped_ThenClientIsPrunedByAge)
+{
+  auto node = std::make_shared<test_composition::ServiceClient>(opts);
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_service");
+  ASSERT_TRUE(client);
+
+  const auto max_age = std::chrono::seconds(5);
+
+  // The Node computes the cutoff from system_clock::now(), so the exact value is unknown here:
+  // check that it lies between "before the call - max_age" and "during the call - max_age"
+  const auto before = std::chrono::system_clock::now();
+  EXPECT_CALL(*client, prune_requests_older_than(::testing::_, ::testing::NotNull()))
+    .WillOnce([before, max_age](auto time_point, std::vector<int64_t> * pruned_requests) {
+      EXPECT_GE(time_point, before - max_age);
+      EXPECT_LE(time_point, std::chrono::system_clock::now() - max_age);
+      // Report which requests were dropped, as rclcpp::Client does through the out parameter
+      *pruned_requests = {11, 12};
+      return pruned_requests->size();
+    });
+
+  EXPECT_THAT(node->dropRequestsOlderThan(max_age), ::testing::ElementsAre(11, 12));
+}
+
 TEST_F(ServiceClientTest, FindServiceClientLeadingSlash)
 {
   auto node = std::make_shared<rclcpp::Node>("test_slash_normalization", opts);
