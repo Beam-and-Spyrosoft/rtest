@@ -1,0 +1,262 @@
+name: CI
+
+on:
+  workflow_dispatch: # On-demand trigger
+  pull_request:
+    branches:
+      - main
+      - jazzy
+      - kilted
+      - lyrical
+  push:
+    branches:
+      - main
+      - chore/pipeline-migration # TEMP(pipeline-migration): remove before merging
+      - jazzy
+      - kilted
+      - lyrical
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # Never cancel a run on a branch push, it may be in the middle of saving caches
+  # or deploying the coverage site.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PIXI_VERSION: v0.81.0
+  # Caches are written only by pushes to main. PRs (into main or a distro branch)
+  # and other branches restore them read-only, so they don't evict main's caches.
+  WRITE_CACHE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          environments: default
+          locked: true
+          cache: true
+          cache-write: ${{ env.WRITE_CACHE }}
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Check for incorrect file extensions
+        run: bash ./scripts/check_extensions.sh
+
+      - name: Check formatting
+        run: pixi run clang-format
+
+  build-test:
+    name: "${{ matrix.distro }} · ${{ matrix.platform }} · ${{ matrix.compiler }}"
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [jazzy, kilted, lyrical]
+        platform: [linux-64, linux-aarch64, osx-arm64, osx-64]
+        compiler: [gnu, clang]
+        exclude:
+          # conda-forge has no gcc for macOS, "gnu" there would be clang again.
+          - platform: osx-arm64
+            compiler: gnu
+          - platform: osx-64
+            compiler: gnu
+        include:
+          - platform: linux-64
+            runner: ubuntu-24.04
+          - platform: linux-aarch64
+            runner: ubuntu-24.04-arm
+          - platform: osx-arm64
+            runner: macos-26
+          - platform: osx-64
+            runner: macos-26-intel
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      # The pixi environment is reinstalled on every run, which changes compiler
+      # mtimes. Hash the compiler content instead so cached objects stay valid.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 500M
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          environments: ${{ matrix.distro }}
+          locked: true
+          cache: true
+          cache-write: ${{ env.WRITE_CACHE }}
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          # Caches are immutable, run_id makes each save unique. Restore picks
+          # the newest cache with a matching prefix.
+          key: ccache-${{ matrix.platform }}-${{ matrix.distro }}-${{ matrix.compiler }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ matrix.platform }}-${{ matrix.distro }}-${{ matrix.compiler }}-
+
+      - name: Reset ccache statistics
+        run: pixi run -e ${{ matrix.distro }} ccache --zero-stats
+
+      - name: Build and test
+        run: pixi run -e ${{ matrix.distro }} test ${{ matrix.compiler }}
+
+      - name: Show ccache statistics
+        if: ${{ !cancelled() }}
+        run: pixi run -e ${{ matrix.distro }} ccache --show-stats
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.distro }}-${{ matrix.platform }}-${{ matrix.compiler }}
+          path: build/${{ matrix.distro }}-${{ matrix.compiler }}/*/test_results
+          if-no-files-found: ignore
+
+      - name: Save ccache
+        if: ${{ !cancelled() && env.WRITE_CACHE == 'true' }}
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.platform }}-${{ matrix.distro }}-${{ matrix.compiler }}-${{ github.run_id }}
+
+  coverage:
+    name: "coverage · ${{ matrix.distro }}"
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [jazzy, kilted, lyrical]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      # The pixi environment is reinstalled on every run, which changes compiler
+      # mtimes. Hash the compiler content instead so cached objects stay valid.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 500M
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: ${{ env.PIXI_VERSION }}
+          environments: ${{ matrix.distro }}
+          locked: true
+          cache: true
+          cache-write: ${{ env.WRITE_CACHE }}
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-linux-64-${{ matrix.distro }}-coverage-${{ github.run_id }}
+          restore-keys: |
+            ccache-linux-64-${{ matrix.distro }}-coverage-
+
+      # Builds with gcc --coverage, runs the tests, writes coverage/<distro>/
+      # and fails if coverage is below the thresholds (lines, functions).
+      - name: Build, test and measure coverage
+        run: pixi run -e ${{ matrix.distro }} coverage 60.0 60.0
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.distro }}
+          path: coverage/${{ matrix.distro }}
+          if-no-files-found: warn
+
+      - name: Save ccache
+        if: ${{ !cancelled() && env.WRITE_CACHE == 'true' }}
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-linux-64-${{ matrix.distro }}-coverage-${{ github.run_id }}
+
+  # Single required status check for branch rulesets.
+  ci-success:
+    name: CI success
+    if: always()
+    needs: [lint, build-test, coverage]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check job results
+        run: |
+          echo "lint: ${{ needs.lint.result }}"
+          echo "build-test: ${{ needs.build-test.result }}"
+          echo "coverage: ${{ needs.coverage.result }}"
+          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" = "true" ]; then
+            echo "❌ At least one required job did not succeed."
+            exit 1
+          fi
+          echo "✅ All required jobs succeeded."
+
+  # Publishes the coverage reports of main to GitHub Pages:
+  # https://beam-and-spyrosoft.github.io/rtest/coverage/
+  publish-coverage:
+    name: Publish coverage
+    # TEMP(pipeline-migration): also publishes from chore/pipeline-migration for testing,
+    # restore to `github.ref == 'refs/heads/main'` only before merging.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/pipeline-migration')
+    needs: [ci-success]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}coverage/
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          path: reports
+
+      - name: Assemble site
+        run: python3 scripts/coverage_site.py reports site --commit "${{ github.sha }}" --repo "${{ github.repository }}"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

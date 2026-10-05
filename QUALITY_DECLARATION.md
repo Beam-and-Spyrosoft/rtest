@@ -76,7 +76,7 @@ All pull requests must resolve related documentation changes before merging.
 
 The license for `rtest` is Apache 2.0, and a summary is in each source file, the type is declared in the [`package.xml`](./package.xml) manifest file, and a full copy of the license is in the [`LICENSE`](./LICENSE) file.
 
-There is an automated test which runs a linter that ensures each file has a license statement. [Here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
+There is an automated test which runs a linter that ensures each file has a license statement. [Here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml)
 can be found a list with the latest results of the various linters being run on the package.
 
 ### Copyright Statements [3.iv]
@@ -84,7 +84,7 @@ can be found a list with the latest results of the various linters being run on 
 The copyright holders each provide a statement of copyright in each source code file in `rtest`.
 
 There is an automated test which runs a linter that ensures each file has at least one copyright statement. Latest linter result report can be seen
-[here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml).
+[here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml).
 
 ### Package Quality Status [3.v]
 
@@ -124,7 +124,7 @@ This includes:
 
 Changes are required to make a best effort to keep or increase coverage before being accepted, but decreases are allowed if properly justified and accepted by reviewers.
 
-Current coverage statistics can be viewed [here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml).
+Current coverage statistics can be viewed [here](https://beam-and-spyrosoft.github.io/rtest/coverage/).
 
 ### Performance [4.iv]
 
@@ -174,7 +174,7 @@ It is **Quality Level 1**, see its [Quality Declaration document](https://github
 
 `rtest` supports all of the tier 1 platforms as described in [REP-2000](https://reps.openrobotics.org/rep-2000/#support-tiers), and tests each change against all of them.
 
-Currently build status can be seen [here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml?query=branch%3Amain)
+Currently build status can be seen [here](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml?query=branch%3Amain)
 
 ## Vulnerability Disclosure Policy [7.i]
 

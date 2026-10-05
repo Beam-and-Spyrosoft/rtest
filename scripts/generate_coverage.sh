@@ -1,94 +1,89 @@
 #!/bin/bash
+# Generate an lcov coverage report for the rtest framework library from a
+# gcc --coverage build (see the `coverage` pixi task).
+#
+# Usage: generate_coverage.sh <build_dir> <output_dir>
+#
+# Writes to <output_dir>:
+#   coverage.info  - filtered lcov tracefile
+#   html/          - genhtml report
+#   summary.env    - LINES=<pct> FUNCTIONS=<pct>, read by check_coverage_thresholds.sh
+#   summary.json   - {"distro", "lines", "functions"}, read by coverage_site.py
+set -euo pipefail
 
-# Check if required tools are installed
-check_dependencies() {
-  local missing_deps=0
+BUILD_DIR="${1:?usage: generate_coverage.sh <build_dir> <output_dir>}"
+OUTPUT_DIR="${2:?usage: generate_coverage.sh <build_dir> <output_dir>}"
+WORKSPACE="$(pwd)"
 
-  if ! command -v lcov &> /dev/null; then
-    echo "ERROR: 'lcov' is not installed. Install it with: apt-get install -y lcov"
-    missing_deps=1
-  fi
-
-  # Check if ROS Jazzy is installed
-  if [ ! -f "/opt/ros/${ROS_DISTRO}/setup.bash" ]; then
-    echo "ERROR: ROS ${ROS_DISTRO} not found"
-    missing_deps=1
-  fi
-
-  if [ $missing_deps -ne 0 ]; then
-    exit 1
-  fi
-}
-
-# Execute dependency check
-check_dependencies
-
-# Source ROS environment
-. /opt/ros/${ROS_DISTRO}/setup.bash
-
-# Generate coverage report for framework library
-echo "===== GENERATING COVERAGE REPORT ====="
-
-lcov --no-external --capture --directory . --output-file all_coverage.info --ignore-errors mismatch,source,unused,inconsistent 2>/dev/null || true
-lcov --extract all_coverage.info "*/rtest/*" --ignore-errors source,empty,unused,inconsistent -o framework_tmp.info 2>/dev/null || true
-lcov --remove framework_tmp.info "*/examples/*" "*/test/*" "*/tests/*" "*/test_composition/*" "*/rtest_examples_interfaces/*" \
-    --ignore-errors source,empty,unused,inconsistent -o framework_filtered.info 2>/dev/null || true
-
-genhtml -o coverage_report_framework framework_filtered.info --ignore-errors source 2>/dev/null || true
-
-if [ -s framework_filtered.info ]; then
-  echo "Overall coverage rate:"
-  COVERAGE_SUMMARY=$(lcov --summary framework_filtered.info 2>&1 | grep -E 'lines|functions')
-  echo "$COVERAGE_SUMMARY"
-
-  FRAMEWORK_LINES=$(echo "$COVERAGE_SUMMARY" | grep 'lines' | awk '{gsub(/%/,""); if ($2 > 100.0) print "100.0"; else print $2}' || echo "0.0")
-  FRAMEWORK_FUNCTIONS=$(echo "$COVERAGE_SUMMARY" | grep 'functions' | awk '{gsub(/%/,""); if ($2 > 100.0) print "100.0"; else print $2}' || echo "0.0")
-
-  echo "Calculating coverage metrics..."
-  echo "Framework library coverage: ${FRAMEWORK_LINES}% (lines), ${FRAMEWORK_FUNCTIONS}% (functions)"
-
-  # Set environment variables if running in GitHub Actions
-  if [ -n "$GITHUB_ENV" ]; then
-    echo "FRAMEWORK_LINES_COVERAGE=${FRAMEWORK_LINES}" >> $GITHUB_ENV
-    echo "FRAMEWORK_FUNCTIONS_COVERAGE=${FRAMEWORK_FUNCTIONS}" >> $GITHUB_ENV
-    echo "LINES_COVERAGE=${FRAMEWORK_LINES}" >> $GITHUB_ENV
-    echo "FUNCTIONS_COVERAGE=${FRAMEWORK_FUNCTIONS}" >> $GITHUB_ENV
-  fi
-
-  # Store the coverage values in a file for local use
-  echo "FRAMEWORK_LINES_COVERAGE=${FRAMEWORK_LINES}" > .coverage_values
-  echo "FRAMEWORK_FUNCTIONS_COVERAGE=${FRAMEWORK_FUNCTIONS}" >> .coverage_values
-else
-  echo "No coverage data available"
-  FRAMEWORK_LINES="0.0"
-  FRAMEWORK_FUNCTIONS="0.0"
-  
-  # Set environment variables if running in GitHub Actions
-  if [ -n "$GITHUB_ENV" ]; then
-    echo "FRAMEWORK_LINES_COVERAGE=0.0" >> $GITHUB_ENV
-    echo "FRAMEWORK_FUNCTIONS_COVERAGE=0.0" >> $GITHUB_ENV
-    echo "LINES_COVERAGE=0.0" >> $GITHUB_ENV
-    echo "FUNCTIONS_COVERAGE=0.0" >> $GITHUB_ENV
-  fi
-
-  # Store the coverage values in a file for local use
-  echo "FRAMEWORK_LINES_COVERAGE=0.0" > .coverage_values
-  echo "FRAMEWORK_FUNCTIONS_COVERAGE=0.0" >> .coverage_values
+if ! command -v lcov &> /dev/null; then
+  echo "ERROR: 'lcov' not found. Run this script through 'pixi run coverage'."
+  exit 1
 fi
 
-mkdir -p coverage_artifacts
-[ -d "coverage_report_framework" ] && cp -r coverage_report_framework coverage_artifacts/ || \
-  mkdir -p coverage_artifacts/coverage_report_framework
+# The conda gcc toolchain ships a target-prefixed gcov next to $CC
+# (e.g. x86_64-conda-linux-gnu-cc -> x86_64-conda-linux-gnu-gcov). It must match
+# the compiler version, the system gcov cannot read gcc 16 .gcda files.
+GCOV_TOOL="${GCOV:-}"
+if [ -z "${GCOV_TOOL}" ] && [ -n "${CC:-}" ] && command -v "${CC%-cc}-gcov" &> /dev/null; then
+  GCOV_TOOL="${CC%-cc}-gcov"
+fi
+GCOV_TOOL="${GCOV_TOOL:-gcov}"
 
-{
-  echo "ROS2 TEST FRAMEWORK LIBRARY COVERAGE SUMMARY"
-  echo "============================================"
-  echo ""
-  echo "Overall coverage:"
-  echo "  Lines:     ${FRAMEWORK_LINES:-0.0}%"
-  echo "  Functions: ${FRAMEWORK_FUNCTIONS:-0.0}%"
-} > coverage_artifacts/framework_coverage_summary.txt
+LCOV_IGNORE="mismatch,source,unused,inconsistent,empty"
 
-echo "✅ Coverage report generated successfully"
-echo "FRAMEWORK_LINES=${FRAMEWORK_LINES}"
-echo "FRAMEWORK_FUNCTIONS=${FRAMEWORK_FUNCTIONS}"
+rm -rf "${OUTPUT_DIR}"
+mkdir -p "${OUTPUT_DIR}"
+
+echo "===== GENERATING COVERAGE REPORT (${BUILD_DIR}, gcov: ${GCOV_TOOL}) ====="
+
+lcov --capture \
+  --directory "${BUILD_DIR}" \
+  --base-directory "${WORKSPACE}" \
+  --gcov-tool "${GCOV_TOOL}" \
+  --output-file "${OUTPUT_DIR}/all.info" \
+  --ignore-errors "${LCOV_IGNORE}"
+
+# Keep only the framework sources. The pixi environment lives inside the
+# workspace (.pixi/), so it is excluded explicitly together with tests,
+# examples and generated code.
+lcov --extract "${OUTPUT_DIR}/all.info" "${WORKSPACE}/rtest/*" \
+  --ignore-errors "${LCOV_IGNORE}" \
+  --output-file "${OUTPUT_DIR}/framework.info"
+lcov --remove "${OUTPUT_DIR}/framework.info" \
+  "*/test/*" "*/tests/*" "*/test_composition/*" \
+  --ignore-errors "${LCOV_IGNORE}" \
+  --output-file "${OUTPUT_DIR}/coverage.info"
+rm -f "${OUTPUT_DIR}/all.info" "${OUTPUT_DIR}/framework.info"
+
+genhtml "${OUTPUT_DIR}/coverage.info" \
+  --output-directory "${OUTPUT_DIR}/html" \
+  --prefix "${WORKSPACE}" \
+  --title "rtest ${ROS_DISTRO:-}" \
+  --ignore-errors "source,empty"
+
+# Take the totals from `lcov --summary` so they match the HTML report
+# (lcov merges template instantiations when counting functions).
+SUMMARY_TEXT="$(lcov --summary "${OUTPUT_DIR}/coverage.info" --ignore-errors "${LCOV_IGNORE}" 2>&1)"
+summary_pct() {
+  echo "${SUMMARY_TEXT}" | awk -v key="$1" '$1 ~ "^" key "\\." { gsub(/%/, "", $2); print $2; found = 1 }
+    END { if (!found) print "0.0" }'
+}
+LINES="$(summary_pct lines)"
+FUNCTIONS="$(summary_pct functions)"
+
+printf 'LINES=%s\nFUNCTIONS=%s\n' "${LINES}" "${FUNCTIONS}" > "${OUTPUT_DIR}/summary.env"
+printf '{"distro": "%s", "lines": %s, "functions": %s}\n' \
+  "${ROS_DISTRO:-unknown}" "${LINES}" "${FUNCTIONS}" > "${OUTPUT_DIR}/summary.json"
+
+echo "Framework library coverage (${ROS_DISTRO:-unknown}): ${LINES}% lines, ${FUNCTIONS}% functions"
+echo "HTML report: ${OUTPUT_DIR}/html/index.html"
+
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+  {
+    echo "### Coverage: ${ROS_DISTRO:-unknown}"
+    echo ""
+    echo "| Lines | Functions |"
+    echo "|---|---|"
+    echo "| ${LINES}% | ${FUNCTIONS}% |"
+  } >> "${GITHUB_STEP_SUMMARY}"
+fi

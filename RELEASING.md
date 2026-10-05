@@ -3,16 +3,16 @@
 This repository has two independent release mechanisms. They are easy to confuse, and mixing them up is how a version
 can appear "released" while `apt install ros-<distro>-rtest` still installs the previous one.
 
-1. **GitHub Release with `.deb` artifacts.** The workflow [`.github/workflows/ros2-release.yml`](.github/workflows/ros2-release.yml)
-is started by hand from the Actions tab (`workflow_dispatch`). It builds `.deb` packages from source for humble,
-jazzy, kilted, and lyrical, and attaches them to a GitHub Release. It does not update the official ROS package index,
-so it has no effect on what `apt` installs from `packages.ros.org`.
+1. **GitHub Release with `.conda` and `.deb` artifacts.** The workflow [`.github/workflows/release.yml`](.github/workflows/release.yml)
+runs automatically when a version tag is pushed (step 5 below). It builds packages for jazzy, kilted and lyrical and
+attaches them to a GitHub Release. It does not update the official ROS package index, so it has no effect on what
+`apt` installs from `packages.ros.org`.
 
 2. **The official ROS distro release**, using [bloom](http://wiki.ros.org/bloom) and a pull request against
 [`ros/rosdistro`](https://github.com/ros/rosdistro). This is what publishes new versions to the ROS build farm and to
 `apt install ros-<distro>-rtest`. The `pixi run -e release ...` tasks in this document drive this path.
 
-The rest of this document is about (2). GitHub `.deb` artifacts are optional and described at the end.
+The rest of this document is about (2). The GitHub Release artifacts are described at the end.
 
 ## Does every new version need a manual bloom-release? Is it per-distro?
 
@@ -153,6 +153,10 @@ git push origin <version>    # for example: git push origin 0.2.5
 
 Confirm that the tag is visible on GitHub before running bloom.
 
+Pushing the tag also starts the [Release workflow](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/release.yml),
+which builds the GitHub Release packages (see [GitHub Release packages](#github-release-packages)). It runs independently
+of bloom, so you can continue with step 6 while it runs.
+
 ### 6. Run bloom-release for every distro
 
 A version is not on the build farm until there is a rosdistro pull request for each distro. Pushing a git tag is not
@@ -236,10 +240,23 @@ Leave older sections unchanged.
 
 Next time, follow steps 1–7 instead so `prepare-release` owns the version bump and the tag.
 
-## Optional: GitHub Release `.deb` packages
+## GitHub Release packages
 
-From the Actions tab, run **ros2-release.yml** via `workflow_dispatch`. That workflow attaches `.deb` files to a GitHub
-Release. It does not update `packages.ros.org`. Skip it unless you specifically want those artifacts.
+[`release.yml`](.github/workflows/release.yml) runs when a version tag (`X.Y.Z`) is pushed. It first checks that the
+tag matches the `<version>` of all three `package.xml` files, then builds on native GitHub runners (no Docker):
+
+| Package | ROS distros | Platforms | How |
+|---|---|---|---|
+| `.conda` | jazzy, kilted, lyrical | linux-64, linux-aarch64, osx-arm64, osx-64 | `pixi publish --path rtest` (pixi-build-ros, RoboStack dependencies) |
+| `.deb` | jazzy, kilted (Ubuntu 24.04), lyrical (Ubuntu 26.04) | amd64, arm64 | `bloom-generate rosdebian` + `debian/rules binary` against the ROS apt repository |
+
+Each `.deb` is then installed on a clean runner, and the examples are built and tested against it, before the GitHub
+Release is created with all packages attached.
+
+These packages do not update `packages.ros.org`; only bloom-release (step 6) does that.
+
+To rebuild the packages for an existing tag, or to build them without creating a release, run the workflow from the
+Actions tab (`workflow_dispatch`) with the tag and the **Create the GitHub Release** option.
 
 ## Why `bloom-release.sh` does more than call `bloom-release`
 
