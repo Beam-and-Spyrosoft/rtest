@@ -2,6 +2,20 @@
 Changelog for package rtest_examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add ``remove_pending_request()``, ``prune_pending_requests()`` and ``prune_requests_older_than()`` to the mocked ``rclcpp::Client``.
+  They forward to ``ServiceClientMock`` so tests can set expectations on them (`#128 <https://github.com/Beam-and-Spyrosoft/rtest/issues/128>`_)
+  (`#129 <https://github.com/Beam-and-Spyrosoft/rtest/issues/129>`_).
+* Fix same-named node collisions in mock lookup, including action registration and timer clocks (`#126 <https://github.com/Beam-and-Spyrosoft/rtest/issues/126>`_)
+  (`#127 <https://github.com/Beam-and-Spyrosoft/rtest/issues/127>`_).
+* Breaking API change: lookup by node-name string has been removed. Pass the node instance instead,
+  e.g. ``findPublisher<MessageT>(node, "topic")`` instead of
+  ``findPublisher<MessageT>(node->get_fully_qualified_name(), "topic")``.
+  This applies to subscriptions, services, service clients, actions, and timers too.
+  Low-level ``StaticMocksRegistry`` registration and lookup now take node ownership identity.
+* Contributors: Sławek Cielepak
+
 0.2.4 (2026-08-26)
 ------------------
 * Add use of NodeInterfaces for TestClock and TriggeringTestClock (`#111 <https://github.com/Beam-and-Spyrosoft/rtest/issues/111>`_)
