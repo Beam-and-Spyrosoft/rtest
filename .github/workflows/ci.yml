@@ -29,7 +29,9 @@ env:
   PIXI_VERSION: v0.81.0
   # Caches are written only by pushes to main. PRs (into main or a distro branch)
   # and other branches restore them read-only, so they don't evict main's caches.
-  WRITE_CACHE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+  # TEMP(pipeline-migration): chore/pipeline-migration also writes caches for testing,
+  # restore to `github.ref == 'refs/heads/main'` only before merging.
+  WRITE_CACHE: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/pipeline-migration') }}
 
 jobs:
   lint:
