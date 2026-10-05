@@ -2,8 +2,8 @@
 Changelog for package rtest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.5 (2026-10-05)
+------------------
 * Add ``remove_pending_request()``, ``prune_pending_requests()`` and ``prune_requests_older_than()`` to the mocked ``rclcpp::Client``.
   They forward to ``ServiceClientMock`` so tests can set expectations on them (`#128 <https://github.com/Beam-and-Spyrosoft/rtest/issues/128>`_)
   (`#129 <https://github.com/Beam-and-Spyrosoft/rtest/issues/129>`_).
