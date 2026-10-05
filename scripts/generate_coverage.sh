@@ -29,7 +29,9 @@ if [ -z "${GCOV_TOOL}" ] && [ -n "${CC:-}" ] && command -v "${CC%-cc}-gcov" &> /
 fi
 GCOV_TOOL="${GCOV_TOOL:-gcov}"
 
-LCOV_IGNORE="mismatch,source,unused,inconsistent,empty"
+# "inconsistent" is listed twice so lcov also suppresses its warnings: gtest's
+# TEST() macros produce dozens of harmless "mismatched end line" reports.
+LCOV_IGNORE="mismatch,source,unused,inconsistent,inconsistent,empty"
 
 rm -rf "${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"

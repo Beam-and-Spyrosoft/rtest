@@ -195,6 +195,8 @@ args = [
 # gcc --coverage build in its own build/<distro>-coverage tree, then tests,
 # lcov report (coverage/<distro>/html) and threshold check. Linux only: it needs
 # gcc, which conda-forge does not provide for macOS.
+# -fprofile-update=atomic: rclcpp runs code on its own threads, and the default
+# non-atomic counters then race and produce corrupt (even negative) hit counts.
 [tasks.coverage]
 description = "Build with gcc coverage, run tests, generate the lcov report and check coverage thresholds"
 cmd = """
@@ -203,7 +205,9 @@ cmd = """
         colcon --log-base "log/${BUILD_DIR}" build \
           --build-base "build/${BUILD_DIR}" \
           --install-base "install/${BUILD_DIR}" \
-          --mixin ninja ccache debug build-testing-on examples gnu coverage-gcc && \
+          --mixin ninja ccache debug build-testing-on examples gnu \
+          --cmake-args "-DCMAKE_C_FLAGS=--coverage -fprofile-update=atomic" \
+                       "-DCMAKE_CXX_FLAGS=--coverage -fprofile-update=atomic" && \
         source install/${BUILD_DIR}/setup.bash && \
           colcon --log-base "log/${BUILD_DIR}" test \
             --build-base "build/${BUILD_DIR}" \
