@@ -110,7 +110,10 @@ jobs:
           environments: ${{ matrix.distro }}
           locked: true
           cache: true
-          cache-write: ${{ env.WRITE_CACHE }}
+          # The environment (and its cache key) is the same for gnu and clang,
+          # so only one job per distro and platform saves it: clang, which runs
+          # on every platform. Concurrent saves of one key fail anyway.
+          cache-write: ${{ env.WRITE_CACHE == 'true' && matrix.compiler == 'clang' }}
 
       - name: Restore ccache
         uses: actions/cache/restore@v6
@@ -174,7 +177,8 @@ jobs:
           environments: ${{ matrix.distro }}
           locked: true
           cache: true
-          cache-write: ${{ env.WRITE_CACHE }}
+          # Same linux-64 environment as the build-test jobs, which save it.
+          cache-write: false
 
       - name: Restore ccache
         uses: actions/cache/restore@v6
