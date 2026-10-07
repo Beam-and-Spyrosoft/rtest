@@ -2,7 +2,9 @@
 
 [![Licence](https://img.shields.io/github/license/Beam-and-Spyrosoft/rtest?style=for-the-badge)](./LICENSE)
 
-[![ROS 2 CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-pull-request.yml)
+[![CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml?query=branch%3Amain)
+
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fbeam-and-spyrosoft.github.io%2Frtest%2Fcoverage%2Fbadge.json)](https://beam-and-spyrosoft.github.io/rtest/coverage/)
 
 [![Static Code Analysis with clang-tidy](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml/badge.svg)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ros2-clang-tidy.yml)
 
@@ -33,9 +35,11 @@ For example: testing interactions with components coming from external dependenc
 
 Complete documentation: [Rtest Documentation](https://rtest.readthedocs.io/en/latest/)
 
-## Requirements
+## Supported platforms
 
-**Supported ROS 2 distributions:** Humble, Jazzy, Kilted, Lyrical Luth
+**Supported ROS 2 distributions:** Jazzy, Kilted, Lyrical Luth
+
+**Tested on:** Linux (x86_64, aarch64) and macOS (Apple Silicon, Intel)
 
 ## Requirements
 
@@ -72,6 +76,12 @@ pixi install --all
 
 ```sh
 pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test, pixi run -e lyrical test
+```
+
+- Generate the framework coverage report (Linux only), written to `coverage/<ros_distro>/html/index.html`:
+
+```sh
+pixi run -e <ros_distro> coverage # fails if line or function coverage is below 70%, branch coverage is reported
 ```
 
 1. (Option B) Install and setup ROS 2 workspace manually:

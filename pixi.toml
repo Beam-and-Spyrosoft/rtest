@@ -28,6 +28,7 @@ clang-tools = ">=21.1,<22"
 colcon-common-extensions = ">=0.3.0,<0.4"
 colcon-mixin = ">=0.2.3,<0.3"
 pre-commit = ">=4.6.2,<5"
+lcov = ">=2.5,<3"
 
 [target.linux-64.dependencies]
 lttng-ust = ">=2.13,<3"
@@ -189,6 +190,38 @@ depends-on = [
 ]
 args = [
     { arg = "compiler", default = "gnu", choices = ["gnu", "clang"] }
+]
+
+# gcc --coverage build in its own build/<distro>-coverage tree, then tests,
+# lcov report (coverage/<distro>/html) and threshold check. Linux only: it needs
+# gcc, which conda-forge does not provide for macOS.
+# -fprofile-update=atomic: rclcpp runs code on its own threads, and the default
+# non-atomic counters then race and produce corrupt (even negative) hit counts.
+[tasks.coverage]
+description = "Build with gcc coverage, run tests, generate the lcov report and check coverage thresholds"
+cmd = """
+    bash -c '
+        BUILD_DIR="${ROS_DISTRO}-coverage"
+        colcon --log-base "log/${BUILD_DIR}" build \
+          --build-base "build/${BUILD_DIR}" \
+          --install-base "install/${BUILD_DIR}" \
+          --mixin ninja ccache debug build-testing-on examples gnu \
+          --cmake-args "-DCMAKE_C_FLAGS=--coverage -fprofile-update=atomic" \
+                       "-DCMAKE_CXX_FLAGS=--coverage -fprofile-update=atomic" && \
+        source install/${BUILD_DIR}/setup.bash && \
+          colcon --log-base "log/${BUILD_DIR}" test \
+            --build-base "build/${BUILD_DIR}" \
+            --install-base "install/${BUILD_DIR}" && \
+          colcon test-result --test-result-base "build/${BUILD_DIR}" && \
+          bash scripts/generate_coverage.sh "build/${BUILD_DIR}" "coverage/${ROS_DISTRO}" && \
+          bash scripts/check_coverage_thresholds.sh "coverage/${ROS_DISTRO}" {{ lines }} {{ functions }} {{ branches }}
+    '
+"""
+args = [
+    { arg = "lines", default = "70.0" },
+    { arg = "functions", default = "70.0" },
+    # Branch coverage is reported but not enforced while the threshold is 0.
+    { arg = "branches", default = "0.0" },
 ]
 
 [tasks.clang-format]

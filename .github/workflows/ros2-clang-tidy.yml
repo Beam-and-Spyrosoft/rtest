@@ -5,6 +5,9 @@ on:
     - cron: "0 0 * * *" # Nightly at midnight UTC
   workflow_dispatch: # On-demand trigger
 
+permissions:
+  contents: read
+
 jobs:
   clang-tidy:
     name: "clang-tidy (${{ matrix.environment }})"
@@ -12,28 +15,45 @@ jobs:
       fail-fast: false
       matrix:
         environment: [jazzy, kilted, lyrical]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 500M
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Set up Pixi
-        uses: prefix-dev/setup-pixi@v0.10.1
+        uses: prefix-dev/setup-pixi@v0.10.2
         with:
-          pixi-version: v0.77.0
+          pixi-version: v0.81.0
           environments: ${{ matrix.environment }}
+          locked: true
           cache: true
+          cache-write: false
+
+      # Read-only: reuse the linux-64 clang ccache that CI saves on main, so the
+      # clang build this task depends on is mostly cache hits.
+      - name: Restore ccache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-linux-64-${{ matrix.environment }}-clang-${{ github.run_id }}
+          restore-keys: |
+            ccache-linux-64-${{ matrix.environment }}-clang-
 
       - name: Run clang-tidy analysis
-        run: pixi run -e ${{ matrix.environment }} clang-tidy
+        shell: bash
+        run: pixi run -e ${{ matrix.environment }} clang-tidy 2>&1 | tee clang-tidy-${{ matrix.environment }}.log
 
-      - name: Upload clang-tidy report
-        if: always()
+      - name: Upload clang-tidy log
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: clang-tidy-report-${{ matrix.environment }}
-          path: build/${{ matrix.environment }}-clang/clang-tidy-report.xml
+          name: clang-tidy-log-${{ matrix.environment }}
+          path: clang-tidy-${{ matrix.environment }}.log
           if-no-files-found: warn

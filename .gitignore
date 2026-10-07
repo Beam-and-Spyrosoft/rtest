@@ -7,6 +7,7 @@ log/
 # Pixi build artifacts
 .pixi
 .ccache/
+coverage/
 
 # General IDE and editor files
 *.swp

@@ -69,6 +69,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/icu-78.3-py310h44b86e0_2.conda
       - conda: https://prefix.dev/conda-forge/linux-64/keyutils-1.6.3-h7cc23a3_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/krb5-1.22.2-hbc21106_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/lcov-2.5-hfc2019e_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.46.1-default_hbd61a6d_102.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libacl-2.3.2-h0f662aa_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libattr-2.5.2-hb03c661_1.conda
@@ -125,6 +126,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/pcre-8.45-h9c3ff4c_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-capture-tiny-0.48-pl5321ha770c72_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-devel-stacktrace-2.04-pl5321h296ab09_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pkg-config-0.29.2-h7c397b8_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-64/python-3.12.14-h8ab3286_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pyyaml-6.0.3-py312h8a5da7c_1.conda
@@ -218,6 +221,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-action-msgs-2.0.3-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-ament-clang-tidy-0.17.5-np2py312h2ed9cc7_18.conda
@@ -383,6 +387,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/icu-78.3-py311h3512406_2.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/keyutils-1.6.3-h5bc82ec_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/krb5-1.22.2-h095d8e5_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/lcov-2.5-h22914b5_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/ld_impl_linux-aarch64-2.46.1-default_h1979696_102.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libacl-2.3.2-h883460d_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libattr-2.5.2-he30d5cf_1.conda
@@ -439,6 +444,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre-8.45-h01db608_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre2-10.47-he574923_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-5.32.1-7_h31becfc_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-capture-tiny-0.48-pl5321h8af1aa0_1.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-devel-stacktrace-2.04-pl5321hc27ab68_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pkg-config-0.29.2-h36a561e_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/python-3.12.14-ha505bbe_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pyyaml-6.0.3-py312ha4530ae_1.conda
@@ -532,6 +539,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-action-msgs-2.0.3-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-ament-clang-tidy-0.17.5-np2py312h61f2ce4_18.conda
@@ -735,6 +743,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-64/bzip2-1.0.8-h374f1ed_10.conda
@@ -771,6 +780,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/gtest-1.17.0-hebe015c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/icu-78.3-py313hbf1d544_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/krb5-1.22.2-h69064fd_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/lcov-2.5-h8822bef_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64-956.6-llvm21_1_h2eed689_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64_osx-64-956.6-llvm21_1_hb373d2a_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/libblas-3.11.0-9_he492b99_openblas.conda
@@ -822,6 +832,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/pcre-8.45-he49afe7_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-64/pcre2-10.47-h31793e3_1.conda
       - conda: https://prefix.dev/conda-forge/osx-64/perl-5.32.1-7_h10d778d_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-capture-tiny-0.48-pl5321h694c41f_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-devel-stacktrace-2.04-pl5321h4c411aa_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pkg-config-0.29.2-h63fb7e2_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-64/python-3.12.14-hd04fa83_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pyyaml-6.0.3-py312h51361c1_1.conda
@@ -1040,6 +1052,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/bzip2-1.0.8-h4e30115_10.conda
@@ -1076,6 +1089,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/gtest-1.17.0-h3feff0a_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/icu-78.3-py310h579977c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/krb5-1.22.2-h34f8a20_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/lcov-2.5-h820172f_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64-956.6-llvm21_1_h5d6df6c_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64_osx-arm64-956.6-llvm21_1_h1a10cc4_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/libblas-3.11.0-9_h51639a9_openblas.conda
@@ -1127,6 +1141,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre-8.45-hbdafb3b_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre2-10.47-he63d830_1.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/perl-5.32.1-7_h4614cfb_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-capture-tiny-0.48-pl5321hce30654_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-devel-stacktrace-2.04-pl5321ha040cf9_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pkg-config-0.29.2-hdc6e874_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/python-3.12.14-hd1323d7_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pyyaml-6.0.3-py312h04c11ed_1.conda
@@ -1313,6 +1329,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/icu-78.3-py310h44b86e0_2.conda
       - conda: https://prefix.dev/conda-forge/linux-64/keyutils-1.6.3-h7cc23a3_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/krb5-1.22.2-hbc21106_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/lcov-2.5-hfc2019e_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.46.1-default_hbd61a6d_102.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libacl-2.3.2-h0f662aa_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libattr-2.5.2-hb03c661_1.conda
@@ -1369,6 +1386,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/pcre-8.45-h9c3ff4c_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-capture-tiny-0.48-pl5321ha770c72_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-devel-stacktrace-2.04-pl5321h296ab09_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pkg-config-0.29.2-h7c397b8_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-64/python-3.12.14-h8ab3286_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pyyaml-6.0.3-py312h8a5da7c_1.conda
@@ -1462,6 +1481,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-action-msgs-2.0.3-np2py312h2ed9cc7_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-64/ros-jazzy-ament-clang-tidy-0.17.5-np2py312h2ed9cc7_18.conda
@@ -1627,6 +1647,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/icu-78.3-py311h3512406_2.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/keyutils-1.6.3-h5bc82ec_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/krb5-1.22.2-h095d8e5_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/lcov-2.5-h22914b5_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/ld_impl_linux-aarch64-2.46.1-default_h1979696_102.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libacl-2.3.2-h883460d_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libattr-2.5.2-he30d5cf_1.conda
@@ -1683,6 +1704,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre-8.45-h01db608_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre2-10.47-he574923_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-5.32.1-7_h31becfc_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-capture-tiny-0.48-pl5321h8af1aa0_1.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-devel-stacktrace-2.04-pl5321hc27ab68_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pkg-config-0.29.2-h36a561e_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/python-3.12.14-ha505bbe_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pyyaml-6.0.3-py312ha4530ae_1.conda
@@ -1776,6 +1799,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-action-msgs-2.0.3-np2py312h61f2ce4_18.conda
       - conda: https://prefix.dev/robostack-jazzy/linux-aarch64/ros-jazzy-ament-clang-tidy-0.17.5-np2py312h61f2ce4_18.conda
@@ -1979,6 +2003,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-64/bzip2-1.0.8-h374f1ed_10.conda
@@ -2015,6 +2040,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/gtest-1.17.0-hebe015c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/icu-78.3-py313hbf1d544_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/krb5-1.22.2-h69064fd_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/lcov-2.5-h8822bef_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64-956.6-llvm21_1_h2eed689_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64_osx-64-956.6-llvm21_1_hb373d2a_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/libblas-3.11.0-9_he492b99_openblas.conda
@@ -2066,6 +2092,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/pcre-8.45-he49afe7_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-64/pcre2-10.47-h31793e3_1.conda
       - conda: https://prefix.dev/conda-forge/osx-64/perl-5.32.1-7_h10d778d_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-capture-tiny-0.48-pl5321h694c41f_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-devel-stacktrace-2.04-pl5321h4c411aa_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pkg-config-0.29.2-h63fb7e2_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-64/python-3.12.14-hd04fa83_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pyyaml-6.0.3-py312h51361c1_1.conda
@@ -2284,6 +2312,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/bzip2-1.0.8-h4e30115_10.conda
@@ -2320,6 +2349,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/gtest-1.17.0-h3feff0a_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/icu-78.3-py310h579977c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/krb5-1.22.2-h34f8a20_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/lcov-2.5-h820172f_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64-956.6-llvm21_1_h5d6df6c_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64_osx-arm64-956.6-llvm21_1_h1a10cc4_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/libblas-3.11.0-9_h51639a9_openblas.conda
@@ -2371,6 +2401,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre-8.45-hbdafb3b_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre2-10.47-he63d830_1.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/perl-5.32.1-7_h4614cfb_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-capture-tiny-0.48-pl5321hce30654_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-devel-stacktrace-2.04-pl5321ha040cf9_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pkg-config-0.29.2-hdc6e874_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/python-3.12.14-hd1323d7_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pyyaml-6.0.3-py312h04c11ed_1.conda
@@ -2556,6 +2588,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/icu-78.3-py310h44b86e0_2.conda
       - conda: https://prefix.dev/conda-forge/linux-64/keyutils-1.6.3-h7cc23a3_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/krb5-1.22.2-hbc21106_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/lcov-2.5-hfc2019e_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.46.1-default_hbd61a6d_102.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libacl-2.4.0-h1b0031e_2.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libattr-2.6.0-h11a17bc_1.conda
@@ -2613,6 +2646,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/pcre-8.45-h9c3ff4c_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-capture-tiny-0.48-pl5321ha770c72_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-devel-stacktrace-2.04-pl5321h296ab09_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pkg-config-0.29.2-h7c397b8_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-64/python-3.12.14-h8ab3286_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pyyaml-6.0.3-py312h8a5da7c_1.conda
@@ -2705,6 +2740,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-action-msgs-2.3.1-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-ament-clang-tidy-0.19.2-np2py312h2ed9cc7_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-64/ros-kilted-ament-cmake-2.7.5-np2py312h2ed9cc7_21.conda
@@ -2871,6 +2907,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/icu-78.3-py311h3512406_2.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/keyutils-1.6.3-h5bc82ec_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/krb5-1.22.2-h095d8e5_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/lcov-2.5-h22914b5_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/ld_impl_linux-aarch64-2.46.1-default_h1979696_102.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libacl-2.4.0-h9191491_2.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libattr-2.6.0-h1f11821_1.conda
@@ -2928,6 +2965,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre-8.45-h01db608_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre2-10.47-he574923_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-5.32.1-7_h31becfc_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-capture-tiny-0.48-pl5321h8af1aa0_1.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-devel-stacktrace-2.04-pl5321hc27ab68_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pkg-config-0.29.2-h36a561e_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/python-3.12.14-ha505bbe_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pyyaml-6.0.3-py312ha4530ae_1.conda
@@ -3020,6 +3059,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-action-msgs-2.3.1-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-ament-clang-tidy-0.19.2-np2py312h61f2ce4_21.conda
       - conda: https://prefix.dev/robostack-kilted/linux-aarch64/ros-kilted-ament-cmake-2.7.5-np2py312h61f2ce4_21.conda
@@ -3223,6 +3263,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-64/bzip2-1.0.8-h374f1ed_10.conda
       - conda: https://prefix.dev/conda-forge/osx-64/c-ares-1.34.8-had63097_2.conda
@@ -3258,6 +3299,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/gtest-1.17.0-hebe015c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/icu-78.3-py313hbf1d544_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/krb5-1.22.2-h69064fd_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/lcov-2.5-h8822bef_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64-956.6-llvm21_1_h2eed689_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64_osx-64-956.6-llvm21_1_hb373d2a_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/libblas-3.11.0-9_he492b99_openblas.conda
@@ -3310,6 +3352,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/pcre-8.45-he49afe7_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-64/pcre2-10.47-h31793e3_1.conda
       - conda: https://prefix.dev/conda-forge/osx-64/perl-5.32.1-7_h10d778d_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-capture-tiny-0.48-pl5321h694c41f_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-devel-stacktrace-2.04-pl5321h4c411aa_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pkg-config-0.29.2-h63fb7e2_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-64/python-3.12.14-hd04fa83_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pyyaml-6.0.3-py312h51361c1_1.conda
@@ -3530,6 +3574,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/wheel-0.48.0-pyhd8ed1ab_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/bzip2-1.0.8-h4e30115_10.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/c-ares-1.34.8-h74c22ad_2.conda
@@ -3565,6 +3610,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/gtest-1.17.0-h3feff0a_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/icu-78.3-py310h579977c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/krb5-1.22.2-h34f8a20_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/lcov-2.5-h820172f_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64-956.6-llvm21_1_h5d6df6c_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64_osx-arm64-956.6-llvm21_1_h1a10cc4_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/libblas-3.11.0-9_h51639a9_openblas.conda
@@ -3617,6 +3663,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre-8.45-hbdafb3b_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre2-10.47-he63d830_1.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/perl-5.32.1-7_h4614cfb_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-capture-tiny-0.48-pl5321hce30654_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-devel-stacktrace-2.04-pl5321ha040cf9_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pkg-config-0.29.2-hdc6e874_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/python-3.12.14-hd1323d7_0_cpython.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pyyaml-6.0.3-py312h04c11ed_1.conda
@@ -3808,6 +3856,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/icu-78.3-py310h44b86e0_2.conda
       - conda: https://prefix.dev/conda-forge/linux-64/keyutils-1.6.3-h7cc23a3_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/krb5-1.22.2-hbc21106_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/lcov-2.5-hfc2019e_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.46.1-default_hbd61a6d_102.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libacl-2.3.2-h0f662aa_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/libattr-2.5.2-hb03c661_1.conda
@@ -3866,6 +3915,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-64/pcre-8.45-h9c3ff4c_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-64/pcre2-10.47-h8b3dc9c_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/perl-5.32.1-7_hd590300_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-capture-tiny-0.48-pl5321ha770c72_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/linux-64/perl-devel-stacktrace-2.04-pl5321h296ab09_0.conda
       - conda: https://prefix.dev/conda-forge/linux-64/pkg-config-0.29.2-h7c397b8_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-64/psutil-7.2.2-py314hfe1a184_1.conda
       - conda: https://prefix.dev/conda-forge/linux-64/python-3.14.7-h399a421_100_cp314.conda
@@ -3962,6 +4013,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/typing_extensions-4.16.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-action-msgs-2.4.5-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-ament-clang-tidy-0.20.6-np2py314hb48eaa3_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-64/ros-lyrical-ament-cmake-2.8.7-np2py314hb48eaa3_22.conda
@@ -4136,6 +4188,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/icu-78.3-py311h3512406_2.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/keyutils-1.6.3-h5bc82ec_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/krb5-1.22.2-h095d8e5_2.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/lcov-2.5-h22914b5_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/ld_impl_linux-aarch64-2.46.1-default_h1979696_102.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libacl-2.3.2-h883460d_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/libattr-2.5.2-he30d5cf_1.conda
@@ -4194,6 +4247,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre-8.45-h01db608_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pcre2-10.47-he574923_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-5.32.1-7_h31becfc_perl5.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-capture-tiny-0.48-pl5321h8af1aa0_1.conda
+      - conda: https://prefix.dev/conda-forge/linux-aarch64/perl-devel-stacktrace-2.04-pl5321hc27ab68_0.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/pkg-config-0.29.2-h36a561e_1011.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/psutil-7.2.2-py314ha22a00f_1.conda
       - conda: https://prefix.dev/conda-forge/linux-aarch64/python-3.14.7-h6bfacdd_100_cp314.conda
@@ -4290,6 +4345,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/typing_extensions-4.16.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-action-msgs-2.4.5-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-ament-clang-tidy-0.20.6-np2py314h2824dc6_22.conda
       - conda: https://prefix.dev/robostack-lyrical/linux-aarch64/ros-lyrical-ament-cmake-2.8.7-np2py314h2824dc6_22.conda
@@ -4501,6 +4557,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/typing_extensions-4.16.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ast-serialize-0.8.0-py310hb9b2626_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/bzip2-1.0.8-h374f1ed_10.conda
@@ -4537,6 +4594,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/gtest-1.17.0-hebe015c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/icu-78.3-py313hbf1d544_2.conda
       - conda: https://prefix.dev/conda-forge/osx-64/krb5-1.22.2-h69064fd_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/lcov-2.5-h8822bef_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64-956.6-llvm21_1_h2eed689_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/ld64_osx-64-956.6-llvm21_1_hb373d2a_6.conda
       - conda: https://prefix.dev/conda-forge/osx-64/libblas-3.11.0-9_he492b99_openblas.conda
@@ -4591,6 +4649,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-64/pcre-8.45-he49afe7_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-64/pcre2-10.47-h31793e3_1.conda
       - conda: https://prefix.dev/conda-forge/osx-64/perl-5.32.1-7_h10d778d_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-capture-tiny-0.48-pl5321h694c41f_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-64/perl-devel-stacktrace-2.04-pl5321h4c411aa_0.conda
       - conda: https://prefix.dev/conda-forge/osx-64/pkg-config-0.29.2-h63fb7e2_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-64/psutil-7.2.2-py314h17af80e_1.conda
       - conda: https://prefix.dev/conda-forge/osx-64/python-3.14.7-hb933c43_100_cp314.conda
@@ -4821,6 +4881,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/noarch/typing_extensions-4.16.0-pyhcf101f3_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/tzdata-2026c-h151e31d_0.conda
       - conda: https://prefix.dev/conda-forge/noarch/virtualenv-21.7.5-pyhcf101f3_0.conda
+      - conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/_openmp_mutex-4.5-7_kmp_llvm.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ast-serialize-0.8.0-py310h3b8a9b8_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/bzip2-1.0.8-h4e30115_10.conda
@@ -4857,6 +4918,7 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/gtest-1.17.0-h3feff0a_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/icu-78.3-py310h579977c_2.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/krb5-1.22.2-h34f8a20_2.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/lcov-2.5-h820172f_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64-956.6-llvm21_1_h5d6df6c_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/ld64_osx-arm64-956.6-llvm21_1_h1a10cc4_6.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/libblas-3.11.0-9_h51639a9_openblas.conda
@@ -4911,6 +4973,8 @@ environments:
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre-8.45-hbdafb3b_0.tar.bz2
       - conda: https://prefix.dev/conda-forge/osx-arm64/pcre2-10.47-he63d830_1.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/perl-5.32.1-7_h4614cfb_perl5.conda
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-capture-tiny-0.48-pl5321hce30654_1.tar.bz2
+      - conda: https://prefix.dev/conda-forge/osx-arm64/perl-devel-stacktrace-2.04-pl5321ha040cf9_0.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/pkg-config-0.29.2-hdc6e874_1011.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/psutil-7.2.2-py314hd98292b_1.conda
       - conda: https://prefix.dev/conda-forge/osx-arm64/python-3.14.7-hf4d206d_100_cp314.conda
@@ -5956,6 +6020,20 @@ packages:
     - krb5 >=1.22.2,<1.23.0a0
   size: 1394333
   timestamp: 1786762112514
+- conda: https://prefix.dev/conda-forge/linux-64/lcov-2.5-hfc2019e_0.conda
+  sha256: b8cccf25a8bd7d9cfe4b0ee4aae766a46bdb64cf31b65c7f0e755d54140a7500
+  md5: 0dfe30a7637ab38284f9452f125d160f
+  depends:
+  - perl 5.*
+  - python
+  - xlsxwriter
+  - perl-capture-tiny
+  - perl-devel-stacktrace
+  license: GPL-2.0-or-later
+  license_family: GPL
+  run_exports: {}
+  size: 3107817
+  timestamp: 1787643609217
 - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.46.1-default_hbd61a6d_102.conda
   sha256: 27d83f1188cd19bcb7754a078b3fa7f4cfb8527f8eb2fde54dd01fc529d1adec
   md5: 449500f2c089da11c40f5c21312e3e07
@@ -6985,6 +7063,26 @@ packages:
     - perl >=5.32.1,<6.0a0 *_perl5
   size: 13344463
   timestamp: 1703310653947
+- conda: https://prefix.dev/conda-forge/linux-64/perl-capture-tiny-0.48-pl5321ha770c72_1.tar.bz2
+  sha256: 0c0e8e7a342edcdd8638bc2ecf1fca13917b67bcf40890bcff7a7bf4db2ff4d3
+  md5: 4859b3d284090166394875e68184dc9c
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports: {}
+  size: 16519
+  timestamp: 1643301265873
+- conda: https://prefix.dev/conda-forge/linux-64/perl-devel-stacktrace-2.04-pl5321h296ab09_0.conda
+  sha256: 65c2326d46dc988e00b0383ebecd40fc5c2aef3768ffad3a08c5c291161f246b
+  md5: dd8fdb871a43e20da8d419e08a25aabc
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports:
+    weak:
+    - perl-devel-stacktrace =2.04
+  size: 20039
+  timestamp: 1745394619485
 - conda: https://prefix.dev/conda-forge/linux-64/pkg-config-0.29.2-h7c397b8_1011.conda
   sha256: ff8d0023722ef5600850074a9bbf418be4d2ec78edbf4d5db45d9f0331f248e4
   md5: 435898aaa55d40aa4c016214d9e9ed98
@@ -7954,6 +8052,20 @@ packages:
     - krb5 >=1.22.2,<1.23.0a0
   size: 1538590
   timestamp: 1786762058856
+- conda: https://prefix.dev/conda-forge/linux-aarch64/lcov-2.5-h22914b5_0.conda
+  sha256: 10c61ab612159ab3ed07be86f9b11523143a985ad2de3f241d68a5a0df71e78d
+  md5: 5022e73e92c4f73572672cac749ed6c0
+  depends:
+  - perl 5.*
+  - python
+  - xlsxwriter
+  - perl-capture-tiny
+  - perl-devel-stacktrace
+  license: GPL-2.0-or-later
+  license_family: GPL
+  run_exports: {}
+  size: 3107665
+  timestamp: 1787643617330
 - conda: https://prefix.dev/conda-forge/linux-aarch64/ld_impl_linux-aarch64-2.46.1-default_h1979696_102.conda
   sha256: 2c4901f4227b0850328ed0c69f958b30ad2cd18982f7a31c7c1f911827004d08
   md5: 489444d0acb2a579d2a002d85a08c059
@@ -8927,6 +9039,26 @@ packages:
     - perl >=5.32.1,<6.0a0 *_perl5
   size: 13338804
   timestamp: 1703310557094
+- conda: https://prefix.dev/conda-forge/linux-aarch64/perl-capture-tiny-0.48-pl5321h8af1aa0_1.conda
+  sha256: 016b389d3a1fddc5fa4d177d237dd424b0a843633a1cc8c5381fe3d99905b4c5
+  md5: 97c36a59444323ddecdcd897dc627044
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports: {}
+  size: 17966
+  timestamp: 1732610140458
+- conda: https://prefix.dev/conda-forge/linux-aarch64/perl-devel-stacktrace-2.04-pl5321hc27ab68_0.conda
+  sha256: 2f97d4078e656b77183e4962f04606af16b37d4aace9d9d3e17ec11ce3cb0d1d
+  md5: d513827966b71d465130ee823042bc0e
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports:
+    weak:
+    - perl-devel-stacktrace =2.04
+  size: 20125
+  timestamp: 1745395613445
 - conda: https://prefix.dev/conda-forge/linux-aarch64/pkg-config-0.29.2-h36a561e_1011.conda
   sha256: 91cf73940417d96fe2c0dc8b4681cdf0e877a12a6eab1cf2ecba1a72699de075
   md5: 635b6b5a581745fb3a4b237069c1a309
@@ -10354,6 +10486,16 @@ packages:
   run_exports: {}
   size: 34528
   timestamp: 1786613220176
+- conda: https://prefix.dev/conda-forge/noarch/xlsxwriter-3.2.9-pyhd8ed1ab_0.conda
+  sha256: 6ed46549d156bc109803f43fd0c336bc4604aabdeee3de2a6e8ce3eff25b1a60
+  md5: fa127b9f29f64174437524d0d61432f4
+  depends:
+  - python >=3.10
+  license: BSD-2-Clause
+  license_family: BSD
+  run_exports: {}
+  size: 133826
+  timestamp: 1760304475989
 - conda: https://prefix.dev/conda-forge/noarch/zipp-4.1.0-pyhcf101f3_0.conda
   sha256: 210bd31c22bb88f5e2a167df24c95bb5f152b2ada7502f9b8c49d1f5366db423
   md5: ba3dcdc8584155c97c648ae9c044b7a3
@@ -10957,6 +11099,20 @@ packages:
     - krb5 >=1.22.2,<1.23.0a0
   size: 1199337
   timestamp: 1786762832264
+- conda: https://prefix.dev/conda-forge/osx-64/lcov-2.5-h8822bef_0.conda
+  sha256: c72b768c93f09b856338f89ecf649e1e3567fc85b9e14e5838bf33cd1b0b8737
+  md5: b649d5d45bbfba3878224af0e6a8d6d1
+  depends:
+  - perl 5.*
+  - python
+  - xlsxwriter
+  - perl-capture-tiny
+  - perl-devel-stacktrace
+  license: GPL-2.0-or-later
+  license_family: GPL
+  run_exports: {}
+  size: 3107117
+  timestamp: 1787643805168
 - conda: https://prefix.dev/conda-forge/osx-64/ld64-956.6-llvm21_1_h2eed689_6.conda
   sha256: 89558916b01fbf1de7387de8af4cfbafb280f690f627ffd56527cef8f7704a7e
   md5: 9444d5013b746c23136d9f83dada6b33
@@ -11819,6 +11975,26 @@ packages:
     - perl >=5.32.1,<6.0a0 *_perl5
   size: 12334471
   timestamp: 1703311001432
+- conda: https://prefix.dev/conda-forge/osx-64/perl-capture-tiny-0.48-pl5321h694c41f_1.tar.bz2
+  sha256: f6110871238b099c802715da71777ba97c8acbb7fed6fd489b4561af70dfcfb6
+  md5: 6c656405cbf99f5ee247b2d32fe1a89e
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports: {}
+  size: 16506
+  timestamp: 1643301591370
+- conda: https://prefix.dev/conda-forge/osx-64/perl-devel-stacktrace-2.04-pl5321h4c411aa_0.conda
+  sha256: 74ba99a8bd699ef92a48cea5af5edda10be3edbfacd6efc80a130285f4a81612
+  md5: 9231e9577f0a6c36bd10deff4cc450ac
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports:
+    weak:
+    - perl-devel-stacktrace =2.04
+  size: 20124
+  timestamp: 1745394649216
 - conda: https://prefix.dev/conda-forge/osx-64/pkg-config-0.29.2-h63fb7e2_1011.conda
   sha256: fb9d3d579f3052361ef49b76224cc80bf5c2c4302d1c52f4ce5c4a7bdc89c2e3
   md5: 1d62b366f4021cb5032f9a1d17ece63d
@@ -12734,6 +12910,20 @@ packages:
     - krb5 >=1.22.2,<1.23.0a0
   size: 1165740
   timestamp: 1786762145768
+- conda: https://prefix.dev/conda-forge/osx-arm64/lcov-2.5-h820172f_0.conda
+  sha256: 08318c761074701ff6e7a26d7ac47a0b97ebc217d10c3735a0acdfdb6adb3a12
+  md5: 56edf799c55b9d6f06788c353932b26f
+  depends:
+  - perl 5.*
+  - python
+  - xlsxwriter
+  - perl-capture-tiny
+  - perl-devel-stacktrace
+  license: GPL-2.0-or-later
+  license_family: GPL
+  run_exports: {}
+  size: 3107132
+  timestamp: 1787643693949
 - conda: https://prefix.dev/conda-forge/osx-arm64/ld64-956.6-llvm21_1_h5d6df6c_6.conda
   sha256: 0d797d56fd1c37023923a363793cb426452453603f36986a7db671cb77dbda8f
   md5: 4a7bce9254a49f75ed4b7a02fcd3891b
@@ -13598,6 +13788,26 @@ packages:
     - perl >=5.32.1,<6.0a0 *_perl5
   size: 14439531
   timestamp: 1703311335652
+- conda: https://prefix.dev/conda-forge/osx-arm64/perl-capture-tiny-0.48-pl5321hce30654_1.tar.bz2
+  sha256: 16bd59b9fd3dcd7f54c70844d6227c4811b317ac4530d48b48f4f8374277cb72
+  md5: aa3af199b5675fa543e985c7e5d2e625
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports: {}
+  size: 16478
+  timestamp: 1655720247857
+- conda: https://prefix.dev/conda-forge/osx-arm64/perl-devel-stacktrace-2.04-pl5321ha040cf9_0.conda
+  sha256: b963b564b2f8004ff978a96165f5a9c5249eec382ded5aeae7b26a45eee8e575
+  md5: 850d67c0aac1222d3b67dc0164ba051d
+  depends:
+  - perl >=5.32.1,<5.33.0a0 *_perl5
+  license: Artistic-2.0
+  run_exports:
+    weak:
+    - perl-devel-stacktrace =2.04
+  size: 20146
+  timestamp: 1745394687575
 - conda: https://prefix.dev/conda-forge/osx-arm64/pkg-config-0.29.2-hdc6e874_1011.conda
   sha256: 92c51e21a2c37382df8e15d817692b3e4cf8b810ba14de2d4adc42be58e8d50b
   md5: f2e323830f7c2ed5e94569dc88ce22f9
