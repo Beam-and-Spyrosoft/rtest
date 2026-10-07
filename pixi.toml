@@ -214,12 +214,14 @@ cmd = """
             --install-base "install/${BUILD_DIR}" && \
           colcon test-result --test-result-base "build/${BUILD_DIR}" && \
           bash scripts/generate_coverage.sh "build/${BUILD_DIR}" "coverage/${ROS_DISTRO}" && \
-          bash scripts/check_coverage_thresholds.sh "coverage/${ROS_DISTRO}" {{ lines }} {{ functions }}
+          bash scripts/check_coverage_thresholds.sh "coverage/${ROS_DISTRO}" {{ lines }} {{ functions }} {{ branches }}
     '
 """
 args = [
     { arg = "lines", default = "70.0" },
     { arg = "functions", default = "70.0" },
+    # Branch coverage is reported but not enforced while the threshold is 0.
+    { arg = "branches", default = "0.0" },
 ]
 
 [tasks.clang-format]

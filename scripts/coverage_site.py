@@ -48,6 +48,7 @@ def render_index(reports: list[dict], commit: str, repo: str) -> str:
         <td><a href="{html.escape(r["distro"])}/index.html">{html.escape(r["distro"])}</a></td>
         <td class="num">{r["lines"]:.1f}%</td>
         <td class="num">{r["functions"]:.1f}%</td>
+        <td class="num">{r["branches"]:.1f}%</td>
       </tr>"""
         for r in reports
     )
@@ -85,9 +86,9 @@ def render_index(reports: list[dict], commit: str, repo: str) -> str:
 <body>
   <main>
     <h1>rtest framework coverage</h1>
-    <p>Line and function coverage of the rtest library on <code>main</code>{commit_html}, generated {generated}.</p>
+    <p>Line, function and branch coverage of the rtest library on <code>main</code>{commit_html}, generated {generated}.</p>
     <table>
-      <thead><tr><th>ROS distro</th><th class="num">Lines</th><th class="num">Functions</th></tr></thead>
+      <thead><tr><th>ROS distro</th><th class="num">Lines</th><th class="num">Functions</th><th class="num">Branches</th></tr></thead>
       <tbody>
 {rows}
       </tbody>
@@ -133,7 +134,10 @@ def main() -> int:
                               '<a href="coverage/">rtest coverage</a>\n')
 
     for r in reports:
-        print(f"{r['distro']}: {r['lines']:.1f}% lines, {r['functions']:.1f}% functions")
+        print(
+            f"{r['distro']}: {r['lines']:.1f}% lines, {r['functions']:.1f}% functions, "
+            f"{r['branches']:.1f}% branches"
+        )
     print(f"badge: {badge['message']} ({badge['color']})")
     return 0
 

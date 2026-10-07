@@ -7,8 +7,8 @@
 # Writes to <output_dir>:
 #   coverage.info  - filtered lcov tracefile
 #   html/          - genhtml report
-#   summary.env    - LINES=<pct> FUNCTIONS=<pct>, read by check_coverage_thresholds.sh
-#   summary.json   - {"distro", "lines", "functions"}, read by coverage_site.py
+#   summary.env    - LINES=<pct> FUNCTIONS=<pct> BRANCHES=<pct>, read by check_coverage_thresholds.sh
+#   summary.json   - {"distro", "lines", "functions", "branches"}, read by coverage_site.py
 set -euo pipefail
 
 BUILD_DIR="${1:?usage: generate_coverage.sh <build_dir> <output_dir>}"
@@ -33,12 +33,17 @@ GCOV_TOOL="${GCOV_TOOL:-gcov}"
 # TEST() macros produce dozens of harmless "mismatched end line" reports.
 LCOV_IGNORE="mismatch,source,unused,inconsistent,inconsistent,empty"
 
+# Branch coverage is measured too. no_exception_branch leaves out the branches gcc generates for
+# the exceptions every call may throw (cleanup paths no test can reasonably take): they make up
+# more than three quarters of all branches and would hide the coverage of the real conditions.
+LCOV_BRANCH=(--branch-coverage --rc no_exception_branch=1)
+
 rm -rf "${OUTPUT_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 
 echo "===== GENERATING COVERAGE REPORT (${BUILD_DIR}, gcov: ${GCOV_TOOL}) ====="
 
-lcov --capture \
+lcov "${LCOV_BRANCH[@]}" --capture \
   --directory "${BUILD_DIR}" \
   --base-directory "${WORKSPACE}" \
   --gcov-tool "${GCOV_TOOL}" \
@@ -48,10 +53,10 @@ lcov --capture \
 # Keep only the framework sources. The pixi environment lives inside the
 # workspace (.pixi/), so it is excluded explicitly together with tests,
 # examples and generated code.
-lcov --extract "${OUTPUT_DIR}/all.info" "${WORKSPACE}/rtest/*" \
+lcov "${LCOV_BRANCH[@]}" --extract "${OUTPUT_DIR}/all.info" "${WORKSPACE}/rtest/*" \
   --ignore-errors "${LCOV_IGNORE}" \
   --output-file "${OUTPUT_DIR}/framework.info"
-lcov --remove "${OUTPUT_DIR}/framework.info" \
+lcov "${LCOV_BRANCH[@]}" --remove "${OUTPUT_DIR}/framework.info" \
   "*/test/*" "*/tests/*" "*/test_composition/*" \
   --ignore-errors "${LCOV_IGNORE}" \
   --output-file "${OUTPUT_DIR}/coverage.info"
@@ -68,7 +73,7 @@ for dir in include src; do
   fi
 done
 
-genhtml "${OUTPUT_DIR}/coverage.info" \
+genhtml "${LCOV_BRANCH[@]}" "${OUTPUT_DIR}/coverage.info" \
   --output-directory "${OUTPUT_DIR}/html" \
   --prefix "${WORKSPACE}" \
   --title "rtest ${ROS_DISTRO:-}" \
@@ -76,27 +81,29 @@ genhtml "${OUTPUT_DIR}/coverage.info" \
 
 # Take the totals from `lcov --summary` so they match the HTML report
 # (lcov merges template instantiations when counting functions).
-SUMMARY_TEXT="$(lcov --summary "${OUTPUT_DIR}/coverage.info" --ignore-errors "${LCOV_IGNORE}" 2>&1)"
+SUMMARY_TEXT="$(lcov "${LCOV_BRANCH[@]}" --summary "${OUTPUT_DIR}/coverage.info" --ignore-errors "${LCOV_IGNORE}" 2>&1)"
 summary_pct() {
   echo "${SUMMARY_TEXT}" | awk -v key="$1" '$1 ~ "^" key "\\." { gsub(/%/, "", $2); print $2; found = 1 }
     END { if (!found) print "0.0" }'
 }
 LINES="$(summary_pct lines)"
 FUNCTIONS="$(summary_pct functions)"
+BRANCHES="$(summary_pct branches)"
 
-printf 'LINES=%s\nFUNCTIONS=%s\n' "${LINES}" "${FUNCTIONS}" > "${OUTPUT_DIR}/summary.env"
-printf '{"distro": "%s", "lines": %s, "functions": %s}\n' \
-  "${ROS_DISTRO:-unknown}" "${LINES}" "${FUNCTIONS}" > "${OUTPUT_DIR}/summary.json"
+printf 'LINES=%s\nFUNCTIONS=%s\nBRANCHES=%s\n' "${LINES}" "${FUNCTIONS}" "${BRANCHES}" \
+  > "${OUTPUT_DIR}/summary.env"
+printf '{"distro": "%s", "lines": %s, "functions": %s, "branches": %s}\n' \
+  "${ROS_DISTRO:-unknown}" "${LINES}" "${FUNCTIONS}" "${BRANCHES}" > "${OUTPUT_DIR}/summary.json"
 
-echo "Framework library coverage (${ROS_DISTRO:-unknown}): ${LINES}% lines, ${FUNCTIONS}% functions"
+echo "Framework library coverage (${ROS_DISTRO:-unknown}): ${LINES}% lines, ${FUNCTIONS}% functions, ${BRANCHES}% branches"
 echo "HTML report: ${OUTPUT_DIR}/html/index.html"
 
 if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
   {
     echo "### Coverage: ${ROS_DISTRO:-unknown}"
     echo ""
-    echo "| Lines | Functions |"
-    echo "|---|---|"
-    echo "| ${LINES}% | ${FUNCTIONS}% |"
+    echo "| Lines | Functions | Branches |"
+    echo "|---|---|---|"
+    echo "| ${LINES}% | ${FUNCTIONS}% | ${BRANCHES}% |"
   } >> "${GITHUB_STEP_SUMMARY}"
 fi
