@@ -159,7 +159,6 @@ jobs:
     timeout-minutes: 45
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
-      CCACHE_BASEDIR: ${{ github.workspace }}
       # The pixi environment is reinstalled on every run, which changes compiler
       # mtimes. Hash the compiler content instead so cached objects stay valid.
       CCACHE_COMPILERCHECK: content

@@ -57,6 +57,17 @@ lcov --remove "${OUTPUT_DIR}/framework.info" \
   --output-file "${OUTPUT_DIR}/coverage.info"
 rm -f "${OUTPUT_DIR}/all.info" "${OUTPUT_DIR}/framework.info"
 
+# lcov ignores sources it cannot open ("source" errors are ignored above), which silently drops
+# whole directories from the report, e.g. when the compiler records unusual source paths.
+# Fail instead of reporting the coverage of an incomplete set of files.
+for dir in include src; do
+  if ! grep -q "^SF:${WORKSPACE}/rtest/${dir}/" "${OUTPUT_DIR}/coverage.info"; then
+    echo "ERROR: no source files from rtest/${dir}/ in the coverage data of ${BUILD_DIR}."
+    echo "       The report would be incomplete. Check lcov's 'unable to open' warnings above."
+    exit 1
+  fi
+done
+
 genhtml "${OUTPUT_DIR}/coverage.info" \
   --output-directory "${OUTPUT_DIR}/html" \
   --prefix "${WORKSPACE}" \
