@@ -218,8 +218,8 @@ cmd = """
     '
 """
 args = [
-    { arg = "lines", default = "60.0" },
-    { arg = "functions", default = "60.0" },
+    { arg = "lines", default = "70.0" },
+    { arg = "functions", default = "70.0" },
 ]
 
 [tasks.clang-format]

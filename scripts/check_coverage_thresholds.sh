@@ -2,12 +2,12 @@
 # Fail if the coverage produced by generate_coverage.sh is below the thresholds.
 #
 # Usage: check_coverage_thresholds.sh <coverage_dir> [lines_threshold] [functions_threshold]
-# Thresholds default to 60%.
+# Thresholds default to 70%.
 set -euo pipefail
 
 COVERAGE_DIR="${1:?usage: check_coverage_thresholds.sh <coverage_dir> [lines] [functions]}"
-LINES_THRESHOLD="${2:-60.0}"
-FUNCTIONS_THRESHOLD="${3:-60.0}"
+LINES_THRESHOLD="${2:-70.0}"
+FUNCTIONS_THRESHOLD="${3:-70.0}"
 SUMMARY="${COVERAGE_DIR}/summary.env"
 
 echo "===== CHECKING COVERAGE THRESHOLDS ====="

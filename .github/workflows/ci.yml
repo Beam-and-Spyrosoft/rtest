@@ -188,7 +188,7 @@ jobs:
       # Builds with gcc --coverage, runs the tests, writes coverage/<distro>/
       # and fails if coverage is below the thresholds (lines, functions).
       - name: Build, test and measure coverage
-        run: pixi run -e ${{ matrix.distro }} coverage 60.0 60.0
+        run: pixi run -e ${{ matrix.distro }} coverage
 
       - name: Upload coverage report
         if: ${{ !cancelled() }}

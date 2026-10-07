@@ -81,7 +81,7 @@ pixi run -e <ros_distro> test # e.g. pixi run -e jazzy test, pixi run -e lyrical
 - Generate the framework coverage report (Linux only), written to `coverage/<ros_distro>/html/index.html`:
 
 ```sh
-pixi run -e <ros_distro> coverage # fails if line or function coverage is below 60%
+pixi run -e <ros_distro> coverage # fails if line or function coverage is below 70%
 ```
 
 1. (Option B) Install and setup ROS 2 workspace manually:

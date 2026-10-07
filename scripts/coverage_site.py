@@ -24,7 +24,7 @@ DISTRO_ORDER = ["jazzy", "kilted", "lyrical", "rolling"]
 
 
 def badge_color(pct: float) -> str:
-    if pct < 60.0:
+    if pct < 70.0:
         return "red"
     if pct < 80.0:
         return "yellow"
