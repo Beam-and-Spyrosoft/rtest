@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - main
+      - chore/pipeline-migration # TEMP(coverage-badge-test): remove before merging
       - jazzy
       - kilted
       - lyrical
@@ -227,8 +228,11 @@ jobs:
   # https://beam-and-spyrosoft.github.io/rtest/coverage/
   publish-coverage:
     name: Publish coverage
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [ci-success]
+    # TEMP(coverage-badge-test): also publishes from chore/pipeline-migration, and waits only for
+    # the coverage jobs instead of ci-success (a flaky unrelated job must not block the test).
+    # Restore to `github.ref == 'refs/heads/main'` and `needs: [ci-success]` before merging.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/pipeline-migration')
+    needs: [coverage]
     runs-on: ubuntu-24.04
     permissions:
       contents: read
