@@ -2,8 +2,7 @@
 
 [![Licence](https://img.shields.io/github/license/Beam-and-Spyrosoft/rtest?style=for-the-badge)](./LICENSE)
 
-<!-- TEMP(pipeline-migration): badge points at chore/pipeline-migration for testing, switch back to main before merging -->
-[![CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml/badge.svg?branch=chore/pipeline-migration)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml?query=branch%3Achore%2Fpipeline-migration)
+[![CI](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Beam-and-Spyrosoft/rtest/actions/workflows/ci.yml?query=branch%3Amain)
 
 [![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fbeam-and-spyrosoft.github.io%2Frtest%2Fcoverage%2Fbadge.json)](https://beam-and-spyrosoft.github.io/rtest/coverage/)
 

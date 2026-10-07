@@ -11,7 +11,6 @@ on:
   push:
     branches:
       - main
-      - chore/pipeline-migration # TEMP(pipeline-migration): remove before merging
       - jazzy
       - kilted
       - lyrical
@@ -29,9 +28,7 @@ env:
   PIXI_VERSION: v0.81.0
   # Caches are written only by pushes to main. PRs (into main or a distro branch)
   # and other branches restore them read-only, so they don't evict main's caches.
-  # TEMP(pipeline-migration): chore/pipeline-migration also writes caches for testing,
-  # restore to `github.ref == 'refs/heads/main'` only before merging.
-  WRITE_CACHE: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/pipeline-migration') }}
+  WRITE_CACHE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
 jobs:
   lint:
@@ -230,9 +227,7 @@ jobs:
   # https://beam-and-spyrosoft.github.io/rtest/coverage/
   publish-coverage:
     name: Publish coverage
-    # TEMP(pipeline-migration): also publishes from chore/pipeline-migration for testing,
-    # restore to `github.ref == 'refs/heads/main'` only before merging.
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/pipeline-migration')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [ci-success]
     runs-on: ubuntu-24.04
     permissions:
