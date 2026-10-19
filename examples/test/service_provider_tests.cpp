@@ -112,6 +112,45 @@ TEST_F(ServiceProviderTest, WhenServiceIsLocked_ThenStateIsNotUpdated)
   EXPECT_TRUE(node->getState());
 }
 
+TEST_F(ServiceProviderTest, WhenProxyRequestReceived_ThenBackendResponseIsForwarded)
+{
+  auto node = std::make_shared<test_composition::ServiceProvider>(opts);
+  auto service = rtest::findService<std_srvs::srv::SetBool>(node, "/test_proxy_service");
+  auto client = rtest::findServiceClient<std_srvs::srv::SetBool>(node, "/test_backend_service");
+  ASSERT_TRUE(service);
+  ASSERT_TRUE(client);
+
+  auto request_header = std::make_shared<rmw_request_id_t>();
+  request_header->sequence_number = 123L;
+  auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
+  request->data = true;
+
+  // Set up the backend response, which the proxy should forward unchanged
+  auto backend_response = std::make_shared<std_srvs::srv::SetBool::Response>();
+  backend_response->success = true;
+  backend_response->message = "Backend state updated";
+
+  // The backend answers immediately by invoking the client callback
+  EXPECT_CALL(*client, async_send_request_with_callback(request, ::testing::_))
+    .WillOnce([backend_response](auto, auto callback) {
+      std::promise<std::shared_ptr<std_srvs::srv::SetBool::Response>> promise;
+      promise.set_value(backend_response);
+      auto shared_future = promise.get_future().share();
+      callback(shared_future);
+      return rclcpp::ClientTypes<std_srvs::srv::SetBool>::SharedFutureResponseAndId{
+        shared_future, 1UL};
+    });
+
+  // The response is sent with the header of the original request
+  EXPECT_CALL(*service, send_response(*request_header, *backend_response));
+
+  // Simulate service call
+  service->handle_request(request_header, request);
+
+  // The proxy does not touch the provider's own state
+  EXPECT_FALSE(node->getState());
+}
+
 TEST_F(ServiceProviderTest, FindServicesWithLeadingSlash)
 {
   // Create a node with two services: one with "/" and one without

@@ -22,6 +22,8 @@
 #include <std_srvs/srv/set_bool.hpp>
 
 #include <atomic>
+#include <future>
+#include <memory>
 
 namespace test_composition
 {
@@ -49,7 +51,17 @@ private:
     const std_srvs::srv::SetBool::Request::SharedPtr request,
     std_srvs::srv::SetBool::Response::SharedPtr response);
 
+  /**
+   * @brief Proxy service callback handler, forwards the request to the backend service and
+   * responds once the backend answers
+   */
+  void handleProxyServiceRequest(
+    const std::shared_ptr<rmw_request_id_t> request_header,
+    const std_srvs::srv::SetBool::Request::SharedPtr request);
+
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_;
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr proxy_service_;
+  rclcpp::Client<std_srvs::srv::SetBool>::SharedPtr backend_client_;
   bool state_{false};
   std::atomic_bool locked_{false};
 };

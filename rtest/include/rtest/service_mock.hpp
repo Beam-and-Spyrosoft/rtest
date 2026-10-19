@@ -156,6 +156,15 @@ public:
     return any_callback_.dispatch(this->shared_from_this(), request_header, typed_request);
   }
 
+  void send_response(rmw_request_id_t & request_header, typename ServiceT::Response & response)
+  {
+    auto mock = rtest::StaticMocksRegistry::instance().getMock(this).lock();
+    if (mock) {
+      std::static_pointer_cast<rtest::ServiceMock<ServiceT>>(mock)->send_response(
+        request_header, response);
+    }
+  }
+
 private:
   RCLCPP_DISABLE_COPY(Service)
 

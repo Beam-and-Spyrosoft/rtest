@@ -32,6 +32,16 @@ ServiceProvider::ServiceProvider(const rclcpp::NodeOptions & options)
       std_srvs::srv::SetBool::Response::SharedPtr response) {
       handleServiceRequest(request, response);
     });
+
+  backend_client_ = create_client<std_srvs::srv::SetBool>("test_backend_service");
+
+  proxy_service_ = create_service<std_srvs::srv::SetBool>(
+    "test_proxy_service",
+    [this](
+      const std::shared_ptr<rmw_request_id_t> request_header,
+      const std_srvs::srv::SetBool::Request::SharedPtr request) {
+      handleProxyServiceRequest(request_header, request);
+    });
 }
 
 bool ServiceProvider::getState() const { return state_; }
@@ -53,6 +63,19 @@ void ServiceProvider::handleServiceRequest(
     response->success = false;
     response->message = "Service is locked, cannot update state";
   }
+}
+
+void ServiceProvider::handleProxyServiceRequest(
+  const std::shared_ptr<rmw_request_id_t> request_header,
+  const std_srvs::srv::SetBool::Request::SharedPtr request)
+{
+  RCLCPP_INFO(get_logger(), "Forwarding proxy service request to the backend service");
+  backend_client_->async_send_request(
+    request,
+    [this, request_header](
+      std::shared_future<rclcpp::Client<std_srvs::srv::SetBool>::SharedResponse> future) {
+      proxy_service_->send_response(*request_header, *future.get());
+    });
 }
 
 }  // namespace test_composition
